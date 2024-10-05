@@ -5,6 +5,14 @@
 using namespace std;
 
 
+struct weapon
+{
+    int bulletCount = 3;
+    double speed = 0.5;
+    int damage = 10;
+    int type = 0;
+};
+
 struct player
 {
     double X_Coord = -1;
@@ -12,6 +20,7 @@ struct player
     int rotate = 1;
     int Hit_Points = -1;
     int Damage = -1;
+    weapon gun;
 };
 
 struct enemy
@@ -22,6 +31,19 @@ struct enemy
     int Hit_Points = -1;
     int Damage = -1;
 };
+
+struct bullet
+{
+    int active = 0;
+    double X_Coord = -1;
+    double Y_Coord = -1;
+    double fin_X_Coord = -1;
+    double fin_Y_Coord = -1;
+    int damage = 0;
+    double speed = 0.2;
+};
+
+
 
 struct game
 {
@@ -39,10 +61,65 @@ struct game
         {'#','.','.','.','#','.','.','.','.','#'},
         {'#','#','#','#','#','#','#','#','#','#'}
     };
+    int bulcnt = 0;
     player you;
     enemy monster;
+    bullet bulls[10];
 
 };
+
+void bulletInit(bullet *p, int active, double X_Coord, double Y_Coord, double fin_X_Coord, double fin_Y_Coord, int damage, double speed)
+{
+    (*p).active = active;
+    (*p).X_Coord = X_Coord;
+    (*p).Y_Coord = Y_Coord;
+    (*p).fin_X_Coord = fin_X_Coord;
+    (*p).fin_Y_Coord = fin_Y_Coord;
+    (*p).speed = speed;
+    (*p).damage = damage;
+
+}
+
+void bulletStepN(bullet* p)
+{
+    (*p).X_Coord -= (*p).speed;
+}
+
+void bulletStepS(bullet* p)
+{
+    (*p).X_Coord += (*p).speed;
+}
+
+void bulletStepW(bullet* p)
+{
+    (*p).Y_Coord -= (*p).speed;
+}
+
+void bulletStepE(bullet* p)
+{
+    (*p).Y_Coord += (*p).speed;
+}
+
+void bulletCoords(bullet p, double *st_x, double *st_y, double *fin_x, double *fin_y)
+{
+    *st_x = p.X_Coord;
+    *st_y = p.Y_Coord;
+    *fin_x = p.fin_X_Coord;
+    *fin_y = p.fin_Y_Coord;
+}
+
+void weaponStat(weapon p, int*bc, double *sp, int *dm,int *t)
+{
+    *bc = p.bulletCount;
+    *sp = p.speed;
+    *dm = p.damage;
+    *t = p.type;
+}
+
+void playerWeaponStat(player p, int* bc, double* sp, int* dm, int* t)
+{
+    weaponStat(p.gun, bc, sp, dm, t);
+}
 
 void playerStepN(player* p)
 {
@@ -99,6 +176,112 @@ void enemyCoord(enemy* p, double* x, double* y)
 {
     *x = (*p).X_Coord;
     *y = (*p).Y_Coord;
+}
+
+void Shot(game *p)
+{
+    int bulletCount = 0;
+    double speed = 0;
+    int damage = 0;
+    int type = 0;
+    double X_coord, Y_coord;
+    double fin_X_coord, fin_Y_coord;
+    int rotation;
+    
+    playerCoord(&(*p).you, &X_coord, &Y_coord, &rotation);
+    playerWeaponStat((*p).you, &bulletCount, &speed, &damage, &type);
+    int d = 0 - bulletCount / 2;
+    (*p).bulcnt = bulletCount;
+    if (bulletCount > 0)
+    {
+        switch (type)
+        {
+        case 0:
+            for (int i = 0; i < bulletCount; i++)
+            {
+                switch (rotation)
+                {
+                case 1:
+                    fin_X_coord = X_coord - 4 - d;
+                    fin_Y_coord = Y_coord + d;
+                    break;
+                case 2:
+                    fin_X_coord = X_coord + d;
+                    fin_Y_coord = Y_coord + 4 + d;
+                    break;
+                case 3:
+                    fin_X_coord = X_coord + 4 + d;
+                    fin_Y_coord = Y_coord + d;
+                    break;
+                case 4:
+                    fin_X_coord = X_coord + d;
+                    fin_Y_coord = Y_coord - 4 - d;
+                    break;
+                
+                }
+                d += 1;
+                bulletInit(&(*p).bulls[i], 1, X_coord, Y_coord, fin_X_coord, fin_Y_coord, damage, speed);
+            }
+            break;
+        case 1:
+            for (int i = 0; i < bulletCount; i++)
+            {
+                switch (rotation)
+                {
+                case 1:
+                    fin_X_coord = X_coord - 10;
+                    fin_Y_coord = Y_coord;
+                    X_coord -= i;
+                    break;
+                case 2:
+                    fin_X_coord = X_coord;
+                    fin_Y_coord = Y_coord + 10;
+                    Y_coord += i;
+                    break;
+                case 3:
+                    fin_X_coord = X_coord + 10;
+                    fin_Y_coord = Y_coord;
+                    X_coord += i;
+                    break;
+                case 4:
+                    fin_X_coord = X_coord;
+                    fin_Y_coord = Y_coord - 10;
+                    Y_coord -= i;
+                    break;
+                }
+                bulletInit(&(*p).bulls[i], 1, X_coord, Y_coord, fin_X_coord, fin_Y_coord, damage, speed);
+            }
+        }
+    }
+}
+
+void bulletMovment(game* p)
+{
+    int bulletCount = (*p).bulcnt;
+    for (int i = 0; i < bulletCount; i++)
+    {
+        double st_x, st_y;
+        double fin_x, fin_y;
+        bulletCoords((*p).bulls[i], &st_x, &st_y, &fin_x, &fin_y);
+ 
+        if (abs(fin_x - st_x) > abs(fin_y - st_y))
+        {
+            if (fin_x < st_x)
+                bulletStepN(&((*p).bulls[i]));
+            else
+                if (fin_x > st_x)
+                    bulletStepS(&((*p).bulls[i]));
+
+        }
+        else
+        {
+            if (fin_y > st_y)
+                bulletStepE(&((*p).bulls[i]));
+            else
+                if (fin_y < st_y)
+                    bulletStepW(&((*p).bulls[i]));
+        }
+    }
 }
 
 void enemyMovment(game *p)
@@ -178,6 +361,7 @@ int vivod(game p)
         {
             mp[i* map_x + j] = p.map[i][j];
         }
+
     int rotPlayer;
     playerCoord(&(p.you), &ent_x, &ent_y, &rotPlayer);
     roundX = round(ent_x);
@@ -191,12 +375,23 @@ int vivod(game p)
         case 4: mp[roundX * map_x + roundY] = 'W'; break;
         }
         
-
     enemyCoord(&(p.monster), &ent_x, &ent_y);
     roundX = round(ent_x);
     roundY = round(ent_y);
     if (ent_x < map_x && ent_x >= 0 && ent_y >= 0 && ent_y < map_y)
         mp[roundX * map_x + roundY] = 'M';
+
+    int count = p.bulcnt;
+    for (int i = 0; i < count; i++)
+    {
+        double st_x, st_y;
+        double fin_x, fin_y;
+        bulletCoords((p).bulls[i], &st_x, &st_y, &fin_x, &fin_y);
+        roundX = round(st_x);
+        roundY = round(st_y);
+        if (st_x < map_x && st_x >= 0 && st_y >= 0 && st_y < map_y)
+            mp[roundX * map_x + roundY] = '0';
+    }
 
     system("cls");
     for (int i = 0; i < map_x; i++) {
@@ -293,11 +488,15 @@ int main()
         {
             gamePlayerStepW(&DOM);
         }
+        if (GetAsyncKeyState(VK_BACK))
+        {
+            Shot(&DOM);
+        }
 
         enemyMovment(&DOM);
-        
+        bulletMovment(&DOM);
         vivod(DOM);
-        Sleep(1);
+
     };
    
 
