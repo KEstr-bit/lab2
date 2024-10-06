@@ -77,33 +77,31 @@ struct game
 
 };
 
-struct final
+
+
+class final
 {
+private:
     int type = 0;
-    char win[10] = {'Y','o','u',' ','W','I','N','!','\n'};
-    char loose[10] = { 'Y','o','u',' ','L','O','O','S','E','\n'};
+    char win[10];
+    char loose[10];
+public:
+    final(int t, char w[10], char l[10]);
+    final();
+    ~final();
+    int changeType(int t);
+    int vvodFinal();
+    int vivodFinal();
+    
+    
 };
 
-void finalInit(final* p, int t, char w[10], char l[10])
-{
-    (*p).type = t;
-    (*p).win;
-    strcpy((*p).win, w);
-    strcpy((*p).loose, l);
-}
 
-void vivodFinal(final p)
-{
-    if (p.type == 1)
-        printf("\n%s\n", p.win);
-    if (p.type == 2)
-        printf("\n%s\n", p.loose);
-}
 
-void changeType(final* p, int t)
-{
-    (*p).type = t;
-}
+
+
+
+
 
 void weaponInit(weapon* p, int bc, double sp, int tp, int dm)
 {
@@ -165,16 +163,7 @@ void bulletInit(bullet* p)
 
 }
 
-void vvodFinal(final* p)
-{
-    char w[10];
-    char l[10];
-    printf("Enter messages when you win: ");
-    fgets(w, 10, stdin);
-    printf("Enter messages when you loose: ");
-    fgets(l, 10, stdin);
-    finalInit(p, 0, w, l);
-}
+
 
 void vvodEnemy(enemy* p)
 {
@@ -717,7 +706,7 @@ final ending;
 
 int main()
 {
-    vvodFinal(&ending);
+    ending.vvodFinal();
     system("cls");
     game DOM;
     playerInit(&DOM.you, 8, 1, 100, 50, 1);
@@ -753,12 +742,12 @@ int main()
         interaction(&DOM);
         if (playerHitPoints(DOM.you) <= 0)
         {
-            changeType(&ending, 2);
+            ending.changeType(2);
             i = 0;
         }
         if (enemyHitPoints(DOM.monster) <= 0)
         {
-            changeType(&ending, 1);
+            ending.changeType(1);
             i = 0;
         }
         vivod(DOM);
@@ -767,9 +756,58 @@ int main()
         
     };
     system("cls");
-    vivodFinal(ending);
+    ending.vivodFinal();
     Sleep(50);
 
     
+}
+
+
+int final::vvodFinal()
+{
+    char w[10];
+    char l[10];
+
+    printf("Enter messages when you win: ");
+    fgets(w, 10, stdin);
+    printf("Enter messages when you loose: ");
+    fgets(l, 10, stdin);
+
+    strcpy(win, w);
+    strcpy(loose, l);
+    return 0;
+}
+
+int final::changeType(int t)
+{
+    type = t;
+    return 0;
+}
+
+int final::vivodFinal()
+{
+    if (type == 1)
+        printf("\n%s\n", win);
+    if (type == 2)
+        printf("\n%s\n", loose);
+    return 0;
+}
+
+final::final(int t, char w[10], char l[10])
+{
+    type = t;
+    strcpy(win, w);
+    strcpy(loose, l);
+}
+
+final::final()
+{
+    type = 0;
+    strcpy(win, "You WIN!");
+    strcpy(loose, "You Loose");
+}
+
+final::~final()
+{
 }
 
