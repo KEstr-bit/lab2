@@ -2,6 +2,7 @@
 #define K 0.2
 #include <iostream>
 #include <windows.h>
+#include <string.h>
 using namespace std;
 
 
@@ -76,7 +77,70 @@ struct game
 
 };
 
-void bulletInit(bullet *p, int active, double X_Coord, double Y_Coord, double fin_X_Coord, double fin_Y_Coord, int damage, double speed)
+struct final
+{
+    int type = 0;
+    char win[10] = {'Y','o','u',' ','W','I','N','!','\n'};
+    char loose[10] = { 'Y','o','u',' ','L','O','O','S','E','\n'};
+};
+
+void finalInit(final* p, int t, char w[10], char l[10])
+{
+    (*p).type = t;
+    (*p).win;
+    strcpy((*p).win, w);
+    strcpy((*p).loose, l);
+}
+
+void vivodFinal(final p)
+{
+    if (p.type == 1)
+        printf("\n%s\n", p.win);
+    if (p.type == 2)
+        printf("\n%s\n", p.loose);
+}
+
+void changeType(final* p, int t)
+{
+    (*p).type = t;
+}
+
+void weaponInit(weapon* p, int bc, double sp, int tp, int dm)
+{
+    (*p).damage = dm;
+    (*p).bulletCount = bc;
+    (*p).speed = sp;
+    (*p).type = tp;
+}
+
+void playerInit(player* p, int x, int y, int hp, int dm, int rot)
+{
+    (*p).Damage = dm;
+    (*p).Hit_Points = hp;
+    (*p).X_Coord = x;
+    (*p).Y_Coord = y;
+    (*p).rotate = rot;
+}
+
+void enemyInit(enemy* p, double x, double y, int hp, int dm, double sp)
+{
+    (*p).Damage = dm;
+    (*p).Hit_Points = hp;
+    (*p).X_Coord = x;
+    (*p).Y_Coord = y;
+    (*p).speed = sp;
+}
+
+void enemyInit(enemy* p)
+{
+    (*p).Damage = -1;
+    (*p).Hit_Points = -1;
+    (*p).X_Coord = -1;
+    (*p).Y_Coord = -1;
+    (*p).speed = 0.2;
+}
+
+void bulletInit(bullet* p, int active, double X_Coord, double Y_Coord, double fin_X_Coord, double fin_Y_Coord, int damage, double speed)
 {
     (*p).active = active;
     (*p).X_Coord = X_Coord;
@@ -85,7 +149,7 @@ void bulletInit(bullet *p, int active, double X_Coord, double Y_Coord, double fi
     (*p).fin_Y_Coord = fin_Y_Coord;
     (*p).speed = speed;
     (*p).damage = damage;
-    
+
 
 }
 
@@ -100,6 +164,92 @@ void bulletInit(bullet* p)
     (*p).damage = 0;
 
 }
+
+void vvodFinal(final* p)
+{
+    char w[10];
+    char l[10];
+    printf("Enter messages when you win: ");
+    fgets(w, 10, stdin);
+    printf("Enter messages when you loose: ");
+    fgets(l, 10, stdin);
+    finalInit(p, 0, w, l);
+}
+
+void vvodEnemy(enemy* p)
+{
+    double x, y, sp;
+    int hp, dm;
+    do {
+        printf("Enter the X coordinate: ");
+        scanf("%lf", &x);
+    } while (x < 0);
+    do {
+        printf("Enter the Y coordinate: ");
+        scanf("%lf", &y);
+    } while (y < 0);
+    do {
+        printf("Enter hp: ");
+        scanf("%d", &hp);
+    } while (hp <= 0);
+    do {
+        printf("Enter damage: ");
+        scanf("%d", &dm);
+    } while (dm <= 0);
+    do {
+        printf("Enter speed: ");
+        scanf("%lf", &sp);
+    } while (sp <= 0);
+
+    enemyInit(p, x, y, hp, dm, sp);
+}
+void vvodPlayer(player* p)
+{
+    double x, y;
+    int hp, dm;
+    do {
+        printf("Enter the X coordinate: ");
+        scanf("%lf", &x);
+    } while (x < 0);
+    do {
+        printf("Enter the Y coordinate: ");
+        scanf("%lf", &y);
+    } while (y < 0);
+    do {
+        printf("Enter hp: ");
+        scanf("%d", &hp);
+    } while (hp <= 0);
+    do {
+        printf("Enter damage: ");
+        scanf("%d", &dm);
+    } while (dm <= 0);
+
+    playerInit(p, x, y, hp, dm, 1);
+}
+void vvodweapon(weapon* p)
+{
+    double x, y, sp;
+    int bc, tp, dm;
+
+    do {
+        printf("Enter bullets count: ");
+        scanf("%d", &bc);
+    } while (bc <= 0);
+    do {
+        printf("Enter type: ");
+        scanf("%d", &tp);
+    } while (tp < 0 || tp >1);
+    do {
+        printf("Enter damage: ");
+        scanf("%d", &dm);
+    } while (dm <= 0);
+    do {
+        printf("Enter speed: ");
+        scanf("%lf", &sp);
+    } while (sp <= 0);
+    weaponInit(p, bc, sp, tp, dm);
+}
+
 
 void bulletStepN(bullet* p)
 {
@@ -478,31 +628,7 @@ int vivod(game p)
     return 0;
 }
 
-void playerInit(player *p, int x, int y, int hp, int dm)
-{
-    (*p).Damage = dm;
-    (*p).Hit_Points = hp;
-    (*p).X_Coord = x;
-    (*p).Y_Coord = y;
-}
 
-void enemyInit(enemy *p, double x, double y, int hp, int dm, double sp)
-{
-    (*p).Damage = dm;
-    (*p).Hit_Points = hp;
-    (*p).X_Coord = x;
-    (*p).Y_Coord = y;
-    (*p).speed = sp;
-}
-
-void enemyInit(enemy* p)
-{
-    (*p).Damage = -1;
-    (*p).Hit_Points = -1;
-    (*p).X_Coord = -1;
-    (*p).Y_Coord = -1;
-    (*p).speed = 0.2;
-}
 
 void gamePlayerStepN(game *p)
 {
@@ -548,7 +674,7 @@ void gamePlayerStepE(game *p)
         playerStepE(&(*p).you);
 }
 
-void bullletCollisions(game* p)
+void interaction(game* p)
 {
     int bc = (*p).bulcnt;
     for (int i = 0; i < bc; i++)
@@ -571,26 +697,35 @@ void bullletCollisions(game* p)
             bulletInit(&(*p).bulls[i]);
 
         }
-        int pl_x, pl_y;
-        playerCoord((*p).you, &pl_x, &pl_y);
-        if (map_x == pl_x && map_y == pl_y)
-        {
-            playerDamage(&(*p).you, getEnemyDamage((*p).monster));
-        }
+        
         if (round(st_x) == round(fin_x) && round(st_y) == round(fin_y))
         {
             bulletInit(&(*p).bulls[i]);
         }
     }
+    int map_x, map_y;
+    int pl_x, pl_y;
+    playerCoord((*p).you, &pl_x, &pl_y);
+    enemyCoord(&(*p).monster, &map_x, &map_y);
+    if (map_x == pl_x && map_y == pl_y)
+    {
+        playerDamage(&(*p).you, getEnemyDamage((*p).monster));
+    }
 }
+
+final ending;
 
 int main()
 {
+    vvodFinal(&ending);
+    system("cls");
     game DOM;
-    playerInit(&DOM.you, 8, 1, 100, 50);
+    playerInit(&DOM.you, 8, 1, 100, 50, 1);
     enemyInit(&DOM.monster, 1, 8, 100, 50, 0.2);
+    weaponInit(&DOM.you.gun, 5, 0.2, 1, 50);
     printf("\e[?25l");
-    while (1)
+    int i = 1;
+    while (i)
     {
         if (GetAsyncKeyState(VK_UP))
         {
@@ -615,11 +750,25 @@ int main()
 
         enemyMovment(&DOM);
         bulletMovment(&DOM);
-        bullletCollisions(&DOM);
+        interaction(&DOM);
+        if (playerHitPoints(DOM.you) <= 0)
+        {
+            changeType(&ending, 2);
+            i = 0;
+        }
+        if (enemyHitPoints(DOM.monster) <= 0)
+        {
+            changeType(&ending, 1);
+            i = 0;
+        }
         vivod(DOM);
         Sleep(50);
+        
+        
     };
-   
+    system("cls");
+    vivodFinal(ending);
+    Sleep(50);
 
     
 }
