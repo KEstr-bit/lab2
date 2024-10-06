@@ -6,8 +6,8 @@
 #include <string.h>
 using namespace std;
 
-
-void setcur(int x, int y)//установка курсора на позицию  x y 
+//установка курсора на позицию  x y 
+void setcur(int x, int y)  
 {
     COORD coord;
     coord.X = x;
@@ -19,16 +19,19 @@ void setcur(int x, int y)//установка курсора на позицию
 class final
 {
 private:
-    int type = 0;
-    char win[10];
-    char loose[10];
+    int type;       //Парамтр окончания игры
+    char win[10];   //Сообщение при победе
+    char loose[10]; //Сообщение при проигрыше
 
 public:
     final(int t, char w[10], char l[10]);
     final();
     ~final();
+    //Изменить параметр окончания
     int changeType(int t);
+    //Ввести с консоли
     int vvodFinal();
+    //Вывести сообщение об завершении игры
     int vivodFinal();
 
 };
@@ -39,15 +42,18 @@ public:
     weapon(int bc, double sp, int tp, int dm);
     weapon();
     ~weapon();
+    //получит характеристики оружия
     int getWeaponStat(int* bc, double* sp, int* dm, int* t);
+    //установить характеристики оружия
     int setWeaponStat(int bc, double sp, int dm, int t);
+    //ввести характеристики с консоли
     int vvodWeapon();
 
 private:
-    int bulletCount;
-    double speed;
-    int damage;
-    int type;
+    int bulletCount;    //количество пуль, выпускаемых за раз
+    double speed;       //скорость полета пули
+    int damage;         //урон, наносимы пулей
+    int type;           //тип оружия: 0 - дробовик, 1 - автомат
 
 };
 
@@ -57,22 +63,28 @@ public:
     player(double x, double y, int hp, int dm, int rot);
     player();
     ~player();
+    //ввести с консоли
     int vvodPlayer();
+    //перемщение игрока
     int playerStep(int rotation);
+    //получение координат игрока
     int getPlayerCoord(double* x, double* y, int* r);
     int getPlayerCoord(int* x, int* y);
+    //нанесение урона игроку
     int playerDamage(int d);
+    //получение данных о здоровье игрока
     int getPlayerHitPoints();
+    //получение характеристик оружия игрока
     int playerWeaponStat(int* bc, double* sp, int* dm, int* t);
 
 
 private:
-    double X_Coord;
-    double Y_Coord;
-    int rotate;
-    int Hit_Points;
-    int Damage;
-    weapon *gun;
+    double X_Coord; //координата игрока по X
+    double Y_Coord; //координата игрока по Y
+    int rotate;     //направление взгляда игрока: 1 - N, 2 - E, 3 - S, 4 - W 
+    int Hit_Points; //очки здоровья игрока
+    int Damage;     //урон наносимый игроком
+    weapon *gun;    //оружие игрока
 };
 
 
@@ -82,21 +94,27 @@ public:
     enemy(double x, double y, int hp, int dm, double sp);
     enemy();
     ~enemy();
+    //ввод с консоли характеристик врага
     int vvodEnemy();
+    //перемещение врага
     int enemyStep(int rotation);
+    //получение координат врага
     int getEnemyCoord(double* x, double* y);
     int getEnemyCoord(int* x, int* y);
+    //нанесение урона врагу
     int enemyDamage(int d);
+    //получение данных об уроне врага
     int getEnemyDamage();
+    //получение данных о здоровье врага
     int getEnemyHitPoints();
 
 
 private:
-    double X_Coord;
-    double Y_Coord;
-    double speed;
-    int Hit_Points;
-    int Damage;
+    double X_Coord;     //координата врага по X
+    double Y_Coord;     //координата врага по Y
+    double speed;       //скорость врага
+    int Hit_Points;     //здоровье врага
+    int Damage;         //урон врага
 };
 
 
@@ -107,22 +125,23 @@ public:
     bullet(int act, double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp);
     bullet();
     ~bullet();
+    //перемещение пули
     int bulletStep(int rotation);
+    //получение данных об уроне пули
     int getBulletDamage();
+    //получение координат пули: текущего и точки назначения
     int getBulletCoords(double* st_x, double* st_y, double* fin_x, double* fin_y);
 
 
 private:
-    int active;
-    double X_Coord;
-    double Y_Coord;
-    double fin_X_Coord;
-    double fin_Y_Coord;
-    int damage;
-    double speed;
+    int active;         //параметр существования пули
+    double X_Coord;     //текущая координата пули по X
+    double Y_Coord;     //текущая координата пули по Y
+    double fin_X_Coord; //конечная координата пули по X
+    double fin_Y_Coord; //конечная координата пул по Y
+    int damage;         //урон пули
+    double speed;       //скорость пули
 };
-
-
 
 
 
@@ -131,24 +150,32 @@ class game
 public:
     game();
     ~game();
+    //движение врага
     int enemyMovment();
+    //движение игрока
     int gamePlayerStep(int rot);
+    //выстрел игрока
     int Shot();
+    //движение пули
     int bulletMovment();
+    //взаимодействие объектов
     int interaction();
+    //вывод текущего состояния игры
     int vivod();
+    //получение данных о здоровье игрока
     int getGamePlayerHitPoints();
+    //получение данных о здоровье врага
     int getGameEnemyHitPoints();
 
 private:
-    int Map_Size_X;
-    int Map_Size_Y;
-    char* map;
-    int activeBullets[10];
-    int bulcnt = 0;
-    player *you;
-    enemy *monster;
-    bullet *bulls[MAX_BULLETS];
+    int Map_Size_X;         //Размер карты по X
+    int Map_Size_Y;         //Размер карты по Y
+    char* map;              //карта
+    int activeBullets[10];  //список, существующих пуль
+    int bulcnt = 0;         //кол-во существующих пуль
+    player *you;            //игрок
+    enemy *monster;         //враг
+    bullet *bulls[MAX_BULLETS]; //массив пуль
 };
 
 
@@ -157,15 +184,17 @@ final ending;
 
 int main()
 {
+    //Ввод данных об окончании игры
     ending.vvodFinal();
     system("cls");
     game DOM;
     
     
     printf("\e[?25l");
-    int i = 1;
+    int i = 1;  //флажок работы игры
     while (i)
     {
+        //обработка действий игрока
         if (GetAsyncKeyState(VK_UP))
         {
             DOM.gamePlayerStep(1);
@@ -187,9 +216,11 @@ int main()
             DOM.Shot();
         }
 
-        DOM.enemyMovment();
-        DOM.bulletMovment();
-        DOM.interaction();
+        DOM.enemyMovment();     //движение врага
+        DOM.bulletMovment();    //движение пули
+        DOM.interaction();      //взаимодействие объектов
+
+        //проверка окончания игры
         if (DOM.getGamePlayerHitPoints() <= 0)
         {
             ending.changeType(2);
@@ -200,11 +231,14 @@ int main()
             ending.changeType(1);
             i = 0;
         }
+
+        //вывод состояния игры
         DOM.vivod();
         Sleep(50);
         
         
     };
+    //завершение игры
     system("cls");
     ending.vivodFinal();
     Sleep(50);
@@ -604,6 +638,7 @@ game::game()
         {'#','.','.','.','#','.','.','.','.','#'},
         {'#','#','#','#','#','#','#','#','#','#'}
     };
+    //копирование premap в map
     for (int x = 0; x < Map_Size_X; x++)
     {
         for (int y = 0; y < Map_Size_Y; y++)
@@ -611,6 +646,7 @@ game::game()
             *(map + x * Map_Size_X + y) = preMap[x][y];
         }
     }
+    //заполнение массива пуль нулями
     for (int i = 0; i < 10; i++)
         activeBullets[i] = 0;
     bulcnt = 0;
@@ -625,17 +661,18 @@ game::~game()
 
 int game::enemyMovment()
 {
-    int i = 0;
+    int i = 0;      //флаг живого игрока
     int HP;
     HP=monster->getEnemyHitPoints();
 
+    //если враг живой
     if (HP > 0)
     {
         double play_x, play_y;
         double enem_x, enem_y;
         double x, y;
         int roundX, roundY;
-        int fl = 1;
+        int fl = 1;     //флаг видимости игрока
         int rotPlayer;
         you->getPlayerCoord(&play_x, &play_y, &rotPlayer);
         monster->getEnemyCoord(&enem_x, &enem_y);
@@ -643,6 +680,9 @@ int game::enemyMovment()
         y = enem_y;
 
         double d = sqrt((x - play_x) * (x - play_x) + (y - play_y) * (y - play_y));
+
+        //движение по прямой от врага до игрока с шагом K
+        //проверка: видит ли враг игрока
         while (d > 1 && fl)
         {
 
@@ -660,6 +700,8 @@ int game::enemyMovment()
 
         roundX = round(enem_x);
         roundY = round(enem_y);
+
+        //движение врага к игроку
         if (fl)
         {
             if (abs(enem_x - play_x) > abs(enem_y - play_y))
@@ -699,6 +741,7 @@ int game::gamePlayerStep(int rot)
         you->getPlayerCoord(&x, &y, &roundX);
         roundX = round(x);
         roundY = round(y);
+        //изменение координат игрока в зависимости от направления
         switch (rot)
         {
         case 1:
@@ -748,8 +791,10 @@ int game::Shot()
     int d = 0 - bulletCount / 2;
     int fl = 0;
     int j = 0;
+    //если оружие выстреливает больше 0 пуль и на карте ни одной пули
     if (bulletCount > 0 && bulcnt == 0)
     {
+        //выбор типа оружия
         switch (type_weapon)
         {
         case 0:
@@ -758,6 +803,7 @@ int game::Shot()
                 double x, y;
                 x = X_coord;
                 y = Y_coord;
+                //выбор координа в зависимости от направления
                 switch (rotation)
                 {
                 case 1:
@@ -784,6 +830,7 @@ int game::Shot()
 
                 }
                 d += 1;
+                // инициализация пуль
                 for(int fl = 1; j < 10 && fl; j++)
                     if (activeBullets[j] == 0)
                     {
@@ -799,6 +846,7 @@ int game::Shot()
         case 1:
             for (int i = 0; i < bulletCount; i++)
             {
+                //выбор координат в зависимости от направления
                 switch (rotation)
                 {
                 case 1:
@@ -822,6 +870,7 @@ int game::Shot()
                     Y_coord -= i;
                     break;
                 }
+                //инициализация пуль
                 for (int fl = 1; j < 10 && fl; j++)
                     if (activeBullets[j] == 0)
                     {
@@ -843,15 +892,16 @@ int game::Shot()
 int game::bulletMovment()
 {
     
-    int bulletCount = bulcnt;
     for (int i = 0; i < 10; i++)
     {
+        //если пуля существует
         if (activeBullets[i] == 1)
         {
             double st_x, st_y;
             double fin_x, fin_y;
             bulls[i]->getBulletCoords(&st_x, &st_y, &fin_x, &fin_y);
 
+            //движение пули к конечной точке
             if (abs(fin_x - st_x) > abs(fin_y - st_y))
             {
                 if (fin_x < st_x)
@@ -876,10 +926,12 @@ int game::bulletMovment()
 
 int game::interaction()
 {
+    //если на карте есть пули
     if (bulcnt > 0)
     {
         for (int i = 0; i < 10; i++)
         {
+            //если пуля существует
             if (activeBullets[i] == 1)
             {
                 double st_x, st_y;
@@ -888,6 +940,7 @@ int game::interaction()
                 bulls[i]->getBulletCoords(&st_x, &st_y, &fin_x, &fin_y);
                 map_x = round(st_x);
                 map_y = round(st_y);
+                //если пуля столкнулась со стеной
                 if (*(map+map_x*Map_Size_X+map_y) == '#')
                 {
                     delete bulls[i];
@@ -897,6 +950,7 @@ int game::interaction()
                 else
                 {
                     monster->getEnemyCoord(&map_x, &map_y);
+                    //если пуля попала во врага
                     if (round(st_x) == map_x && round(st_y) == map_y)
                     {
 
@@ -908,6 +962,7 @@ int game::interaction()
                     }
                     else
                     {
+                        //если пуля достигла своей конечной точки
                         if (round(st_x) == round(fin_x) && round(st_y) == round(fin_y))
                         {
                             delete bulls[i];
@@ -923,6 +978,7 @@ int game::interaction()
     int pl_x, pl_y;
     you->getPlayerCoord(&pl_x, &pl_y);
     monster->getEnemyCoord(&map_x, &map_y);
+    //если враг достиг игрока
     if (map_x == pl_x && map_y == pl_y)
     {
         you->playerDamage(monster->getEnemyDamage());
@@ -945,6 +1001,7 @@ int game::vivod()
         return 1;
     }
 
+    //копирование карты в динамический массив
     for (int i = 0; i < Map_Size_X; i++)
         for (int j = 0; j < Map_Size_Y; j++)
         {
@@ -952,6 +1009,7 @@ int game::vivod()
         }
 
 
+    //если игрок живой
     if (you->getPlayerHitPoints() > 0)
     {
         int rotPlayer;
@@ -959,6 +1017,7 @@ int game::vivod()
 
         roundX = round(ent_x);
         roundY = round(ent_y);
+        //обозначение игрока в зависимости от направления взгляда
         if (ent_x < Map_Size_X && ent_x >= 0 && ent_y >= 0 && ent_y < Map_Size_Y)
             switch (rotPlayer)
             {
@@ -969,7 +1028,7 @@ int game::vivod()
             }
     }
     
-    
+    //если враг живой
     if (monster->getEnemyHitPoints() > 0)
     {
         monster->getEnemyCoord(&ent_x, &ent_y);
@@ -979,7 +1038,7 @@ int game::vivod()
             mp[roundX * Map_Size_X + roundY] = 'M';
     }
 
-    
+    //отображение пуль
     for (int i = 0; i < 10; i++)
     {
         if (activeBullets[i] == 1)
@@ -995,6 +1054,7 @@ int game::vivod()
     }
 
     setcur(0, 0);
+    //вывод новой карты
     for (int i = 0; i < Map_Size_X; i++) {
         for (int j = 0; j < Map_Size_Y; j++) {
             cout << mp[i * Map_Size_X + j] << " ";
