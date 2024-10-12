@@ -53,9 +53,6 @@ public:
     //получит характеристики оружия
     int getWeaponStat(int* bc, double* sp, int* dm, int* t);
 
-
-
-
 };
 
 class entity
@@ -104,7 +101,8 @@ public:
     enemy(double x, double y, int hp, int dm, double sp);
     enemy();
     ~enemy();
-
+    int enemyMovment(char* map, int Map_Size_X, player* pl);
+    int playersVision(char* map, int Map_Size_X, player* pl);
 
 private:
     
@@ -134,8 +132,6 @@ class game
 public:
     game();
     ~game();
-    //движение врага
-    int enemyMovment();
     //движение игрока
     int gamePlayerStep(int rot);
     //выстрел игрока
@@ -152,14 +148,16 @@ public:
     int getGameEnemyHitPoints();
 
 private:
+    int activeBullets[10];  //список, существующих пуль
+    int bulcnt = 0;         //кол-во существующих пуль
+    bullet *bulls[MAX_BULLETS]; //массив пуль
+
+public:
     int Map_Size_X;         //Размер карты по X
     int Map_Size_Y;         //Размер карты по Y
     char* map;              //карта
-    int activeBullets[10];  //список, существующих пуль
-    int bulcnt = 0;         //кол-во существующих пуль
-    player *you;            //игрок
-    enemy *monster;         //враг
-    bullet *bulls[MAX_BULLETS]; //массив пуль
+    player* you;            //игрок
+    enemy* monster;         //враг
 };
 
 
@@ -169,8 +167,8 @@ final ending;
 int main()
 {
     system("cls");
-    game DOM;
-    
+    game *DOM;
+    DOM = new game();
     
     printf("\e[?25l");
     int i = 1;  //флажок работы игры
@@ -179,43 +177,43 @@ int main()
         //обработка действий игрока
         if (GetAsyncKeyState(VK_UP))
         {
-            DOM.gamePlayerStep(1);
+            DOM->gamePlayerStep(1);
         }
         if (GetAsyncKeyState(VK_DOWN))
         {
-            DOM.gamePlayerStep(3);
+            DOM->gamePlayerStep(3);
         }
         if (GetAsyncKeyState(VK_RIGHT))
         {
-            DOM.gamePlayerStep(2);
+            DOM->gamePlayerStep(2);
         }
         if (GetAsyncKeyState(VK_LEFT))
         {
-            DOM.gamePlayerStep(4);
+            DOM->gamePlayerStep(4);
         }
         if (GetAsyncKeyState(VK_BACK))
         {
-            DOM.Shot();
+            DOM->Shot();
         }
 
-        DOM.enemyMovment();     //движение врага
-        DOM.bulletMovment();    //движение пули
-        DOM.interaction();      //взаимодействие объектов
+        DOM->monster->enemyMovment(DOM->map, DOM->Map_Size_X, DOM->you);     //движение врага
+        DOM->bulletMovment();    //движение пули
+        DOM->interaction();      //взаимодействие объектов
 
         //проверка окончания игры
-        if (DOM.getGamePlayerHitPoints() <= 0)
+        if (DOM->getGamePlayerHitPoints() <= 0)
         {
             ending.changeType(LooseGame);
             i = 0;
         }
-        if (DOM.getGameEnemyHitPoints() <= 0)
+        if (DOM->getGameEnemyHitPoints() <= 0)
         {
             ending.changeType(WinGame);
             i = 0;
         }
 
         //вывод состояния игры
-        DOM.vivod();
+        DOM->vivod();
         Sleep(50);
         
         
@@ -440,75 +438,95 @@ game::~game()
 {
 }
 
-int game::enemyMovment()
+int enemy::enemyMovment(char* map, int Map_Size_X, player* pl)
 {
     int i = 0;      //флаг живого игрока
-    int HP;
-    HP=monster->getEntityHitPoints();
+    double player_x, player_y;
+    int roundX, roundY;
+    pl->getEntityCoord(&player_x, &player_y);
+    roundX = round(X_Coord);
+    roundY = round(Y_Coord);
 
     //если враг живой
-    if (HP > 0)
+    if (Hit_Points > 0)
     {
-        double play_x, play_y;
-        double enem_x, enem_y;
-        double x, y;
-        int roundX, roundY;
-        int fl = 1;     //флаг видимости игрока
-
-        you->getEntityCoord(&play_x, &play_y);
-        monster->getEntityCoord(&enem_x, &enem_y);
-        x = enem_x;
-        y = enem_y;
-
-        double d = sqrt((x - play_x) * (x - play_x) + (y - play_y) * (y - play_y));
-
-        //движение по прямой от врага до игрока с шагом K
-        //проверка: видит ли враг игрока
-        while (d > 1 && fl)
+        if (playersVision(map, Map_Size_X, pl))
         {
-
-
-            x = (K * play_x + (d - K) * x) / d;
-            y = (K * play_y + (d - K) * y) / d;
-            d = sqrt((x - play_x) * (x - play_x) + (y - play_y) * (y - play_y));
-
-            roundX = round(x);
-            roundY = round(y);
-            if (*(map + roundX * Map_Size_X + roundY) == '#')
-                fl = 0;
-
-        }
-
-        roundX = round(enem_x);
-        roundY = round(enem_y);
-
-        //движение врага к игроку
-        if (fl)
-        {
-            if (abs(enem_x - play_x) > abs(enem_y - play_y))
+            if (abs(X_Coord - player_x) > abs(Y_Coord - player_y))
             {
-                if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#' && enem_x < play_x)
-                    monster->entityStep(South);
+                if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#' && X_Coord < player_x)
+                    this->entityStep(South);
                 else
-                    if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#' && enem_x > play_x)
-                        monster->entityStep(North);
+                    if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#' && X_Coord > player_x)
+                        this->entityStep(North);
 
             }
             else
             {
-                if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#' && enem_y > play_y)
-                    monster->entityStep(West);
+                if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#' && X_Coord > player_y)
+                    this->entityStep(West);
                 else
-                    if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#' && enem_y < play_y)
-                        monster->entityStep(East);
+                    if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#' && X_Coord < player_y)
+                        this->entityStep(East);
+            }
+        }
+        else
+        {
+            switch (rand() % 4)
+            {
+            case 0: 
+                if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#')
+                    this->entityStep(South); break;
+            case 1: 
+                if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#')
+                    this->entityStep(North); break;
+            case 2:
+                if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#')
+                    this->entityStep(West); break;
+            case 3: 
+                if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#')
+                    this->entityStep(East); break;
             }
         }
     }
-    else
-        i = 1;
-    return i;
 
+    return 0;
 }
+
+int enemy::playersVision(char* map, int Map_Size_X, player* pl)
+{
+    double player_x, player_y;
+    double x, y;
+    int roundX, roundY;
+    x = X_Coord;
+    y = Y_Coord;
+
+    pl->getEntityCoord(&player_x, &player_y);
+
+    int fl = 1;
+    double d = sqrt((x - player_x) * (x - player_x) + (y - player_y) * (y - player_y));
+
+    //проверка: видит ли враг игрока
+    while (d > 1 && fl)
+    {
+        
+
+        x = (K * player_x + (d - K) * x) / d;
+        y = (K * player_y + (d - K) * y) / d;
+        d = sqrt((x - player_x) * (x - player_x) + (y - player_y) * (y - player_y));
+
+        roundX = round(x);
+        roundY = round(y);
+
+        if (*(map + roundX * Map_Size_X + roundY) == '#')
+            fl = 0;
+
+    }
+
+    return fl;
+}
+
+
 
 int game::gamePlayerStep(int rot)
 {
