@@ -1,9 +1,10 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #define K 0.2
 #define MAX_BULLETS 10
+
 #include <iostream>
 #include <windows.h>
-#include <string.h>
+
 using namespace std;
 
 //установка курсора на позицию  x y 
@@ -16,19 +17,22 @@ void setcur(int x, int y)
 };
 
 
+enum EndingOption {WinGame, LooseGame};
+enum СardinalDirections {North, East, South, West};
+
 class final
 {
 private:
-    int type;       //Парамтр окончания игры
-    char winMessage[10];   //Сообщение при победе
-    char looseMessage[10]; //Сообщение при проигрыше
+    EndingOption gameEndType;       //Парамтр окончания игры
+    char winMessage[10];            //Сообщение при победе
+    char looseMessage[10];          //Сообщение при проигрыше
 
 public:
-    final(int t, char w[10], char l[10]);
+    final(EndingOption option, char win_mes[10], char loose_mes[10]);
     final();
     ~final();
     //Изменить параметр окончания
-    int changeType(int t);
+    int changeType(EndingOption option);
     //Вывести сообщение об завершении игры
     int vivodFinal();
 
@@ -36,49 +40,53 @@ public:
 
 class weapon
 {
-public:
-    weapon(int bc, double sp, int tp, int dm);
-    weapon();
-    ~weapon();
-    //получит характеристики оружия
-    int getWeaponStat(int* bc, double* sp, int* dm, int* t);
-    //установить характеристики оружия
-    int setWeaponStat(int bc, double sp, int dm, int t);
-
 private:
     int bulletCount;    //количество пуль, выпускаемых за раз
     double speed;       //скорость полета пули
     int damage;         //урон, наносимы пулей
     int type;           //тип оружия: 0 - дробовик, 1 - автомат
 
+public:
+    weapon(int bc, double sp, int tp, int dm);
+    weapon();
+    ~weapon();
+    //получит характеристики оружия
+    int getWeaponStat(int* bc, double* sp, int* dm, int* t);
+
+
+
+
 };
+
+
 
 class player
 {
 public:
-    player(double x, double y, int hp, int dm, int rot);
+    player(double x, double y, double sp, int hp, int dm, СardinalDirections rotation);
     player();
     ~player();
     //перемщение игрока
-    int playerStep(int rotation);
+    int playerStep(СardinalDirections rotation);
     //получение координат игрока
-    int getPlayerCoord(double* x, double* y, int* r);
+    int getPlayerCoord(double* x, double* y, int* rot);
     int getPlayerCoord(int* x, int* y);
     //нанесение урона игроку
     int playerDamage(int d);
     //получение данных о здоровье игрока
     int getPlayerHitPoints();
-    //получение характеристик оружия игрока
-    int playerWeaponStat(int* bc, double* sp, int* dm, int* t);
+
 
 
 private:
-    double X_Coord; //координата игрока по X
-    double Y_Coord; //координата игрока по Y
-    int rotate;     //направление взгляда игрока: 1 - N, 2 - E, 3 - S, 4 - W 
-    int Hit_Points; //очки здоровья игрока
-    int Damage;     //урон наносимый игроком
-    weapon *gun;    //оружие игрока
+    double X_Coord;             //координата игрока по X
+    double Y_Coord;             //координата игрока по Y
+    int Hit_Points;             //очки здоровья игрока
+    int Damage;                 //урон наносимый игроком
+    double speed;               //скорость игрока
+    СardinalDirections playerRotation;  //направление взгляда игрока
+public:
+    weapon *gun;                        //оружие игрока
 };
 
 
@@ -89,7 +97,7 @@ public:
     enemy();
     ~enemy();
     //перемещение врага
-    int enemyStep(int rotation);
+    int enemyStep(СardinalDirections rotation);
     //получение координат врага
     int getEnemyCoord(double* x, double* y);
     int getEnemyCoord(int* x, int* y);
@@ -118,7 +126,7 @@ public:
     bullet();
     ~bullet();
     //перемещение пули
-    int bulletStep(int rotation);
+    int bulletStep(СardinalDirections rotation);
     //получение данных об уроне пули
     int getBulletDamage();
     //получение координат пули: текущего и точки назначения
@@ -212,12 +220,12 @@ int main()
         //проверка окончания игры
         if (DOM.getGamePlayerHitPoints() <= 0)
         {
-            ending.changeType(2);
+            ending.changeType(LooseGame);
             i = 0;
         }
         if (DOM.getGameEnemyHitPoints() <= 0)
         {
-            ending.changeType(1);
+            ending.changeType(WinGame);
             i = 0;
         }
 
@@ -235,16 +243,16 @@ int main()
     
 }
 
-final::final(int t, char w[10], char l[10])
+final::final(EndingOption option, char w[10], char l[10])
 {
-    type = t;
+    gameEndType = option;
     strcpy(winMessage, w);
     strcpy(looseMessage, l);
 }
 
 final::final()
 {
-    type = 0;
+    gameEndType = WinGame;
     strcpy(winMessage, "You WIN!");
     strcpy(looseMessage, "You Loose");
 }
@@ -254,17 +262,17 @@ final::~final()
 }
 
 
-int final::changeType(int t)
+int final::changeType(EndingOption option)
 {
-    type = t;
+    gameEndType = option;
     return 0;
 }
 
 int final::vivodFinal()
 {
-    if (type == 1)
+    if (gameEndType == 0)
         printf("\n%s\n", winMessage);
-    if (type == 2)
+    if (gameEndType == 1)
         printf("\n%s\n", looseMessage);
     return 0;
 }
@@ -299,14 +307,6 @@ int weapon::getWeaponStat(int* bc, double* sp, int* dm, int* t)
     return 0;
 }
 
-int weapon::setWeaponStat(int bc, double sp, int dm, int t)
-{
-    bulletCount = bc;
-    speed = sp;
-    damage = dm;
-    type = t;
-    return 0;
-}
 
 enemy::enemy(double x, double y, int hp, int dm, double sp)
 {
@@ -331,15 +331,15 @@ enemy::~enemy()
 }
 
 
-int enemy::enemyStep(int rotation)
+int enemy::enemyStep(СardinalDirections rotation)
 {
     int i = 0;
     switch (rotation)
     {
-    case 1: X_Coord -= speed; break;
-    case 2: Y_Coord += speed; break;
-    case 3: X_Coord += speed; break;
-    case 4: Y_Coord -= speed; break;
+    case 0: X_Coord -= speed; break;
+    case 1: Y_Coord += speed; break;
+    case 2: X_Coord += speed; break;
+    case 3: Y_Coord -= speed; break;
     default: i = 1;
     }
     return 0;
@@ -375,13 +375,14 @@ int enemy::getEnemyHitPoints()
     return Hit_Points;
 }
 
-player::player(double x, double y, int hp, int dm, int rot)
+player::player(double x, double y, double sp, int hp, int dm, СardinalDirections rotation)
 {
     Damage = dm;
     Hit_Points = hp;
     X_Coord = x;
     Y_Coord = y;
-    rotate = rot;
+    speed = sp;
+    playerRotation = rotation;
     gun = new weapon();
 }
 
@@ -389,8 +390,9 @@ player::player()
 {
     X_Coord = 8;
     Y_Coord = 1;
-    rotate = 1;
+    playerRotation = North;
     Hit_Points = 100;
+    speed = 1;
     Damage = 50;
     gun = new weapon();
     
@@ -401,25 +403,26 @@ player::~player()
 }
 
 
-int player::playerStep(int rotation)
+int player::playerStep(СardinalDirections rotation)
 {
     int i = 0;
+    playerRotation = rotation;
     switch (rotation)
     {
-    case 1: X_Coord -= 1; rotate = 1;  break;
-    case 2: Y_Coord += 1; rotate = 2; break;
-    case 3: X_Coord += 1; rotate = 3; break;
-    case 4: Y_Coord -= 1; rotate = 4; break;
+    case 0: X_Coord -= speed; break;
+    case 1: Y_Coord += speed; break;
+    case 2: X_Coord += speed; break;
+    case 3: Y_Coord -= speed; break;
     default: i = 1;
     }
 
-    return 0;
+    return i;
 
 }
 
 int player::getPlayerCoord(double* x, double* y, int* r)
 {
-    *r = rotate;
+    *r = playerRotation;
     *x = X_Coord;
     *y = Y_Coord;
     return 0;
@@ -443,11 +446,7 @@ int player::getPlayerHitPoints()
     return Hit_Points;
 }
 
-int player::playerWeaponStat(int* bc, double* sp, int* dm, int* t)
-{
-    gun->getWeaponStat(bc, sp, dm, t);
-    return 0;
-}
+
 
 bullet::bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp)
 {
@@ -473,15 +472,15 @@ bullet::~bullet()
 {
 }
 
-int bullet::bulletStep(int rotation)
+int bullet::bulletStep(СardinalDirections rotation)
 {
     int i = 0;
     switch (rotation)
     {
-    case 1: X_Coord -= speed; break;
-    case 2: Y_Coord += speed; break;
-    case 3: X_Coord += speed; break;
-    case 4: Y_Coord -= speed; break;
+    case 0: X_Coord -= speed; break;
+    case 1: Y_Coord += speed; break;
+    case 2: X_Coord += speed; break;
+    case 3: Y_Coord -= speed; break;
     default: i = 1;
     }
     return 0;
@@ -589,19 +588,19 @@ int game::enemyMovment()
             if (abs(enem_x - play_x) > abs(enem_y - play_y))
             {
                 if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#' && enem_x < play_x)
-                    monster->enemyStep(3);
+                    monster->enemyStep(South);
                 else
                     if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#' && enem_x > play_x)
-                        monster->enemyStep(1);
+                        monster->enemyStep(North);
 
             }
             else
             {
                 if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#' && enem_y > play_y)
-                    monster->enemyStep(4);
+                    monster->enemyStep(West);
                 else
                     if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#' && enem_y < play_y)
-                        monster->enemyStep(2);
+                        monster->enemyStep(East);
             }
         }
     }
@@ -628,25 +627,25 @@ int game::gamePlayerStep(int rot)
         {
         case 1:
             if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#')
-                you->playerStep(1);
+                you->playerStep(North);
             else
                 fl = 2;
             break;
         case 2:
             if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#')
-                you->playerStep(2);
+                you->playerStep(East);
             else
                 fl = 2;
             break;
         case 3:
             if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#')
-                you->playerStep(3);
+                you->playerStep(South);
             else
                 fl = 2;
             break;
         case 4:
             if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#')
-                you->playerStep(4);
+                you->playerStep(West);
             else
                 fl = 2;
             break;
@@ -668,7 +667,7 @@ int game::Shot()
     int rotation;
 
     you->getPlayerCoord(& X_coord, & Y_coord, & rotation);
-    you->playerWeaponStat(&bulletCount, &speed, &damage, &type_weapon);
+    you->gun->getWeaponStat(&bulletCount, &speed, &damage, &type_weapon);
 
     int d = 0 - bulletCount / 2;
     int fl = 0;
@@ -688,23 +687,23 @@ int game::Shot()
                 //выбор координа в зависимости от направления
                 switch (rotation)
                 {
-                case 1:
+                case 0:
                     fin_X_coord = X_coord - 4;
                     fin_Y_coord = Y_coord + d;
                     y += d;
                     break;
-                case 2:
+                case 1:
                     fin_X_coord = X_coord + d;
                     fin_Y_coord = Y_coord + 4;
                     x += d;
 
                     break;
-                case 3:
+                case 2:
                     fin_X_coord = X_coord + 4;
                     fin_Y_coord = Y_coord + d;
                     y += d;
                     break;
-                case 4:
+                case 3:
                     fin_X_coord = X_coord + d;
                     fin_Y_coord = Y_coord - 4;
                     x += d;
@@ -731,22 +730,22 @@ int game::Shot()
                 //выбор координат в зависимости от направления
                 switch (rotation)
                 {
-                case 1:
+                case 0:
                     fin_X_coord = X_coord - 10;
                     fin_Y_coord = Y_coord;
                     X_coord -= i;
                     break;
-                case 2:
+                case 1:
                     fin_X_coord = X_coord;
                     fin_Y_coord = Y_coord + 10;
                     Y_coord += i;
                     break;
-                case 3:
+                case 2:
                     fin_X_coord = X_coord + 10;
                     fin_Y_coord = Y_coord;
                     X_coord += i;
                     break;
-                case 4:
+                case 3:
                     fin_X_coord = X_coord;
                     fin_Y_coord = Y_coord - 10;
                     Y_coord -= i;
@@ -787,19 +786,19 @@ int game::bulletMovment()
             if (abs(fin_x - st_x) > abs(fin_y - st_y))
             {
                 if (fin_x < st_x)
-                    bulls[i]->bulletStep(1);
+                    bulls[i]->bulletStep(North);
                 else
                     if (fin_x > st_x)
-                        bulls[i]->bulletStep(3);
+                        bulls[i]->bulletStep(South);
 
             }
             else
             {
                 if (fin_y > st_y)
-                    bulls[i]->bulletStep(2);
+                    bulls[i]->bulletStep(East);
                 else
                     if (fin_y < st_y)
-                        bulls[i]->bulletStep(4);
+                        bulls[i]->bulletStep(West);
             }
         }
     }
@@ -903,10 +902,10 @@ int game::vivod()
         if (ent_x < Map_Size_X && ent_x >= 0 && ent_y >= 0 && ent_y < Map_Size_Y)
             switch (rotPlayer)
             {
-            case 1: mp[roundX * Map_Size_X + roundY] = 'N'; break;
-            case 2: mp[roundX * Map_Size_X + roundY] = 'E'; break;
-            case 3: mp[roundX * Map_Size_X + roundY] = 'S'; break;
-            case 4: mp[roundX * Map_Size_X + roundY] = 'W'; break;
+            case 0: mp[roundX * Map_Size_X + roundY] = 'N'; break;
+            case 1: mp[roundX * Map_Size_X + roundY] = 'E'; break;
+            case 2: mp[roundX * Map_Size_X + roundY] = 'S'; break;
+            case 3: mp[roundX * Map_Size_X + roundY] = 'W'; break;
             }
     }
     
