@@ -8,7 +8,7 @@
 using namespace std;
 
 //установка курсора на позицию  x y 
-void setcur(int x, int y)  
+void setcur(int x, int y)
 {
     COORD coord;
     coord.X = x;
@@ -17,8 +17,8 @@ void setcur(int x, int y)
 };
 
 
-enum EndingOption {WinGame, LooseGame};
-enum СardinalDirections {North, East, South, West};
+enum EndingOption { WinGame, LooseGame };
+enum СardinalDirections { North, East, South, West };
 
 class final
 {
@@ -35,23 +35,6 @@ public:
     int changeType(EndingOption option);
     //Вывести сообщение об завершении игры
     int vivodFinal();
-
-};
-
-class weapon
-{
-private:
-    int bulletCount;    //количество пуль, выпускаемых за раз
-    double speed;       //скорость полета пули
-    int damage;         //урон, наносимы пулей
-    int type;           //тип оружия: 0 - дробовик, 1 - автомат
-
-public:
-    weapon(int bc, double sp, int tp, int dm);
-    weapon();
-    ~weapon();
-    //получит характеристики оружия
-    int getWeaponStat(int* bc, double* sp, int* dm, int* t);
 
 };
 
@@ -77,6 +60,63 @@ public:
 
 };
 
+class bullet : public entity
+{
+public:
+    bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp);
+    bullet();
+    ~bullet();
+
+    //получение координат точки назначения пули
+    int getBulletCoords(double* fin_x, double* fin_y);
+    //движение пули
+    int bulletMovment();
+
+private:
+    double fin_X_Coord; //конечная координата пули по X
+    double fin_Y_Coord; //конечная координата пул по Y
+};
+
+class weapon
+{
+protected:
+    int bulletCount;    //количество пуль, выпускаемых за раз
+    double speed;       //скорость полета пули
+    int damage;         //урон, наносимы пулей
+    int type;           //тип оружия: 0 - дробовик, 1 - автомат
+    int activeBullets[10];              //список, существующих пуль
+    СardinalDirections playerRotation;  //направление взгляда игрока
+    int countActiveBullets;
+public:
+    bullet* bulls[MAX_BULLETS];         //массив пуль
+
+public:
+    weapon(int bc, double sp, int tp, int dm);
+    weapon();
+    ~weapon();
+    //получит характеристики оружия
+    int getWeaponStat(int* bc, double* sp, int* dm, int* t);
+    int getWeaponCountBullets();
+    int setActiveBullet(int index, int active);
+    int getActiveBullet(int index);
+    int changeCountActiveBullets(int change);
+    int allBulletMovment();
+
+};
+
+class shotGun : public weapon
+{
+public:
+    int Shot(double X_coord, double Y_coord, int rotation);
+};
+
+class avtomat : public weapon
+{
+public:
+    int Shot(double X_coord, double Y_coord, int rotation);
+};
+
+
 class player : public entity
 {
 public:
@@ -87,11 +127,14 @@ public:
     int playerStep(СardinalDirections rotation);
     //получение координат игрока
     int getPlayerRotation();
+    
+
 
 private:
-    СardinalDirections playerRotation;  //направление взгляда игрока
+    СardinalDirections playerRotation;
 public:
-    weapon *gun;                        //оружие игрока
+    shotGun* gun;                        //оружие игрока
+
 };
 
 
@@ -105,27 +148,8 @@ public:
     int playersVision(char* map, int Map_Size_X, player* pl);
 
 private:
-    
+
 };
-
-
-class bullet : public entity
-{
-public:
-    bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp);
-    bullet();
-    ~bullet();
-
-    //получение координат точки назначения пули
-    int getBulletCoords(double* fin_x, double* fin_y);
-
-
-private:
-    double fin_X_Coord; //конечная координата пули по X
-    double fin_Y_Coord; //конечная координата пул по Y
-};
-
-
 
 class game
 {
@@ -134,10 +158,6 @@ public:
     ~game();
     //движение игрока
     int gamePlayerStep(int rot);
-    //выстрел игрока
-    int Shot();
-    //движение пули
-    int bulletMovment();
     //взаимодействие объектов
     int interaction();
     //вывод текущего состояния игры
@@ -147,10 +167,6 @@ public:
     //получение данных о здоровье врага
     int getGameEnemyHitPoints();
 
-private:
-    int activeBullets[10];  //список, существующих пуль
-    int bulcnt = 0;         //кол-во существующих пуль
-    bullet *bulls[MAX_BULLETS]; //массив пуль
 
 public:
     int Map_Size_X;         //Размер карты по X
@@ -167,9 +183,9 @@ final ending;
 int main()
 {
     system("cls");
-    game *DOM;
+    game* DOM;
     DOM = new game();
-    
+
     printf("\e[?25l");
     int i = 1;  //флажок работы игры
     while (i)
@@ -193,11 +209,15 @@ int main()
         }
         if (GetAsyncKeyState(VK_BACK))
         {
-            DOM->Shot();
+            double X_Coord, Y_Coord;
+            int rotation;
+            DOM->you->getEntityCoord(&X_Coord, &Y_Coord);
+            rotation = DOM->you->getPlayerRotation();
+            DOM->you->gun->Shot(X_Coord, Y_Coord, rotation);
         }
 
         DOM->monster->enemyMovment(DOM->map, DOM->Map_Size_X, DOM->you);     //движение врага
-        DOM->bulletMovment();    //движение пули
+        DOM->you->gun->allBulletMovment();    //движение пули
         DOM->interaction();      //взаимодействие объектов
 
         //проверка окончания игры
@@ -215,15 +235,15 @@ int main()
         //вывод состояния игры
         DOM->vivod();
         Sleep(50);
-        
-        
+
+
     };
     //завершение игры
     system("cls");
     ending.vivodFinal();
     Sleep(50);
 
-    
+
 }
 
 final::final(EndingOption option, char w[10], char l[10])
@@ -323,7 +343,7 @@ player::player(double x, double y, double sp, int hp, int dm, СardinalDirection
     Y_Coord = y;
     speed = sp;
     playerRotation = rotation;
-    gun = new weapon();
+    gun = new shotGun();
 }
 
 player::player()
@@ -334,8 +354,8 @@ player::player()
     speed = 1;
     Damage = 50;
     playerRotation = North;
-    gun = new weapon();
-    
+    gun = new shotGun();
+
 }
 
 player::~player()
@@ -363,6 +383,40 @@ int player::playerStep(СardinalDirections rotation)
 int player::getPlayerRotation()
 {
     return playerRotation;
+}
+
+int weapon::getWeaponCountBullets()
+{
+    return countActiveBullets;
+}
+int weapon::setActiveBullet(int index, int active)
+{
+    activeBullets[index] = active;
+    return 0;
+}
+int weapon::getActiveBullet(int index)
+{
+    return activeBullets[index];
+}
+int weapon::changeCountActiveBullets(int change)
+{
+    countActiveBullets += change;
+    return 0;
+}
+
+int weapon::allBulletMovment()
+{
+
+    for (int i = 0; i < 10; i++)
+    {
+        //если пуля существует
+        if (activeBullets[i] == 1)
+        {
+            bulls[i]->bulletMovment();
+        }
+
+    }
+    return 0;
 }
 
 
@@ -399,13 +453,37 @@ int bullet::getBulletCoords(double* fin_x, double* fin_y)
     return 0;
 }
 
+int bullet::bulletMovment()
+{
+    //движение пули к конечной точке
+    if (abs(fin_X_Coord - X_Coord) > abs(fin_Y_Coord - Y_Coord))
+    {
+        if (fin_X_Coord < X_Coord)
+            this->entityStep(North);
+        else
+            if (fin_X_Coord > X_Coord)
+                this->entityStep(South);
+
+    }
+    else
+    {
+        if (fin_Y_Coord > Y_Coord)
+            this->entityStep(East);
+        else
+            if (fin_Y_Coord < Y_Coord)
+                this->entityStep(West);
+    }
+
+    return 0;
+}
+
 game::game()
 {
     Map_Size_X = 10;
     Map_Size_Y = 10;
     map = (char*)calloc(Map_Size_X * Map_Size_Y, sizeof(char));
-    char preMap[10][10] = 
-    { 
+    char preMap[10][10] =
+    {
         {'#','#','#','#','#','#','#','#','#','#'},
         {'#','.','.','.','.','.','.','.','.','#'},
         {'#','.','.','.','.','.','.','.','.','#'},
@@ -425,10 +503,7 @@ game::game()
             *(map + x * Map_Size_X + y) = preMap[x][y];
         }
     }
-    //заполнение массива пуль нулями
-    for (int i = 0; i < 10; i++)
-        activeBullets[i] = 0;
-    bulcnt = 0;
+
     you = new player();
     monster = new enemy();
 
@@ -474,16 +549,16 @@ int enemy::enemyMovment(char* map, int Map_Size_X, player* pl)
         {
             switch (rand() % 4)
             {
-            case 0: 
+            case 0:
                 if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#')
                     this->entityStep(South); break;
-            case 1: 
+            case 1:
                 if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#')
                     this->entityStep(North); break;
             case 2:
                 if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#')
                     this->entityStep(West); break;
-            case 3: 
+            case 3:
                 if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#')
                     this->entityStep(East); break;
             }
@@ -509,7 +584,7 @@ int enemy::playersVision(char* map, int Map_Size_X, player* pl)
     //проверка: видит ли враг игрока
     while (d > 1 && fl)
     {
-        
+
 
         x = (K * player_x + (d - K) * x) / d;
         y = (K * player_y + (d - K) * y) / d;
@@ -574,179 +649,29 @@ int game::gamePlayerStep(int rot)
     return fl;
 }
 
-int game::Shot()
-{
-    int bulletCount = 0;
-    double speed = 0;
-    int damage = 0;
-    int type_weapon = 0;
-    double X_coord, Y_coord;
-    double fin_X_coord = 0, fin_Y_coord = 0;
-    int rotation;
-
-    you->getEntityCoord(& X_coord, & Y_coord);
-    rotation = you->getPlayerRotation();
-    you->gun->getWeaponStat(&bulletCount, &speed, &damage, &type_weapon);
-
-    int d = 0 - bulletCount / 2;
-    int fl = 0;
-    int j = 0;
-    //если оружие выстреливает больше 0 пуль и на карте ни одной пули
-    if (bulletCount > 0 && bulcnt == 0)
-    {
-        //выбор типа оружия
-        switch (type_weapon)
-        {
-        case 0:
-            for (int i = 0; i < bulletCount; i++)
-            {
-                double x, y;
-                x = X_coord;
-                y = Y_coord;
-                //выбор координа в зависимости от направления
-                switch (rotation)
-                {
-                case 0:
-                    fin_X_coord = X_coord - 4;
-                    fin_Y_coord = Y_coord + d;
-                    y += d;
-                    break;
-                case 1:
-                    fin_X_coord = X_coord + d;
-                    fin_Y_coord = Y_coord + 4;
-                    x += d;
-
-                    break;
-                case 2:
-                    fin_X_coord = X_coord + 4;
-                    fin_Y_coord = Y_coord + d;
-                    y += d;
-                    break;
-                case 3:
-                    fin_X_coord = X_coord + d;
-                    fin_Y_coord = Y_coord - 4;
-                    x += d;
-                    break;
-
-                }
-                d += 1;
-                // инициализация пуль
-                for(int fl = 1; j < 10 && fl; j++)
-                    if (activeBullets[j] == 0)
-                    {
-                        bulls[j] = new bullet(x, y, fin_X_coord, fin_Y_coord, damage, speed);
-                        bulcnt += 1;
-                        activeBullets[j] = 1;
-                        fl = 0;
-                    }
-                
-                
-            }
-            break;
-        case 1:
-            for (int i = 0; i < bulletCount; i++)
-            {
-                //выбор координат в зависимости от направления
-                switch (rotation)
-                {
-                case 0:
-                    fin_X_coord = X_coord - 10;
-                    fin_Y_coord = Y_coord;
-                    X_coord -= i;
-                    break;
-                case 1:
-                    fin_X_coord = X_coord;
-                    fin_Y_coord = Y_coord + 10;
-                    Y_coord += i;
-                    break;
-                case 2:
-                    fin_X_coord = X_coord + 10;
-                    fin_Y_coord = Y_coord;
-                    X_coord += i;
-                    break;
-                case 3:
-                    fin_X_coord = X_coord;
-                    fin_Y_coord = Y_coord - 10;
-                    Y_coord -= i;
-                    break;
-                }
-                //инициализация пуль
-                for (int fl = 1; j < 10 && fl; j++)
-                    if (activeBullets[j] == 0)
-                    {
-                        bulls[j] = new bullet(X_coord, Y_coord, fin_X_coord, fin_Y_coord, damage, speed);
-                        bulcnt += 1;
-                        activeBullets[j] = 1;
-                        fl = 0;
-                    }
-                
-            }
-        }
-
-    }
-    else 
-        fl = 1;
-    return fl;
-}
-
-int game::bulletMovment()
-{
-    
-    for (int i = 0; i < 10; i++)
-    {
-        //если пуля существует
-        if (activeBullets[i] == 1)
-        {
-            double st_x, st_y;
-            double fin_x, fin_y;
-            bulls[i]->getBulletCoords(&fin_x, &fin_y);
-            bulls[i]->getEntityCoord(&st_x, &st_y);
-            //движение пули к конечной точке
-            if (abs(fin_x - st_x) > abs(fin_y - st_y))
-            {
-                if (fin_x < st_x)
-                    bulls[i]->entityStep(North);
-                else
-                    if (fin_x > st_x)
-                        bulls[i]->entityStep(South);
-
-            }
-            else
-            {
-                if (fin_y > st_y)
-                    bulls[i]->entityStep(East);
-                else
-                    if (fin_y < st_y)
-                        bulls[i]->entityStep(West);
-            }
-        }
-    }
-    return 0;
-}
-
 int game::interaction()
 {
     //если на карте есть пули
-    if (bulcnt > 0)
+    if (you->gun->getWeaponCountBullets() > 0)
     {
         for (int i = 0; i < 10; i++)
         {
             //если пуля существует
-            if (activeBullets[i] == 1)
+            if (you->gun->getActiveBullet(i) == 1)
             {
                 double st_x, st_y;
                 double fin_x, fin_y;
                 int map_x, map_y;
-                bulls[i]->getBulletCoords(&fin_x, &fin_y);
-                bulls[i]->getEntityCoord(&st_x, &st_y);
+                you->gun->bulls[i]->getBulletCoords(&fin_x, &fin_y);
+                you->gun->bulls[i]->getEntityCoord(&st_x, &st_y);
                 map_x = round(st_x);
                 map_y = round(st_y);
                 //если пуля столкнулась со стеной
-                if (*(map+map_x*Map_Size_X+map_y) == '#')
+                if (*(map + map_x * Map_Size_X + map_y) == '#')
                 {
-                    delete bulls[i];
-                    activeBullets[i] = 0;
-                    bulcnt -= 1;
+                    delete you->gun->bulls[i];
+                    you->gun->setActiveBullet(i, 0);
+                    you->gun->changeCountActiveBullets(-1);
                 }
                 else
                 {
@@ -755,10 +680,10 @@ int game::interaction()
                     if (round(st_x) == map_x && round(st_y) == map_y)
                     {
 
-                        monster->attackEntity(bulls[i]->getEntityDamage());
-                        delete bulls[i];
-                        activeBullets[i] = 0;
-                        bulcnt -= 1;
+                        monster->attackEntity(you->gun->bulls[i]->getEntityDamage());
+                        delete you->gun->bulls[i];
+                        you->gun->setActiveBullet(i, 0);
+                        you->gun->changeCountActiveBullets(-1);
 
                     }
                     else
@@ -766,9 +691,9 @@ int game::interaction()
                         //если пуля достигла своей конечной точки
                         if (round(st_x) == round(fin_x) && round(st_y) == round(fin_y))
                         {
-                            delete bulls[i];
-                            activeBullets[i] = 0;
-                            bulcnt -= 1;
+                            delete you->gun->bulls[i];
+                            you->gun->setActiveBullet(i, 0);
+                            you->gun->changeCountActiveBullets(-1);
                         }
                     }
                 }
@@ -829,7 +754,7 @@ int game::vivod()
             case 3: mp[roundX * Map_Size_X + roundY] = 'W'; break;
             }
     }
-    
+
     //если враг живой
     if (monster->getEntityHitPoints() > 0)
     {
@@ -841,14 +766,14 @@ int game::vivod()
     }
 
     //отображение пуль
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < MAX_BULLETS; i++)
     {
-        if (activeBullets[i] == 1)
+        if (you->gun->getActiveBullet(i) == 1)
         {
             double st_x, st_y;
             double fin_x, fin_y;
-            bulls[i]->getBulletCoords(&fin_x, &fin_y);
-            bulls[i]->getEntityCoord(&st_x, &st_y);
+            you->gun->bulls[i]->getBulletCoords(&fin_x, &fin_y);
+            you->gun->bulls[i]->getEntityCoord(&st_x, &st_y);
             roundX = round(st_x);
             roundY = round(st_y);
             if (st_x < Map_Size_X && st_x >= 0 && st_y >= 0 && st_y < Map_Size_Y)
@@ -945,4 +870,117 @@ int entity::getEntityCoord(int* x, int* y)
     *x = round(X_Coord);
     *y = round(Y_Coord);
     return 0;
+}
+
+int shotGun::Shot(double X_coord, double Y_coord, int rotation)
+{
+    double fin_X_coord = 0, fin_Y_coord = 0;
+
+
+    int d = 0 - bulletCount / 2;
+    int fl = 0;
+    int j = 0;
+    //если оружие выстреливает больше 0 пуль и на карте ни одной пули
+    if (bulletCount > 0 && countActiveBullets == 0)
+    {
+        for (int i = 0; i < bulletCount; i++)
+        {
+
+            //выбор типа оружия
+            double x, y;
+            x = X_coord;
+            y = Y_coord;
+            //выбор координа в зависимости от направления
+            switch (rotation)
+            {
+            case 0:
+                fin_X_coord = X_coord - 4;
+                fin_Y_coord = Y_coord + d;
+                y += d;
+                break;
+            case 1:
+                fin_X_coord = X_coord + d;
+                fin_Y_coord = Y_coord + 4;
+                x += d;
+                break;
+            case 2:
+                fin_X_coord = X_coord + 4;
+                fin_Y_coord = Y_coord + d;
+                y += d;
+                break;
+            case 3:
+                fin_X_coord = X_coord + d;
+                fin_Y_coord = Y_coord - 4;
+                x += d;
+                break;
+            }
+            d += 1;
+            // инициализация пуль
+            for (int fl = 1; j < 10 && fl; j++)
+                if (activeBullets[j] == 0)
+                {
+                    bulls[j] = new bullet(x, y, fin_X_coord, fin_Y_coord, damage, speed);
+                    countActiveBullets += 1;
+                    activeBullets[j] = 1;
+                    fl = 0;
+                }
+        }
+    }
+    else
+        fl = 1;
+    return fl;
+}
+
+int avtomat::Shot(double X_coord, double Y_coord, int rotation)
+{
+    double fin_X_coord = 0, fin_Y_coord = 0;
+
+    int d = 0 - bulletCount / 2;
+    int fl = 0;
+    int j = 0;
+    //если оружие выстреливает больше 0 пуль и на карте ни одной пули
+    if (bulletCount > 0 && countActiveBullets == 0)
+    {
+        //выбор типа оружия
+        double x, y;
+        x = X_coord;
+        y = Y_coord;
+        //выбор координа в зависимости от направления
+        switch (rotation)
+        {
+        case 0:
+            fin_X_coord = X_coord - 10;
+            fin_Y_coord = Y_coord;
+            X_coord -= d;
+            break;
+        case 1:
+            fin_X_coord = X_coord;
+            fin_Y_coord = Y_coord + 10;
+            Y_coord += d;
+            break;
+        case 2:
+            fin_X_coord = X_coord + 10;
+            fin_Y_coord = Y_coord;
+            X_coord += d;
+            break;
+        case 3:
+            fin_X_coord = X_coord;
+            fin_Y_coord = Y_coord - 10;
+            Y_coord -= d;
+            break;
+        }
+        d += 1;
+        // инициализация пуль
+        for (int fl = 1; j < 10 && fl; j++)
+            if (activeBullets[j] == 0)
+            {
+                bulls[j] = new bullet(x, y, fin_X_coord, fin_Y_coord, damage, speed);
+                countActiveBullets += 1;
+                activeBullets[j] = 1;
+                fl = 0;
+            }
+    }
+    else
+        fl = 1;
+    return fl;
 }
