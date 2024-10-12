@@ -20,8 +20,8 @@ class final
 {
 private:
     int type;       //Парамтр окончания игры
-    char win[10];   //Сообщение при победе
-    char loose[10]; //Сообщение при проигрыше
+    char winMessage[10];   //Сообщение при победе
+    char looseMessage[10]; //Сообщение при проигрыше
 
 public:
     final(int t, char w[10], char l[10]);
@@ -29,8 +29,6 @@ public:
     ~final();
     //Изменить параметр окончания
     int changeType(int t);
-    //Ввести с консоли
-    int vvodFinal();
     //Вывести сообщение об завершении игры
     int vivodFinal();
 
@@ -46,8 +44,6 @@ public:
     int getWeaponStat(int* bc, double* sp, int* dm, int* t);
     //установить характеристики оружия
     int setWeaponStat(int bc, double sp, int dm, int t);
-    //ввести характеристики с консоли
-    int vvodWeapon();
 
 private:
     int bulletCount;    //количество пуль, выпускаемых за раз
@@ -63,8 +59,6 @@ public:
     player(double x, double y, int hp, int dm, int rot);
     player();
     ~player();
-    //ввести с консоли
-    int vvodPlayer();
     //перемщение игрока
     int playerStep(int rotation);
     //получение координат игрока
@@ -94,8 +88,6 @@ public:
     enemy(double x, double y, int hp, int dm, double sp);
     enemy();
     ~enemy();
-    //ввод с консоли характеристик врага
-    int vvodEnemy();
     //перемещение врага
     int enemyStep(int rotation);
     //получение координат врага
@@ -122,7 +114,7 @@ private:
 class bullet
 {
 public:
-    bullet(int act, double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp);
+    bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp);
     bullet();
     ~bullet();
     //перемещение пули
@@ -134,7 +126,6 @@ public:
 
 
 private:
-    int active;         //параметр существования пули
     double X_Coord;     //текущая координата пули по X
     double Y_Coord;     //текущая координата пули по Y
     double fin_X_Coord; //конечная координата пули по X
@@ -184,8 +175,6 @@ final ending;
 
 int main()
 {
-    //Ввод данных об окончании игры
-    ending.vvodFinal();
     system("cls");
     game DOM;
     
@@ -249,35 +238,21 @@ int main()
 final::final(int t, char w[10], char l[10])
 {
     type = t;
-    strcpy(win, w);
-    strcpy(loose, l);
+    strcpy(winMessage, w);
+    strcpy(looseMessage, l);
 }
 
 final::final()
 {
     type = 0;
-    strcpy(win, "You WIN!");
-    strcpy(loose, "You Loose");
+    strcpy(winMessage, "You WIN!");
+    strcpy(looseMessage, "You Loose");
 }
 
 final::~final()
 {
 }
 
-int final::vvodFinal()
-{
-    char w[10];
-    char l[10];
-
-    printf("Enter messages when you win: ");
-    fgets(w, 10, stdin);
-    printf("Enter messages when you loose: ");
-    fgets(l, 10, stdin);
-
-    strcpy(win, w);
-    strcpy(loose, l);
-    return 0;
-}
 
 int final::changeType(int t)
 {
@@ -288,9 +263,9 @@ int final::changeType(int t)
 int final::vivodFinal()
 {
     if (type == 1)
-        printf("\n%s\n", win);
+        printf("\n%s\n", winMessage);
     if (type == 2)
-        printf("\n%s\n", loose);
+        printf("\n%s\n", looseMessage);
     return 0;
 }
 
@@ -333,36 +308,6 @@ int weapon::setWeaponStat(int bc, double sp, int dm, int t)
     return 0;
 }
 
-int weapon::vvodWeapon()
-{
-    double sp;
-    int bc, tp, dm;
-
-    do {
-        printf("Enter bullets count: ");
-        scanf("%d", &bc);
-    } while (bc <= 0);
-    do {
-        printf("Enter type: ");
-        scanf("%d", &tp);
-    } while (tp < 0 || tp >1);
-    do {
-        printf("Enter damage: ");
-        scanf("%d", &dm);
-    } while (dm <= 0);
-    do {
-        printf("Enter speed: ");
-        scanf("%lf", &sp);
-    } while (sp <= 0);
-    
-    bulletCount = bc;
-    speed = sp;
-    damage = dm;
-    type = tp;
-    return 0;
-}
-
-
 enemy::enemy(double x, double y, int hp, int dm, double sp)
 {
     Damage = dm;
@@ -385,39 +330,6 @@ enemy::~enemy()
 {
 }
 
-int enemy::vvodEnemy()
-{
-    double x, y, sp;
-    int hp, dm;
-    do {
-        printf("Enter the X coordinate: ");
-        scanf("%lf", &x);
-    } while (x < 0);
-    do {
-        printf("Enter the Y coordinate: ");
-        scanf("%lf", &y);
-    } while (y < 0);
-    do {
-        printf("Enter hp: ");
-        scanf("%d", &hp);
-    } while (hp <= 0);
-    do {
-        printf("Enter damage: ");
-        scanf("%d", &dm);
-    } while (dm <= 0);
-    do {
-        printf("Enter speed: ");
-        scanf("%lf", &sp);
-    } while (sp <= 0);
-
-    Damage = dm; 
-    Hit_Points = hp;
-    X_Coord = x;
-    Y_Coord = y;
-    speed = sp;
-
-    return 0;
-}
 
 int enemy::enemyStep(int rotation)
 {
@@ -488,34 +400,6 @@ player::~player()
 {
 }
 
-int player::vvodPlayer()
-{
-    double x, y;
-    int hp, dm;
-    do {
-        printf("Enter the X coordinate: ");
-        scanf("%lf", &x);
-    } while (x < 0);
-    do {
-        printf("Enter the Y coordinate: ");
-        scanf("%lf", &y);
-    } while (y < 0);
-    do {
-        printf("Enter hp: ");
-        scanf("%d", &hp);
-    } while (hp <= 0);
-    do {
-        printf("Enter damage: ");
-        scanf("%d", &dm);
-    } while (dm <= 0);
-
-    X_Coord = x;
-    Y_Coord = y;
-    Hit_Points = hp;
-    Damage = dm;
-
-    return 0;
-}
 
 int player::playerStep(int rotation)
 {
@@ -565,9 +449,8 @@ int player::playerWeaponStat(int* bc, double* sp, int* dm, int* t)
     return 0;
 }
 
-bullet::bullet(int act, double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp)
+bullet::bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp)
 {
-    active = act;
     X_Coord = X_Crd;
     Y_Coord = Y_Crd;
     fin_X_Coord = fX_Crd;
@@ -578,7 +461,6 @@ bullet::bullet(int act, double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd
 
 bullet::bullet()
 {
-    active = 0;
     X_Coord = -1;
     Y_Coord = -1;
     fin_X_Coord = -1;
@@ -834,7 +716,7 @@ int game::Shot()
                 for(int fl = 1; j < 10 && fl; j++)
                     if (activeBullets[j] == 0)
                     {
-                        bulls[j] = new bullet(1, x, y, fin_X_coord, fin_Y_coord, damage, speed);
+                        bulls[j] = new bullet(x, y, fin_X_coord, fin_Y_coord, damage, speed);
                         bulcnt += 1;
                         activeBullets[j] = 1;
                         fl = 0;
@@ -874,7 +756,7 @@ int game::Shot()
                 for (int fl = 1; j < 10 && fl; j++)
                     if (activeBullets[j] == 0)
                     {
-                        bulls[j] = new bullet(1, X_coord, Y_coord, fin_X_coord, fin_Y_coord, damage, speed);
+                        bulls[j] = new bullet(X_coord, Y_coord, fin_X_coord, fin_Y_coord, damage, speed);
                         bulcnt += 1;
                         activeBullets[j] = 1;
                         fl = 0;
