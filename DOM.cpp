@@ -60,7 +60,7 @@ public:
 
 class entity
 {
-private:
+protected:
     double X_Coord;             //координата по X
     double Y_Coord;             //координата по Y
     int Hit_Points;             //очки здоровья 
@@ -71,14 +71,16 @@ public:
     entity();
     ~entity();
     int getEntityCoord(double* x, double* y);
+    int getEntityCoord(int* x, int* y);
     int getEntityDamage();
     int getEntityHitPoints();
     int attackEntity(int dm);
     int entityStep(СardinalDirections rotation);
 
+
 };
 
-class player
+class player : public entity
 {
 public:
     player(double x, double y, double sp, int hp, int dm, СardinalDirections rotation);
@@ -87,77 +89,42 @@ public:
     //перемщение игрока
     int playerStep(СardinalDirections rotation);
     //получение координат игрока
-    int getPlayerCoord(double* x, double* y, int* rot);
-    int getPlayerCoord(int* x, int* y);
-    //нанесение урона игроку
-    int playerDamage(int d);
-    //получение данных о здоровье игрока
-    int getPlayerHitPoints();
-
-
+    int getPlayerRotation();
 
 private:
-    double X_Coord;             //координата игрока по X
-    double Y_Coord;             //координата игрока по Y
-    int Hit_Points;             //очки здоровья игрока
-    int Damage;                 //урон наносимый игроком
-    double speed;               //скорость игрока
     СardinalDirections playerRotation;  //направление взгляда игрока
 public:
     weapon *gun;                        //оружие игрока
 };
 
 
-class enemy
+class enemy : public entity
 {
 public:
     enemy(double x, double y, int hp, int dm, double sp);
     enemy();
     ~enemy();
-    //перемещение врага
-    int enemyStep(СardinalDirections rotation);
-    //получение координат врага
-    int getEnemyCoord(double* x, double* y);
-    int getEnemyCoord(int* x, int* y);
-    //нанесение урона врагу
-    int enemyDamage(int d);
-    //получение данных об уроне врага
-    int getEnemyDamage();
-    //получение данных о здоровье врага
-    int getEnemyHitPoints();
 
 
 private:
-    double X_Coord;     //координата врага по X
-    double Y_Coord;     //координата врага по Y
-    double speed;       //скорость врага
-    int Hit_Points;     //здоровье врага
-    int Damage;         //урон врага
+    
 };
 
 
-
-class bullet
+class bullet : public entity
 {
 public:
     bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp);
     bullet();
     ~bullet();
-    //перемещение пули
-    int bulletStep(СardinalDirections rotation);
-    //получение данных об уроне пули
-    int getBulletDamage();
-    //получение координат пули: текущего и точки назначения
-    int getBulletCoords(double* st_x, double* st_y, double* fin_x, double* fin_y);
+
+    //получение координат точки назначения пули
+    int getBulletCoords(double* fin_x, double* fin_y);
 
 
 private:
-    double X_Coord;     //текущая координата пули по X
-    double Y_Coord;     //текущая координата пули по Y
     double fin_X_Coord; //конечная координата пули по X
     double fin_Y_Coord; //конечная координата пул по Y
-    int damage;         //урон пули
-    double speed;       //скорость пули
 };
 
 
@@ -349,49 +316,6 @@ enemy::~enemy()
 }
 
 
-int enemy::enemyStep(СardinalDirections rotation)
-{
-    int i = 0;
-    switch (rotation)
-    {
-    case 0: X_Coord -= speed; break;
-    case 1: Y_Coord += speed; break;
-    case 2: X_Coord += speed; break;
-    case 3: Y_Coord -= speed; break;
-    default: i = 1;
-    }
-    return 0;
-}
-
-int enemy::getEnemyCoord(double* x, double* y)
-{
-    *x = X_Coord;
-    *y = Y_Coord;
-    return 0;
-}
-
-int enemy::getEnemyCoord(int* x, int* y)
-{
-    *x = round(X_Coord);
-    *y = round(Y_Coord);
-    return 0;
-}
-
-int enemy::enemyDamage(int d)
-{
-    Hit_Points -= d;
-    return 0;
-}
-
-int enemy::getEnemyDamage()
-{
-    return Damage;
-}
-
-int enemy::getEnemyHitPoints()
-{
-    return Hit_Points;
-}
 
 player::player(double x, double y, double sp, int hp, int dm, СardinalDirections rotation)
 {
@@ -408,10 +332,10 @@ player::player()
 {
     X_Coord = 8;
     Y_Coord = 1;
-    playerRotation = North;
     Hit_Points = 100;
     speed = 1;
     Damage = 50;
+    playerRotation = North;
     gun = new weapon();
     
 }
@@ -438,32 +362,10 @@ int player::playerStep(СardinalDirections rotation)
 
 }
 
-int player::getPlayerCoord(double* x, double* y, int* r)
+int player::getPlayerRotation()
 {
-    *r = playerRotation;
-    *x = X_Coord;
-    *y = Y_Coord;
-    return 0;
+    return playerRotation;
 }
-
-int player::getPlayerCoord(int* x, int* y)
-{
-    *x = round(X_Coord);
-    *y = round(Y_Coord);
-    return 0;
-}
-
-int player::playerDamage(int d)
-{
-    Hit_Points -= d;
-    return 0;
-}
-
-int player::getPlayerHitPoints()
-{
-    return Hit_Points;
-}
-
 
 
 bullet::bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp)
@@ -473,7 +375,7 @@ bullet::bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm,
     fin_X_Coord = fX_Crd;
     fin_Y_Coord = fY_Crd;
     speed = sp;
-    damage = dm;
+    Damage = dm;
 }
 
 bullet::bullet()
@@ -483,37 +385,17 @@ bullet::bullet()
     fin_X_Coord = -1;
     fin_Y_Coord = -1;
     speed = 0.2;
-    damage = 50;
+    Damage = 50;
 }
 
 bullet::~bullet()
 {
 }
 
-int bullet::bulletStep(СardinalDirections rotation)
-{
-    int i = 0;
-    switch (rotation)
-    {
-    case 0: X_Coord -= speed; break;
-    case 1: Y_Coord += speed; break;
-    case 2: X_Coord += speed; break;
-    case 3: Y_Coord -= speed; break;
-    default: i = 1;
-    }
-    return 0;
-}
 
 
-int bullet::getBulletDamage()
+int bullet::getBulletCoords(double* fin_x, double* fin_y)
 {
-    return damage;
-}
-
-int bullet::getBulletCoords(double* st_x, double* st_y, double* fin_x, double* fin_y)
-{
-    *st_x = X_Coord;
-    *st_y = Y_Coord;
     *fin_x = fin_X_Coord;
     *fin_y = fin_Y_Coord;
     return 0;
@@ -562,7 +444,7 @@ int game::enemyMovment()
 {
     int i = 0;      //флаг живого игрока
     int HP;
-    HP=monster->getEnemyHitPoints();
+    HP=monster->getEntityHitPoints();
 
     //если враг живой
     if (HP > 0)
@@ -572,9 +454,9 @@ int game::enemyMovment()
         double x, y;
         int roundX, roundY;
         int fl = 1;     //флаг видимости игрока
-        int rotPlayer;
-        you->getPlayerCoord(&play_x, &play_y, &rotPlayer);
-        monster->getEnemyCoord(&enem_x, &enem_y);
+
+        you->getEntityCoord(&play_x, &play_y);
+        monster->getEntityCoord(&enem_x, &enem_y);
         x = enem_x;
         y = enem_y;
 
@@ -606,19 +488,19 @@ int game::enemyMovment()
             if (abs(enem_x - play_x) > abs(enem_y - play_y))
             {
                 if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#' && enem_x < play_x)
-                    monster->enemyStep(South);
+                    monster->entityStep(South);
                 else
                     if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#' && enem_x > play_x)
-                        monster->enemyStep(North);
+                        monster->entityStep(North);
 
             }
             else
             {
                 if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#' && enem_y > play_y)
-                    monster->enemyStep(West);
+                    monster->entityStep(West);
                 else
                     if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#' && enem_y < play_y)
-                        monster->enemyStep(East);
+                        monster->entityStep(East);
             }
         }
     }
@@ -632,12 +514,12 @@ int game::gamePlayerStep(int rot)
 {
     int HP;
     int fl = 0;
-    HP = you->getPlayerHitPoints();
+    HP = you->getEntityHitPoints();
     if (HP > 0)
     {
         double x, y;
         int roundX, roundY;
-        you->getPlayerCoord(&x, &y, &roundX);
+        you->getEntityCoord(&x, &y);
         roundX = round(x);
         roundY = round(y);
         //изменение координат игрока в зависимости от направления
@@ -684,7 +566,8 @@ int game::Shot()
     double fin_X_coord = 0, fin_Y_coord = 0;
     int rotation;
 
-    you->getPlayerCoord(& X_coord, & Y_coord, & rotation);
+    you->getEntityCoord(& X_coord, & Y_coord);
+    rotation = you->getPlayerRotation();
     you->gun->getWeaponStat(&bulletCount, &speed, &damage, &type_weapon);
 
     int d = 0 - bulletCount / 2;
@@ -798,25 +681,25 @@ int game::bulletMovment()
         {
             double st_x, st_y;
             double fin_x, fin_y;
-            bulls[i]->getBulletCoords(&st_x, &st_y, &fin_x, &fin_y);
-
+            bulls[i]->getBulletCoords(&fin_x, &fin_y);
+            bulls[i]->getEntityCoord(&st_x, &st_y);
             //движение пули к конечной точке
             if (abs(fin_x - st_x) > abs(fin_y - st_y))
             {
                 if (fin_x < st_x)
-                    bulls[i]->bulletStep(North);
+                    bulls[i]->entityStep(North);
                 else
                     if (fin_x > st_x)
-                        bulls[i]->bulletStep(South);
+                        bulls[i]->entityStep(South);
 
             }
             else
             {
                 if (fin_y > st_y)
-                    bulls[i]->bulletStep(East);
+                    bulls[i]->entityStep(East);
                 else
                     if (fin_y < st_y)
-                        bulls[i]->bulletStep(West);
+                        bulls[i]->entityStep(West);
             }
         }
     }
@@ -836,7 +719,8 @@ int game::interaction()
                 double st_x, st_y;
                 double fin_x, fin_y;
                 int map_x, map_y;
-                bulls[i]->getBulletCoords(&st_x, &st_y, &fin_x, &fin_y);
+                bulls[i]->getBulletCoords(&fin_x, &fin_y);
+                bulls[i]->getEntityCoord(&st_x, &st_y);
                 map_x = round(st_x);
                 map_y = round(st_y);
                 //если пуля столкнулась со стеной
@@ -848,12 +732,12 @@ int game::interaction()
                 }
                 else
                 {
-                    monster->getEnemyCoord(&map_x, &map_y);
+                    monster->getEntityCoord(&map_x, &map_y);
                     //если пуля попала во врага
                     if (round(st_x) == map_x && round(st_y) == map_y)
                     {
 
-                        monster->enemyDamage(bulls[i]->getBulletDamage());
+                        monster->attackEntity(bulls[i]->getEntityDamage());
                         delete bulls[i];
                         activeBullets[i] = 0;
                         bulcnt -= 1;
@@ -875,12 +759,12 @@ int game::interaction()
     }
     int map_x, map_y;
     int pl_x, pl_y;
-    you->getPlayerCoord(&pl_x, &pl_y);
-    monster->getEnemyCoord(&map_x, &map_y);
+    you->getEntityCoord(&pl_x, &pl_y);
+    monster->getEntityCoord(&map_x, &map_y);
     //если враг достиг игрока
     if (map_x == pl_x && map_y == pl_y)
     {
-        you->playerDamage(monster->getEnemyDamage());
+        you->attackEntity(monster->getEntityDamage());
     }
     return 0;
 }
@@ -909,10 +793,11 @@ int game::vivod()
 
 
     //если игрок живой
-    if (you->getPlayerHitPoints() > 0)
+    if (you->getEntityHitPoints() > 0)
     {
         int rotPlayer;
-        you->getPlayerCoord(&ent_x, &ent_y, &rotPlayer);
+        you->getEntityCoord(&ent_x, &ent_y);
+        rotPlayer = you->getPlayerRotation();
 
         roundX = round(ent_x);
         roundY = round(ent_y);
@@ -928,9 +813,9 @@ int game::vivod()
     }
     
     //если враг живой
-    if (monster->getEnemyHitPoints() > 0)
+    if (monster->getEntityHitPoints() > 0)
     {
-        monster->getEnemyCoord(&ent_x, &ent_y);
+        monster->getEntityCoord(&ent_x, &ent_y);
         roundX = round(ent_x);
         roundY = round(ent_y);
         if (ent_x < Map_Size_X && ent_x >= 0 && ent_y >= 0 && ent_y < Map_Size_Y)
@@ -944,7 +829,8 @@ int game::vivod()
         {
             double st_x, st_y;
             double fin_x, fin_y;
-            bulls[i]->getBulletCoords(&st_x, &st_y, &fin_x, &fin_y);
+            bulls[i]->getBulletCoords(&fin_x, &fin_y);
+            bulls[i]->getEntityCoord(&st_x, &st_y);
             roundX = round(st_x);
             roundY = round(st_y);
             if (st_x < Map_Size_X && st_x >= 0 && st_y >= 0 && st_y < Map_Size_Y)
@@ -966,12 +852,12 @@ int game::vivod()
 
 int game::getGamePlayerHitPoints()
 {
-    return you->getPlayerHitPoints();
+    return you->getEntityHitPoints();
 }
 
 int game::getGameEnemyHitPoints()
 {
-    return monster->getEnemyHitPoints();
+    return monster->getEntityHitPoints();
 }
 
 entity::entity(double x, double y, double sp, int hp, int dm)
@@ -1034,4 +920,11 @@ int entity::entityStep(СardinalDirections rotation)
 
     return i;
 
+}
+
+int entity::getEntityCoord(int* x, int* y)
+{
+    *x = round(X_Coord);
+    *y = round(Y_Coord);
+    return 0;
 }
