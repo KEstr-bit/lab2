@@ -58,7 +58,25 @@ public:
 
 };
 
+class entity
+{
+private:
+    double X_Coord;             //координата по X
+    double Y_Coord;             //координата по Y
+    int Hit_Points;             //очки здоровья 
+    int Damage;                 //урон наносимый
+    double speed;               //скорость 
+public:
+    entity(double x, double y, double sp, int hp, int dm);
+    entity();
+    ~entity();
+    int getEntityCoord(double* x, double* y);
+    int getEntityDamage();
+    int getEntityHitPoints();
+    int attackEntity(int dm);
+    int entityStep(СardinalDirections rotation);
 
+};
 
 class player
 {
@@ -954,4 +972,66 @@ int game::getGamePlayerHitPoints()
 int game::getGameEnemyHitPoints()
 {
     return monster->getEnemyHitPoints();
+}
+
+entity::entity(double x, double y, double sp, int hp, int dm)
+{
+    Damage = dm;
+    Hit_Points = hp;
+    X_Coord = x;
+    Y_Coord = y;
+    speed = sp;
+
+}
+
+entity::entity()
+{
+    X_Coord = 8;
+    Y_Coord = 1;
+    Hit_Points = 100;
+    speed = 1;
+    Damage = 50;
+}
+
+entity::~entity()
+{
+}
+
+int entity::getEntityCoord(double* x, double* y)
+{
+    *x = X_Coord;
+    *y = Y_Coord;
+    return 0;
+}
+
+int entity::getEntityDamage()
+{
+    return Damage;
+}
+
+int entity::getEntityHitPoints()
+{
+    return Hit_Points;
+}
+
+int entity::attackEntity(int dm)
+{
+    Hit_Points -= dm;
+    return 0;
+}
+
+int entity::entityStep(СardinalDirections rotation)
+{
+    int i = 0;
+    switch (rotation)
+    {
+    case 0: X_Coord -= speed; break;
+    case 1: Y_Coord += speed; break;
+    case 2: X_Coord += speed; break;
+    case 3: Y_Coord -= speed; break;
+    default: i = 1;
+    }
+
+    return i;
+
 }
