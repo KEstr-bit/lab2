@@ -5,9 +5,9 @@
 class enemy : public entity
 {
 public:
-    enemy(double x, double y, int hp, int dm, double sp);
+    enemy(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage);
     enemy();
     ~enemy();
-    int enemyMovment(char* map, int Map_Size_X, player* pl);
-    int playersVision(char* map, int Map_Size_X, player* pl);
+    int enemyMovment(char* world_Map, int map_Size_X, player* pl);
+    int playersVision(char* world_Map, int map_Size_X, player* pl);
 };

@@ -4,21 +4,21 @@
 class entity
 {
 protected:
-    double X_Coord;             //координата по X
-    double Y_Coord;             //координата по Y
-    int Hit_Points;             //очки здоровья 
-    int Damage;                 //урон наносимый
+    double coordX;             //координата по X
+    double coordY;             //координата по Y
+    int hitPoints;             //очки здоровья 
+    int damage;                 //урон наносимый
     double speed;               //скорость 
 public:
-    entity(double x, double y, double sp, int hp, int dm);
+    entity(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage);
     entity();
     ~entity();
-    int getEntityCoord(double* x, double* y);
-    int getEntityCoord(int* x, int* y);
+    int getEntityCoord(double* coord_X, double* coord_Y);
+    int getEntityCoord(int* coord_X, int* coord_Y);
     int getEntityDamage();
     int getEntityHitPoints();
-    int attackEntity(int dm);
-    int entityStep(СardinalDirections rotation);
+    int attackEntity(int entity_Damage);
+    int entityStep(СardinalDirections step_Direction);
 
 
 };

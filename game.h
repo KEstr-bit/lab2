@@ -8,9 +8,9 @@
 class game
 {
 private:
-    int Map_Size_X;         //Размер карты по X
-    int Map_Size_Y;         //Размер карты по Y
-    char* map;              //карта
+    int mapSizeX;         //Размер карты по X
+    int mapSizeY;         //Размер карты по Y
+    char* worldMap;              //карта
 public:
     player* you;            //игрок
     enemy* monster;
@@ -24,6 +24,6 @@ public:
     //вывод текущего состояния игры
     int vivod();
     int getMapSizeX();
-    int getWorldMap(char getMap[MAX_X][MAX_Y]);
+    int getWorldMap(char get_Map[MAX_X][MAX_Y]);
     
 };

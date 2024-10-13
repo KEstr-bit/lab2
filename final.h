@@ -15,6 +15,6 @@ public:
     //Изменить параметр окончания
     int changeType(EndingOption option);
     //Вывести сообщение об завершении игры
-    int vivodFinal();
+    int outputFinal();
 
 };

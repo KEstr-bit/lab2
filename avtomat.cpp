@@ -1,53 +1,55 @@
 #include "avtomat.h"
 
-int avtomat::Shot(double X_coord, double Y_coord, int rotation)
+int avtomat::shot(double coord_X, double coord_Y, СardinalDirections shot_Direction)
 {
-    double fin_X_coord = 0, fin_Y_coord = 0;
+    double final_coord_X = 0, final_coord_Y = 0;
 
-    int d = 0 - bulletCount / 2;
+    int sideShift = 0 - bulletCount / 2;
     int fl = 0;
-    int j = 0;
+    int bulletIndex = 0;
     //если оружие выстреливает больше 0 пуль и на карте ни одной пули
     if (bulletCount > 0 && countActiveBullets == 0)
     {
-        //выбор типа оружия
-        double x, y;
-        x = X_coord;
-        y = Y_coord;
-        //выбор координа в зависимости от направления
-        switch (rotation)
+        for (int i = 0; i < bulletCount; i++)
         {
-        case 0:
-            fin_X_coord = X_coord - 10;
-            fin_Y_coord = Y_coord;
-            X_coord -= d;
-            break;
-        case 1:
-            fin_X_coord = X_coord;
-            fin_Y_coord = Y_coord + 10;
-            Y_coord += d;
-            break;
-        case 2:
-            fin_X_coord = X_coord + 10;
-            fin_Y_coord = Y_coord;
-            X_coord += d;
-            break;
-        case 3:
-            fin_X_coord = X_coord;
-            fin_Y_coord = Y_coord - 10;
-            Y_coord -= d;
-            break;
-        }
-        d += 1;
-        // инициализация пуль
-        for (int fl = 1; j < 10 && fl; j++)
-            if (activeBullets[j] == 0)
+            double x, y;
+            x = coord_X;
+            y = coord_Y;
+            //выбор координа в зависимости от направления
+            switch (shot_Direction)
             {
-                bulls[j] = new bullet(x, y, fin_X_coord, fin_Y_coord, damage, speed);
-                countActiveBullets += 1;
-                activeBullets[j] = 1;
-                fl = 0;
+            case North:
+                final_coord_X = coord_X - 10;
+                final_coord_Y = coord_Y;
+                x -= sideShift;
+                break;
+            case East:
+                final_coord_X = coord_X;
+                final_coord_Y = coord_Y + 10;
+                y += sideShift;
+                break;
+            case South:
+                final_coord_X = coord_X + 10;
+                final_coord_Y = coord_Y;
+                x += sideShift;
+                break;
+            case West:
+                final_coord_X = coord_X;
+                final_coord_Y = coord_Y - 10;
+                y -= sideShift;
+                break;
             }
+            sideShift += 1;
+            // инициализация пуль
+            for (int fl = 1; bulletIndex < 10 && fl; bulletIndex++)
+                if (this->getActiveBullet(bulletIndex) == 0)
+                {
+                    bullets[bulletIndex] = new bullet(x, y, final_coord_X, final_coord_Y, bulletDamage, bulletSpeed);
+                    this->changeCountActiveBullets(1);
+                    this->setActiveBullet(bulletIndex, 1);
+                    fl = 0;
+                }
+        }
     }
     else
         fl = 1;

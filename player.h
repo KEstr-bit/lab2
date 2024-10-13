@@ -1,25 +1,29 @@
 #pragma once
 #include "entity.h"
 #include "shotGun.h"
+#include "avtomat.h"
 #include "helper.h"
 
 class player : public entity
 {
 private:
-    ÑardinalDirections playerRotation;
+    ÑardinalDirections playerDirection;
+    WeaponOption activeWeapon;
 
 public:
-    shotGun* gun;                        //îğóæèå èãğîêà
+    shotGun* firstGun;                        //îğóæèå èãğîêà
+    avtomat* secondGun;
 
 public:
-    player(double x, double y, double sp, int hp, int dm, ÑardinalDirections rotation);
+    player(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage, ÑardinalDirections direction);
     player();
     ~player();
     //ïåğåìùåíèå èãğîêà
-    int playerStep(ÑardinalDirections rotation);
+    int playerStep(ÑardinalDirections step_Direction);
     //ïîëó÷åíèå êîîğäèíàò èãğîêà
-    ÑardinalDirections getPlayerRotation();
+    ÑardinalDirections getPlayerDirection();
 
-    int gamePlayerStep(char* map, int Map_Size_X, ÑardinalDirections rot);
-
+    int gamePlayerStep(char* world_Map, int map_Size_X, ÑardinalDirections step_Direction);
+    int changeActiveWeapon();
+    int shot();
 };

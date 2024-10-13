@@ -1,24 +1,24 @@
 #include "bullet.h"
 #include "helper.h"
 
-bullet::bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp)
+bullet::bullet(double coord_X, double coord_Y, double final_coord_X, double final_coord_Y, int entity_Damage, double entity_Speed)
 {
-    X_Coord = X_Crd;
-    Y_Coord = Y_Crd;
-    fin_X_Coord = fX_Crd;
-    fin_Y_Coord = fY_Crd;
-    speed = sp;
-    Damage = dm;
+    coordX = coord_X;
+    coordY = coord_Y;
+    finalCoordX = final_coord_X;
+    finalCoordY = final_coord_Y;
+    speed = entity_Speed;
+    damage = entity_Damage;
 }
 
 bullet::bullet()
 {
-    X_Coord = -1;
-    Y_Coord = -1;
-    fin_X_Coord = -1;
-    fin_Y_Coord = -1;
+    coordX = -1;
+    coordY = -1;
+    finalCoordX = -1;
+    finalCoordY = -1;
     speed = 0.2;
-    Damage = 50;
+    damage = 50;
 }
 
 bullet::~bullet()
@@ -27,38 +27,38 @@ bullet::~bullet()
 
 
 
-int bullet::getBulletCoords(double* bullet_fin_x, double* bullet_fin_y)
+int bullet::getBulletCoords(double* final_coord_X, double* final_coord_Y)
 {
-    *bullet_fin_x = fin_X_Coord;
-    *bullet_fin_y = fin_Y_Coord;
+    *final_coord_X = finalCoordX;
+    *final_coord_Y = finalCoordY;
     return 0;
 }
 
-int bullet::getBulletCoords(int* bullet_fin_x, int* bullet_fin_y)
+int bullet::getBulletCoords(int* final_coord_X, int* final_coord_Y)
 {
-    *bullet_fin_x = roundd(fin_X_Coord);
-    *bullet_fin_y = roundd(fin_Y_Coord);
+    *final_coord_X = roundd(finalCoordX);
+    *final_coord_Y = roundd(finalCoordY);
     return 0;
 }
 
 int bullet::bulletMovment()
 {
     //движение пули к конечной точке
-    if (abss(fin_X_Coord - X_Coord) > abss(fin_Y_Coord - Y_Coord))
+    if (abss(finalCoordX - coordX) > abss(finalCoordY - coordY))
     {
-        if (fin_X_Coord < X_Coord)
+        if (finalCoordX < coordX)
             this->entityStep(North);
         else
-            if (fin_X_Coord > X_Coord)
+            if (finalCoordX > coordX)
                 this->entityStep(South);
 
     }
     else
     {
-        if (fin_Y_Coord > Y_Coord)
+        if (finalCoordY > coordY)
             this->entityStep(East);
         else
-            if (fin_Y_Coord < Y_Coord)
+            if (finalCoordY < coordY)
                 this->entityStep(West);
     }
 

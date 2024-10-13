@@ -6,19 +6,19 @@ class weapon
 {
 protected:
     int bulletCount;                    //количество пуль, выпускаемых за раз
-    double speed;                       //скорость полета пули
-    int damage;                         //урон, наносимы пулей
+    double bulletSpeed;                       //скорость полета пули
+    int bulletDamage;                         //урон, наносимы пулей
     int activeBullets[10];              //список, существующих пуль
     int countActiveBullets;
 public:
-    bullet* bulls[MAX_BULLETS];         //массив пуль
+    bullet* bullets[MAX_BULLETS];         //массив пуль
 
 public:
-    weapon(int bc, double sp, int dm);
+    weapon(int bullet_Count, double bullet_Speed, int bullet_Damage);
     weapon();
     ~weapon();
     //получит характеристики оружия
-    int getWeaponCountBullets();
+    int getCountActiveBullets();
     int setActiveBullet(int index, int active);
     int getActiveBullet(int index);
     int changeCountActiveBullets(int change);

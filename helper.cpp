@@ -1,6 +1,6 @@
 #include "helper.h"
 #include <windows.h>
-
+#include <iostream>
 
 
 void setcur(int x, int y)
@@ -54,4 +54,16 @@ double abss(double number)
     {
         return number * (-1);
     }
+};
+
+bool isWall(char* world_Map, int map_Size_X, int coord_X, int coord_Y)
+{
+    if (*(world_Map + coord_X * map_Size_X + coord_Y) == '#')
+        return true;
+    else
+        return false;
+};
+
+double calcDistance(double first_X, double first_Y, double second_X, double second_Y) {
+    return sqrt((first_X - second_X) * (first_X - second_X) + (first_Y - second_Y) * (first_Y - second_Y));
 };

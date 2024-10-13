@@ -1,60 +1,60 @@
 #include "entity.h"
 
-entity::entity(double x, double y, double sp, int hp, int dm)
+entity::entity(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage)
 {
-    Damage = dm;
-    Hit_Points = hp;
-    X_Coord = x;
-    Y_Coord = y;
-    speed = sp;
+    damage = entity_Damage;
+    hitPoints = hit_Points;
+    coordX = coord_X;
+    coordY = coord_Y;
+    speed = entity_Speed;
 
 }
 
 entity::entity()
 {
-    X_Coord = 8;
-    Y_Coord = 1;
-    Hit_Points = 100;
+    coordX = 8;
+    coordY = 1;
+    hitPoints = 100;
     speed = 1;
-    Damage = 50;
+    damage = 50;
 }
 
 entity::~entity()
 {
 }
 
-int entity::getEntityCoord(double* x, double* y)
+int entity::getEntityCoord(double* coord_X, double* coord_Y)
 {
-    *x = X_Coord;
-    *y = Y_Coord;
+    *coord_X = coordX;
+    *coord_Y = coordY;
     return 0;
 }
 
 int entity::getEntityDamage()
 {
-    return Damage;
+    return damage;
 }
 
 int entity::getEntityHitPoints()
 {
-    return Hit_Points;
+    return hitPoints;
 }
 
-int entity::attackEntity(int dm)
+int entity::attackEntity(int entity_Damage)
 {
-    Hit_Points -= dm;
+    hitPoints -= entity_Damage;
     return 0;
 }
 
-int entity::entityStep(ÑardinalDirections rotation)
+int entity::entityStep(ÑardinalDirections step_Direction)
 {
     int i = 0;
-    switch (rotation)
+    switch (step_Direction)
     {
-    case 0: X_Coord -= speed; break;
-    case 1: Y_Coord += speed; break;
-    case 2: X_Coord += speed; break;
-    case 3: Y_Coord -= speed; break;
+    case North: coordX -= speed; break;
+    case East: coordY += speed; break;
+    case South: coordX += speed; break;
+    case West: coordY -= speed; break;
     default: i = 1;
     }
 
@@ -62,9 +62,9 @@ int entity::entityStep(ÑardinalDirections rotation)
 
 }
 
-int entity::getEntityCoord(int* x, int* y)
+int entity::getEntityCoord(int* coord_X, int* coord_Y)
 {
-    *x = roundd(X_Coord);
-    *y = roundd(Y_Coord);
+    *coord_X = roundd(coordX);
+    *coord_Y = roundd(coordY);
     return 0;
 }

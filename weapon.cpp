@@ -1,17 +1,27 @@
 #include "weapon.h"
 
-weapon::weapon(int bc, double sp, int dm)
+weapon::weapon(int bullet_Count, double bullet_Speed, int bullet_Damage)
 {
-    damage = dm;
-    bulletCount = bc;
-    speed = sp;
+    bulletDamage = bullet_Damage;
+    bulletCount = bullet_Count;
+    bulletSpeed = bullet_Speed;
+
+    for (int i = 0; i < 10; i++)
+        activeBullets[i] = 0;
+
+    countActiveBullets = 0;
 }
 
 weapon::weapon()
 {
     bulletCount = 3;
-    speed = 0.5;
-    damage = 50;
+    bulletSpeed = 0.5;
+    bulletDamage = 50;
+
+    for (int i = 0; i < 10; i++)
+        activeBullets[i] = 0;
+
+    countActiveBullets = 0;
 
 }
 
@@ -20,7 +30,7 @@ weapon::~weapon()
 }
 
 
-int weapon::getWeaponCountBullets()
+int weapon::getCountActiveBullets()
 {
     return countActiveBullets;
 }
@@ -47,7 +57,7 @@ int weapon::allBulletMovment()
         //если пуля существует
         if (activeBullets[i] == 1)
         {
-            bulls[i]->bulletMovment();
+            bullets[i]->bulletMovment();
         }
 
     }

@@ -38,13 +38,15 @@ int main()
         {
             DOM->you->gamePlayerStep(map[0], mapSizeX, West);
         }
-        if (GetAsyncKeyState(VK_BACK))
+        if (GetAsyncKeyState(VK_LCONTROL))
         {
-            double X_Coord, Y_Coord;
-            int rotation;
-            DOM->you->getEntityCoord(&X_Coord, &Y_Coord);
-            rotation = DOM->you->getPlayerRotation();
-            DOM->you->gun->Shot(X_Coord, Y_Coord, rotation);
+
+            DOM->you->changeActiveWeapon();
+        }
+        if (GetAsyncKeyState(VK_LSHIFT))
+        {
+
+            DOM->you->shot();
         }
 
        
@@ -70,7 +72,7 @@ int main()
     };
     //завершение игры
     system("cls");
-    ending.vivodFinal();
+    ending.outputFinal();
     Sleep(50);
 
 

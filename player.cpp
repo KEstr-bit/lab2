@@ -1,39 +1,39 @@
 #include "player.h"
 
 
-int player::gamePlayerStep(char* map, int Map_Size_X, ÑardinalDirections rot)
+int player::gamePlayerStep(char* world_Map, int map_Size_X, ÑardinalDirections step_Direction)
 {
 
     int fl = 0;
-    if (Hit_Points > 0)
+    if (hitPoints > 0)
     {
         int roundX, roundY;
         this->getEntityCoord(&roundX, &roundY);
 
 
         //èçìåíåíèå êîîðäèíàò èãðîêà â çàâèñèìîñòè îò íàïðàâëåíèÿ
-        switch (rot)
+        switch (step_Direction)
         {
         case North:
-            if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#')
+            if (!isWall(world_Map, map_Size_X, roundX - 1, roundY))
                 this->playerStep(North);
             else
                 fl = 2;
             break;
         case East:
-            if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#')
+            if (!isWall(world_Map, map_Size_X, roundX, roundY + 1))
                 this->playerStep(East);
             else
                 fl = 2;
             break;
         case South:
-            if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#')
+            if (!isWall(world_Map, map_Size_X, roundX + 1, roundY))
                 this->playerStep(South);
             else
                 fl = 2;
             break;
         case West:
-            if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#')
+            if (!isWall(world_Map, map_Size_X, roundX, roundY - 1))
                 this->playerStep(West);
             else
                 fl = 2;
@@ -45,26 +45,32 @@ int player::gamePlayerStep(char* map, int Map_Size_X, ÑardinalDirections rot)
     return fl;
 }
 
-player::player(double x, double y, double sp, int hp, int dm, ÑardinalDirections rotation)
+player::player(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage, ÑardinalDirections direction)
 {
-    Damage = dm;
-    Hit_Points = hp;
-    X_Coord = x;
-    Y_Coord = y;
-    speed = sp;
-    playerRotation = rotation;
-    gun = new shotGun();
+    damage = entity_Damage;
+    hitPoints = hit_Points;
+    coordX = coord_X;
+    coordY = coord_Y;
+    speed = entity_Speed;
+
+    playerDirection = direction;
+    activeWeapon = ShotGun;
+    firstGun = new shotGun();
+    secondGun = new avtomat();
 }
 
 player::player()
 {
-    X_Coord = 8;
-    Y_Coord = 1;
-    Hit_Points = 100;
+    coordX = 8;
+    coordY = 1;
+    hitPoints = 100;
     speed = 1;
-    Damage = 50;
-    playerRotation = North;
-    gun = new shotGun();
+    damage = 50;
+
+    playerDirection = North;
+    activeWeapon = ShotGun;
+    firstGun = new shotGun();
+    secondGun = new avtomat();
 
 }
 
@@ -73,24 +79,48 @@ player::~player()
 }
 
 
-int player::playerStep(ÑardinalDirections rotation)
+int player::playerStep(ÑardinalDirections step_Direction)
 {
     int i = 0;
-    playerRotation = rotation;
-    switch (rotation)
-    {
-    case 0: X_Coord -= speed; break;
-    case 1: Y_Coord += speed; break;
-    case 2: X_Coord += speed; break;
-    case 3: Y_Coord -= speed; break;
-    default: i = 1;
-    }
+
+    playerDirection = step_Direction;
+
+    i = this->entityStep(step_Direction);
 
     return i;
 
 }
 
-ÑardinalDirections player::getPlayerRotation()
+ÑardinalDirections player::getPlayerDirection()
 {
-    return playerRotation;
+    return playerDirection;
 }
+
+int player::changeActiveWeapon() 
+{
+    switch (activeWeapon)
+    {
+    case ShotGun:
+        activeWeapon = Automat;
+        break;
+    case Automat:
+        activeWeapon = ShotGun;
+        break;
+    }
+    return activeWeapon;
+};
+
+int player::shot()
+{
+    switch (activeWeapon)
+    {
+    case ShotGun:   
+        this->firstGun->shot(coordX, coordY, playerDirection);
+        break;
+    case Automat:
+        this->secondGun->shot(coordX, coordY, playerDirection);
+        break;
+    }
+
+    return activeWeapon;
+};

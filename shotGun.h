@@ -4,5 +4,5 @@
 class shotGun : public weapon
 {
 public:
-    int Shot(double X_coord, double Y_coord, int rotation);
+    int shot(double coord_X, double coord_Y, ÑardinalDirections shot_Direction);
 };

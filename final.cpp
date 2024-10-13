@@ -28,11 +28,11 @@ int final::changeType(EndingOption option)
     return 0;
 }
 
-int final::vivodFinal()
+int final::outputFinal()
 {
-    if (gameEndType == 0)
+    if (gameEndType == WinGame)
         std::cout << '\n' << winMessage << '\n' << std::endl;
-    if (gameEndType == 1)
+    if (gameEndType == LooseGame)
         std::cout << '\n' << looseMessage << '\n' << std::endl;
     return 0;
 }
