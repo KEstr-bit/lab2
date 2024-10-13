@@ -1,13 +1,10 @@
 #include "weapon.h"
-#include "bullet.h"
-#include "helper.h"
 
-weapon::weapon(int bc, double sp, int tp, int dm)
+weapon::weapon(int bc, double sp, int dm)
 {
     damage = dm;
     bulletCount = bc;
     speed = sp;
-    type = tp;
 }
 
 weapon::weapon()
@@ -15,21 +12,13 @@ weapon::weapon()
     bulletCount = 3;
     speed = 0.5;
     damage = 50;
-    type = 0;
+
 }
 
 weapon::~weapon()
 {
 }
 
-int weapon::getWeaponStat(int* bc, double* sp, int* dm, int* t)
-{
-    *bc = bulletCount;
-    *sp = speed;
-    *dm = damage;
-    *t = type;
-    return 0;
-}
 
 int weapon::getWeaponCountBullets()
 {

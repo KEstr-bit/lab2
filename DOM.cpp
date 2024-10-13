@@ -8,7 +8,6 @@
 #include "game.h"
 using namespace std;
 
-
 final ending;
 
 int main()
@@ -24,19 +23,19 @@ int main()
         //обработка действий игрока
         if (GetAsyncKeyState(VK_UP))
         {
-            DOM->gamePlayerStep(1);
+            DOM->gamePlayerStep(North);
         }
         if (GetAsyncKeyState(VK_DOWN))
         {
-            DOM->gamePlayerStep(3);
+            DOM->gamePlayerStep(South);
         }
         if (GetAsyncKeyState(VK_RIGHT))
         {
-            DOM->gamePlayerStep(2);
+            DOM->gamePlayerStep(East);
         }
         if (GetAsyncKeyState(VK_LEFT))
         {
-            DOM->gamePlayerStep(4);
+            DOM->gamePlayerStep(West);
         }
         if (GetAsyncKeyState(VK_BACK))
         {
@@ -52,12 +51,12 @@ int main()
         DOM->interaction();      //взаимодействие объектов
 
         //проверка окончания игры
-        if (DOM->getGamePlayerHitPoints() <= 0)
+        if (DOM->you->getEntityHitPoints() <= 0)
         {
             ending.changeType(LooseGame);
             i = 0;
         }
-        if (DOM->getGameEnemyHitPoints() <= 0)
+        if (DOM->monster->getEntityHitPoints() <= 0)
         {
             ending.changeType(WinGame);
             i = 0;

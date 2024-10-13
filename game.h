@@ -8,16 +8,11 @@ public:
     game();
     ~game();
     //движение игрока
-    int gamePlayerStep(int rot);
+    int gamePlayerStep(СardinalDirections rot);
     //взаимодействие объектов
     int interaction();
     //вывод текущего состояния игры
     int vivod();
-    //получение данных о здоровье игрока
-    int getGamePlayerHitPoints();
-    //получение данных о здоровье врага
-    int getGameEnemyHitPoints();
-
 
 public:
     int Map_Size_X;         //Размер карты по X

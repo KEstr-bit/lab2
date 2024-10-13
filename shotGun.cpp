@@ -1,6 +1,4 @@
 #include "shotGun.h"
-#include "weapon.h"
-#include "bullet.h"
 
 int shotGun::Shot(double X_coord, double Y_coord, int rotation)
 {

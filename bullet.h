@@ -7,7 +7,6 @@ public:
     bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp);
     bullet();
     ~bullet();
-
     //получение координат точки назначения пули
     int getBulletCoords(double* fin_x, double* fin_y);
     //движение пули

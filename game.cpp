@@ -44,40 +44,38 @@ game::~game()
 
 
 
-int game::gamePlayerStep(int rot)
+int game::gamePlayerStep(СardinalDirections rot)
 {
-    int HP;
+    
     int fl = 0;
-    HP = you->getEntityHitPoints();
-    if (HP > 0)
+    if (you->getEntityHitPoints() > 0)
     {
-        double x, y;
         int roundX, roundY;
-        you->getEntityCoord(&x, &y);
-        roundX = round(x);
-        roundY = round(y);
+        you->getEntityCoord(&roundX, &roundY);
+
+        
         //изменение координат игрока в зависимости от направления
         switch (rot)
         {
-        case 1:
+        case North:
             if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#')
                 you->playerStep(North);
             else
                 fl = 2;
             break;
-        case 2:
+        case East:
             if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#')
                 you->playerStep(East);
             else
                 fl = 2;
             break;
-        case 3:
+        case South:
             if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#')
                 you->playerStep(South);
             else
                 fl = 2;
             break;
-        case 4:
+        case West:
             if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#')
                 you->playerStep(West);
             else
@@ -232,14 +230,4 @@ int game::vivod()
     }
     free(mp);
     return 0;
-}
-
-int game::getGamePlayerHitPoints()
-{
-    return you->getEntityHitPoints();
-}
-
-int game::getGameEnemyHitPoints()
-{
-    return monster->getEntityHitPoints();
 }

@@ -1,5 +1,4 @@
 #include "entity.h"
-#include "helper.h"
 
 entity::entity(double x, double y, double sp, int hp, int dm)
 {

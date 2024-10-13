@@ -5,6 +5,12 @@
 
 class player : public entity
 {
+private:
+    ÑardinalDirections playerRotation;
+
+public:
+    shotGun* gun;                        //îğóæèå èãğîêà
+
 public:
     player(double x, double y, double sp, int hp, int dm, ÑardinalDirections rotation);
     player();
@@ -13,12 +19,5 @@ public:
     int playerStep(ÑardinalDirections rotation);
     //ïîëó÷åíèå êîîğäèíàò èãğîêà
     int getPlayerRotation();
-
-
-
-private:
-    ÑardinalDirections playerRotation;
-public:
-    shotGun* gun;                        //îğóæèå èãğîêà
 
 };

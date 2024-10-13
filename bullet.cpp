@@ -1,5 +1,4 @@
 #include "bullet.h"
-#include "entity.h"
 #include "helper.h"
 
 bullet::bullet(double X_Crd, double Y_Crd, double fX_Crd, double fY_Crd, int dm, double sp)

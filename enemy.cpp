@@ -1,7 +1,5 @@
 #include "enemy.h"
-#include "entity.h"
 #include "helper.h"
-#include "player.h"
 #include <iostream>
 #include <windows.h>
 

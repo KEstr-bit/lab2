@@ -10,7 +10,4 @@ public:
     ~enemy();
     int enemyMovment(char* map, int Map_Size_X, player* pl);
     int playersVision(char* map, int Map_Size_X, player* pl);
-
-private:
-
 };

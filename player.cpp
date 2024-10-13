@@ -1,7 +1,5 @@
-#include "shotGun.h"
 #include "player.h"
-#include "entity.h"
-#include "helper.h"
+
 
 player::player(double x, double y, double sp, int hp, int dm, ÑardinalDirections rotation)
 {

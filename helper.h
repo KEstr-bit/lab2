@@ -14,4 +14,5 @@ char* strcopy(char* _Destination, const char* _Source);
 int roundd(double number);
 
 int abss(int number);
+
 double abss(double number);

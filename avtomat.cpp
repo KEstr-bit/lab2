@@ -1,6 +1,4 @@
 #include "avtomat.h"
-#include "weapon.h"
-#include "bullet.h"
 
 int avtomat::Shot(double X_coord, double Y_coord, int rotation)
 {
