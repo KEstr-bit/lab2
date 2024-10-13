@@ -1,7 +1,6 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 
 
-#include <iostream>
 #include <windows.h>
 #include "final.h"
 #include "helper.h"
@@ -12,30 +11,32 @@ final ending;
 
 int main()
 {
-    system("cls");
     game* DOM;
     DOM = new game();
-
-    printf("\e[?25l");
+    char map[10][10];
+    int mapSizeX;
+    DOM->getWorldMap(map);
+    mapSizeX = DOM->getMapSizeX();
     int i = 1;  //флажок работы игры
     while (i)
     {
+        
         //обработка действий игрока
         if (GetAsyncKeyState(VK_UP))
         {
-            DOM->gamePlayerStep(North);
+            DOM->you->gamePlayerStep(map[0], mapSizeX, North);
         }
         if (GetAsyncKeyState(VK_DOWN))
         {
-            DOM->gamePlayerStep(South);
+            DOM->you->gamePlayerStep(map[0], mapSizeX, South);
         }
         if (GetAsyncKeyState(VK_RIGHT))
         {
-            DOM->gamePlayerStep(East);
+            DOM->you->gamePlayerStep(map[0], mapSizeX, East);
         }
         if (GetAsyncKeyState(VK_LEFT))
         {
-            DOM->gamePlayerStep(West);
+            DOM->you->gamePlayerStep(map[0], mapSizeX, West);
         }
         if (GetAsyncKeyState(VK_BACK))
         {
@@ -46,8 +47,7 @@ int main()
             DOM->you->gun->Shot(X_Coord, Y_Coord, rotation);
         }
 
-        DOM->monster->enemyMovment(DOM->map, DOM->Map_Size_X, DOM->you);     //движение врага
-        DOM->you->gun->allBulletMovment();    //движение пули
+       
         DOM->interaction();      //взаимодействие объектов
 
         //проверка окончания игры

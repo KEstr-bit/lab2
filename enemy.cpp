@@ -50,16 +50,16 @@ int enemy::enemyMovment(char* map, int Map_Size_X, player* pl)
             }
             else
             {
-                if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#' && X_Coord > player_y)
+                if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#' && Y_Coord > player_y)
                     this->entityStep(West);
                 else
-                    if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#' && X_Coord < player_y)
+                    if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#' && Y_Coord < player_y)
                         this->entityStep(East);
             }
         }
         else
         {
-            switch (rand() % 4)
+            switch (rand() % 10)
             {
             case 0:
                 if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#')
@@ -73,6 +73,7 @@ int enemy::enemyMovment(char* map, int Map_Size_X, player* pl)
             case 3:
                 if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#')
                     this->entityStep(East); break;
+            default: break;
             }
         }
     }
@@ -94,7 +95,7 @@ int enemy::playersVision(char* map, int Map_Size_X, player* pl)
     double d = sqrt((x - player_x) * (x - player_x) + (y - player_y) * (y - player_y));
 
     //проверка: видит ли враг игрока
-    while (d > 1 && fl)
+    while (d > speed && fl)
     {
 
 

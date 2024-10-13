@@ -9,6 +9,7 @@ public:
     ~bullet();
     //получение координат точки назначения пули
     int getBulletCoords(double* fin_x, double* fin_y);
+    int getBulletCoords(int* fin_x, int* fin_y);
     //движение пули
     int bulletMovment();
 

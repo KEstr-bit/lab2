@@ -18,6 +18,8 @@ public:
     //перемщение игрока
     int playerStep(СardinalDirections rotation);
     //получение координат игрока
-    int getPlayerRotation();
+    СardinalDirections getPlayerRotation();
+
+    int gamePlayerStep(char* map, int Map_Size_X, СardinalDirections rot);
 
 };

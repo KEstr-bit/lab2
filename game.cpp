@@ -7,10 +7,10 @@
 
 game::game()
 {
-    Map_Size_X = 10;
-    Map_Size_Y = 10;
+    Map_Size_X = MAX_X;
+    Map_Size_Y = MAX_Y;
     map = (char*)calloc(Map_Size_X * Map_Size_Y, sizeof(char));
-    char preMap[10][10] =
+    char preMap[MAX_X][MAX_Y] =
     {
         {'#','#','#','#','#','#','#','#','#','#'},
         {'#','.','.','.','.','.','.','.','.','#'},
@@ -43,53 +43,16 @@ game::~game()
 
 
 
-
-int game::gamePlayerStep(СardinalDirections rot)
-{
-    
-    int fl = 0;
-    if (you->getEntityHitPoints() > 0)
-    {
-        int roundX, roundY;
-        you->getEntityCoord(&roundX, &roundY);
-
-        
-        //изменение координат игрока в зависимости от направления
-        switch (rot)
-        {
-        case North:
-            if (*(map + (roundX - 1) * Map_Size_X + roundY) != '#')
-                you->playerStep(North);
-            else
-                fl = 2;
-            break;
-        case East:
-            if (*(map + (roundX)*Map_Size_X + roundY + 1) != '#')
-                you->playerStep(East);
-            else
-                fl = 2;
-            break;
-        case South:
-            if (*(map + (roundX + 1) * Map_Size_X + roundY) != '#')
-                you->playerStep(South);
-            else
-                fl = 2;
-            break;
-        case West:
-            if (*(map + (roundX)*Map_Size_X + roundY - 1) != '#')
-                you->playerStep(West);
-            else
-                fl = 2;
-            break;
-        default:
-            fl = 1;
-        }
-    }
-    return fl;
-}
-
 int game::interaction()
 {
+    this->monster->enemyMovment(map, Map_Size_X, you);     //движение врага
+    this->you->gun->allBulletMovment();                    //движение пули
+
+    int monsterCoordX, monsterCoordY;
+    int playerCoordX, playerCoordY;
+    monster->getEntityCoord(&monsterCoordX, &monsterCoordY);
+    you->getEntityCoord(&playerCoordX, &playerCoordY);
+
     //если на карте есть пули
     if (you->gun->getWeaponCountBullets() > 0)
     {
@@ -98,15 +61,16 @@ int game::interaction()
             //если пуля существует
             if (you->gun->getActiveBullet(i) == 1)
             {
-                double st_x, st_y;
-                double fin_x, fin_y;
-                int map_x, map_y;
-                you->gun->bulls[i]->getBulletCoords(&fin_x, &fin_y);
-                you->gun->bulls[i]->getEntityCoord(&st_x, &st_y);
-                map_x = round(st_x);
-                map_y = round(st_y);
+                
+                int bulletCoordX, bulletCoordY;
+                int bulletFinalCoordX, bulletFinalCoordY;
+
+                you->gun->bulls[i]->getBulletCoords(&bulletFinalCoordX, &bulletFinalCoordY);
+                you->gun->bulls[i]->getEntityCoord(&bulletCoordX, &bulletCoordY);
+                
+
                 //если пуля столкнулась со стеной
-                if (*(map + map_x * Map_Size_X + map_y) == '#')
+                if (*(map + bulletCoordX * Map_Size_X + bulletCoordY) == '#')
                 {
                     delete you->gun->bulls[i];
                     you->gun->setActiveBullet(i, 0);
@@ -114,9 +78,10 @@ int game::interaction()
                 }
                 else
                 {
-                    monster->getEntityCoord(&map_x, &map_y);
+                    
                     //если пуля попала во врага
-                    if (round(st_x) == map_x && round(st_y) == map_y)
+
+                    if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY)
                     {
 
                         monster->attackEntity(you->gun->bulls[i]->getEntityDamage());
@@ -128,7 +93,7 @@ int game::interaction()
                     else
                     {
                         //если пуля достигла своей конечной точки
-                        if (round(st_x) == round(fin_x) && round(st_y) == round(fin_y))
+                        if (bulletCoordX == bulletFinalCoordX && bulletCoordY == bulletFinalCoordY)
                         {
                             delete you->gun->bulls[i];
                             you->gun->setActiveBullet(i, 0);
@@ -139,12 +104,9 @@ int game::interaction()
             }
         }
     }
-    int map_x, map_y;
-    int pl_x, pl_y;
-    you->getEntityCoord(&pl_x, &pl_y);
-    monster->getEntityCoord(&map_x, &map_y);
+
     //если враг достиг игрока
-    if (map_x == pl_x && map_y == pl_y)
+    if (monsterCoordX == playerCoordX && monsterCoordY == playerCoordY)
     {
         you->attackEntity(monster->getEntityDamage());
     }
@@ -153,15 +115,13 @@ int game::interaction()
 
 int game::vivod()
 {
-    int m;
-    double ent_x, ent_y;
-    int roundX, roundY;
-    char* mp;
 
-    m = Map_Size_X * Map_Size_Y;
-    mp = (char*)calloc(m, sizeof(char));
+    int EntityCoordX, EntityCoordY;
 
-    if (mp == NULL)
+    static char* firstBuffer = (char*)calloc(Map_Size_X * Map_Size_Y, sizeof(char));
+    static char* SecondBuffer = (char*)calloc(Map_Size_X * Map_Size_Y, sizeof(char));
+
+    if (firstBuffer == NULL || SecondBuffer == NULL)
     {
         return 1;
     }
@@ -170,38 +130,33 @@ int game::vivod()
     for (int i = 0; i < Map_Size_X; i++)
         for (int j = 0; j < Map_Size_Y; j++)
         {
-            mp[i * Map_Size_X + j] = map[i * Map_Size_X + j];
+            firstBuffer[i * Map_Size_X + j] = map[i * Map_Size_X + j];
         }
 
 
     //если игрок живой
     if (you->getEntityHitPoints() > 0)
     {
-        int rotPlayer;
-        you->getEntityCoord(&ent_x, &ent_y);
+        СardinalDirections rotPlayer;
+        you->getEntityCoord(&EntityCoordX, &EntityCoordY);
         rotPlayer = you->getPlayerRotation();
 
-        roundX = round(ent_x);
-        roundY = round(ent_y);
-        //обозначение игрока в зависимости от направления взгляда
-        if (ent_x < Map_Size_X && ent_x >= 0 && ent_y >= 0 && ent_y < Map_Size_Y)
-            switch (rotPlayer)
-            {
-            case 0: mp[roundX * Map_Size_X + roundY] = 'N'; break;
-            case 1: mp[roundX * Map_Size_X + roundY] = 'E'; break;
-            case 2: mp[roundX * Map_Size_X + roundY] = 'S'; break;
-            case 3: mp[roundX * Map_Size_X + roundY] = 'W'; break;
-            }
+
+        switch (rotPlayer)
+        {
+            case North: firstBuffer[EntityCoordX * Map_Size_X + EntityCoordY] = 'N'; break;
+            case East: firstBuffer[EntityCoordX * Map_Size_X + EntityCoordY] = 'E'; break;
+            case South: firstBuffer[EntityCoordX * Map_Size_X + EntityCoordY] = 'S'; break;
+            case West: firstBuffer[EntityCoordX * Map_Size_X + EntityCoordY] = 'W'; break;
+        }
     }
 
     //если враг живой
     if (monster->getEntityHitPoints() > 0)
     {
-        monster->getEntityCoord(&ent_x, &ent_y);
-        roundX = round(ent_x);
-        roundY = round(ent_y);
-        if (ent_x < Map_Size_X && ent_x >= 0 && ent_y >= 0 && ent_y < Map_Size_Y)
-            mp[roundX * Map_Size_X + roundY] = 'M';
+        monster->getEntityCoord(&EntityCoordX, &EntityCoordY);
+
+        firstBuffer[EntityCoordX * Map_Size_X + EntityCoordY] = 'M';
     }
 
     //отображение пуль
@@ -209,25 +164,47 @@ int game::vivod()
     {
         if (you->gun->getActiveBullet(i) == 1)
         {
-            double st_x, st_y;
-            double fin_x, fin_y;
-            you->gun->bulls[i]->getBulletCoords(&fin_x, &fin_y);
-            you->gun->bulls[i]->getEntityCoord(&st_x, &st_y);
-            roundX = round(st_x);
-            roundY = round(st_y);
-            if (st_x < Map_Size_X && st_x >= 0 && st_y >= 0 && st_y < Map_Size_Y)
-                mp[roundX * Map_Size_X + roundY] = '0';
+            you->gun->bulls[i]->getEntityCoord(&EntityCoordX, &EntityCoordY);
+            firstBuffer[EntityCoordX * Map_Size_X + EntityCoordY] = '0';
         }
     }
 
     setcur(0, 0);
     //вывод новой карты
-    for (int i = 0; i < Map_Size_X; i++) {
-        for (int j = 0; j < Map_Size_Y; j++) {
-            std::cout << mp[i * Map_Size_X + j] << " ";
+    for (int i = 0; i < Map_Size_X; i++) 
+    {
+        for (int j = 0; j < Map_Size_Y; j++) 
+        {
+            if (firstBuffer[i * Map_Size_X + j] != SecondBuffer[i * Map_Size_X + j])
+            {
+                setcur(2*j, i);
+                std::cout << firstBuffer[i * Map_Size_X + j] << " ";
+            }
         }
         std::cout << std::endl;
     }
-    free(mp);
+
+    for (int i = 0; i < Map_Size_X; i++)
+        for (int j = 0; j < Map_Size_Y; j++)
+        {
+            SecondBuffer[i * Map_Size_X + j] = firstBuffer[i * Map_Size_X + j];
+        }
     return 0;
+}
+
+int game::getWorldMap(char getMap[MAX_X][MAX_Y])
+{
+    for (int i = 0; i < Map_Size_X; i++)
+    {
+        for (int j = 0; j < Map_Size_Y; j++)
+        {
+            getMap[i][j] = *(map + i*Map_Size_X + j);
+        }
+    }
+    return 0;
+}
+
+int  game::getMapSizeX()
+{
+    return Map_Size_X;
 }
