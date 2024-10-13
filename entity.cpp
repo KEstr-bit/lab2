@@ -42,29 +42,41 @@ int entity::getEntityHitPoints()
 
 int entity::attackEntity(int entity_Damage)
 {
-    hitPoints -= entity_Damage;
-    return 0;
+    if (hitPoints > 0)
+    {
+        hitPoints -= entity_Damage;
+        return 0;
+    }
+    else
+        return 1;
 }
 
 int entity::entityStep(ÑardinalDirections step_Direction)
 {
-    int i = 0;
-    switch (step_Direction)
+    if (hitPoints > 0)
     {
-    case North: coordX -= speed; break;
-    case East: coordY += speed; break;
-    case South: coordX += speed; break;
-    case West: coordY -= speed; break;
-    default: i = 1;
+        int i = 0;
+        switch (step_Direction)
+        {
+        case North: coordX -= speed; break;
+        case East: coordY += speed; break;
+        case South: coordX += speed; break;
+        case West: coordY -= speed; break;
+        default: i = 1;
+        }
+
+        return i;
     }
-
-    return i;
-
+    return 2;
 }
 
 int entity::getEntityCoord(int* coord_X, int* coord_Y)
 {
-    *coord_X = roundd(coordX);
-    *coord_Y = roundd(coordY);
-    return 0;
+    if (hitPoints > 0)
+    {
+        *coord_X = roundd(coordX);
+        *coord_Y = roundd(coordY);
+        return 0;
+    }
+    return 1;
 }

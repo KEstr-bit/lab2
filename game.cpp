@@ -31,7 +31,6 @@ game::game()
             *(worldMap + x * mapSizeX + y) = preMap[x][y];
         }
     }
-
     you = new player();
     monster = new enemy();
 
@@ -49,10 +48,13 @@ int game::interaction()
     this->you->firstGun->allBulletMovment();                    //движение пули
     this->you->secondGun->allBulletMovment();                    //движение пули
 
+    int monsterIsAlive = 0;
     int monsterCoordX, monsterCoordY;
-    int playerCoordX, playerCoordY;
-    monster->getEntityCoord(&monsterCoordX, &monsterCoordY);
-    you->getEntityCoord(&playerCoordX, &playerCoordY);
+    if (!monster->getEntityCoord(&monsterCoordX, &monsterCoordY))
+    {
+        monsterIsAlive = 1;
+    }
+ 
 
     //если на карте есть пули первого оружия
     if (you->firstGun->getCountActiveBullets() > 0)
@@ -82,7 +84,7 @@ int game::interaction()
                     
                     //если пуля попала во врага
 
-                    if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY)
+                    if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY && monsterIsAlive)
                     {
 
                         monster->attackEntity(you->firstGun->bullets[i]->getEntityDamage());
@@ -132,8 +134,7 @@ int game::interaction()
                 {
 
                     //если пуля попала во врага
-
-                    if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY)
+                    if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY && monsterIsAlive)
                     {
 
                         monster->attackEntity(you->secondGun->bullets[i]->getEntityDamage());
@@ -157,10 +158,14 @@ int game::interaction()
         }
     }
 
-    //если враг достиг игрока
-    if (monsterCoordX == playerCoordX && monsterCoordY == playerCoordY)
+    int playerCoordX, playerCoordY;
+    if (!you->getEntityCoord(&playerCoordX, &playerCoordY) && monsterIsAlive)
     {
-        you->attackEntity(monster->getEntityDamage());
+        //если враг достиг игрока
+        if (monsterCoordX == playerCoordX && monsterCoordY == playerCoordY)
+        {
+            you->attackEntity(monster->getEntityDamage());
+        }
     }
     return 0;
 }
@@ -187,27 +192,22 @@ int game::vivod()
 
 
     //если игрок живой
-    if (you->getEntityHitPoints() > 0)
+    if (!you->getEntityCoord(&EntityCoordX, &EntityCoordY))
     {
         СardinalDirections rotPlayer;
-        you->getEntityCoord(&EntityCoordX, &EntityCoordY);
         rotPlayer = you->getPlayerDirection();
-
 
         switch (rotPlayer)
         {
-            case North: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'N'; break;
-            case East: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'E'; break;
-            case South: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'S'; break;
-            case West: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'W'; break;
+        case North: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'N'; break;
+        case East: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'E'; break;
+        case South: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'S'; break;
+        case West: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'W'; break;
         }
     }
 
-    //если враг живой
-    if (monster->getEntityHitPoints() > 0)
+    if (!monster->getEntityCoord(&EntityCoordX, &EntityCoordY))
     {
-        monster->getEntityCoord(&EntityCoordX, &EntityCoordY);
-
         firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'M';
     }
 

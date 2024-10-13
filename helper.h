@@ -21,3 +21,4 @@ double abss(double number);
 bool isWall(char* world_Map, int map_Size_X, int coord_X, int coord_Y);
 
 double calcDistance(double first_X, double first_Y, double second_X, double second_Y);
+

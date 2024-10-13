@@ -1,6 +1,5 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 
-
 #include <windows.h>
 #include "final.h"
 #include "helper.h"
@@ -13,12 +12,14 @@ int main()
 {
     game* DOM;
     DOM = new game();
+
     char map[10][10];
     int mapSizeX;
     DOM->getWorldMap(map);
     mapSizeX = DOM->getMapSizeX();
-    int i = 1;  //флажок работы игры
-    while (i)
+
+    int fl = 1;  //флажок работы игры
+    while (fl)
     {
         
         //обработка действий игрока
@@ -56,12 +57,12 @@ int main()
         if (DOM->you->getEntityHitPoints() <= 0)
         {
             ending.changeType(LooseGame);
-            i = 0;
+            fl = 0;
         }
         if (DOM->monster->getEntityHitPoints() <= 0)
         {
             ending.changeType(WinGame);
-            i = 0;
+            fl = 0;
         }
 
         //вывод состояния игры
