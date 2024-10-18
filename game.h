@@ -1,16 +1,13 @@
 #pragma once
 #include "player.h"
 #include "enemy.h"
+#include "map.h"
 
 #define MAX_X 10
 #define MAX_Y 10
 
 class game
 {
-private:
-    int mapSizeX;         //Размер карты по X
-    int mapSizeY;         //Размер карты по Y
-    char* worldMap;              //карта
 public:
     player* you;            //игрок
     enemy* monster;
@@ -20,10 +17,7 @@ public:
     ~game();
 
     //взаимодействие объектов
-    int interaction();
+    int interaction(char world_Map[MAP_SIZE_X][MAP_SIZE_Y]);
     //вывод текущего состояния игры
-    int vivod();
-    int getMapSizeX();
-    int getWorldMap(char get_Map[MAX_X][MAX_Y]);
-    
+    int vivod(char world_Map[MAP_SIZE_X][MAP_SIZE_Y]);
 };

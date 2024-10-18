@@ -5,35 +5,11 @@
 #include "enemy.h"
 #include "helper.h"
 
+
 game::game()
 {
-    mapSizeX = MAX_X;
-    mapSizeY = MAX_Y;
-    worldMap = (char*)calloc(mapSizeX * mapSizeY, sizeof(char));
-    char preMap[MAX_X][MAX_Y] =
-    {
-        {'#','#','#','#','#','#','#','#','#','#'},
-        {'#','.','.','.','.','.','.','.','.','#'},
-        {'#','.','.','.','.','.','.','.','.','#'},
-        {'#','.','.','.','.','.','.','.','.','#'},
-        {'#','#','#','#','#','#','#','.','.','#'},
-        {'#','.','.','.','.','.','#','.','.','#'},
-        {'#','.','.','.','.','.','.','.','.','#'},
-        {'#','.','.','.','#','.','.','.','.','#'},
-        {'#','.','.','.','#','.','.','.','.','#'},
-        {'#','#','#','#','#','#','#','#','#','#'}
-    };
-    //копирование premap в map
-    for (int x = 0; x < mapSizeX; x++)
-    {
-        for (int y = 0; y < mapSizeY; y++)
-        {
-            *(worldMap + x * mapSizeX + y) = preMap[x][y];
-        }
-    }
     you = new player();
     monster = new enemy();
-
 }
 
 game::~game()
@@ -42,9 +18,9 @@ game::~game()
 
 
 
-int game::interaction()
+int game::interaction(char world_Map[MAP_SIZE_X][MAP_SIZE_Y])
 {
-    this->monster->enemyMovment(worldMap, mapSizeX, you);     //движение врага
+    this->monster->enemyMovment(world_Map[0], MAP_SIZE_X, you);     //движение врага
     this->you->firstGun->allBulletMovment();                    //движение пули
     this->you->secondGun->allBulletMovment();                    //движение пули
 
@@ -73,7 +49,7 @@ int game::interaction()
                 
 
                 //если пуля столкнулась со стеной
-                if(isWall(worldMap, mapSizeX, bulletCoordX, bulletCoordY))
+                if(isWall(world_Map[0], MAP_SIZE_X, bulletCoordX, bulletCoordY))
                 {
                     delete you->firstGun->bullets[i];
                     you->firstGun->setActiveBullet(i, 0);
@@ -124,7 +100,7 @@ int game::interaction()
 
 
                 //если пуля столкнулась со стеной
-                if (isWall(worldMap, mapSizeX, bulletCoordX, bulletCoordY))
+                if (isWall(world_Map[0], MAP_SIZE_X, bulletCoordX, bulletCoordY))
                 {
                     delete you->secondGun->bullets[i];
                     you->secondGun->setActiveBullet(i, 0);
@@ -170,13 +146,13 @@ int game::interaction()
     return 0;
 }
 
-int game::vivod()
+int game::vivod(char world_Map[MAP_SIZE_X][MAP_SIZE_Y])
 {
 
     int EntityCoordX, EntityCoordY;
 
-    static char* firstBuffer = (char*)calloc(mapSizeX * mapSizeY, sizeof(char));
-    static char* secondBuffer = (char*)calloc(mapSizeX * mapSizeY, sizeof(char));
+    static char* firstBuffer = (char*)calloc(MAP_SIZE_X * MAP_SIZE_Y, sizeof(char));
+    static char* secondBuffer = (char*)calloc(MAP_SIZE_X * MAP_SIZE_Y, sizeof(char));
 
     if (firstBuffer == NULL || secondBuffer == NULL)
     {
@@ -184,10 +160,10 @@ int game::vivod()
     }
 
     //копирование карты в динамический массив
-    for (int i = 0; i < mapSizeX; i++)
-        for (int j = 0; j < mapSizeY; j++)
+    for (int i = 0; i < MAP_SIZE_X; i++)
+        for (int j = 0; j < MAP_SIZE_Y; j++)
         {
-            firstBuffer[i * mapSizeX + j] = worldMap[i * mapSizeX + j];
+            firstBuffer[i * MAP_SIZE_X + j] = world_Map[i][j];
         }
 
 
@@ -199,16 +175,16 @@ int game::vivod()
 
         switch (rotPlayer)
         {
-        case North: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'N'; break;
-        case East: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'E'; break;
-        case South: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'S'; break;
-        case West: firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'W'; break;
+        case North: firstBuffer[EntityCoordX * MAP_SIZE_X + EntityCoordY] = 'N'; break;
+        case East: firstBuffer[EntityCoordX * MAP_SIZE_X + EntityCoordY] = 'E'; break;
+        case South: firstBuffer[EntityCoordX * MAP_SIZE_X + EntityCoordY] = 'S'; break;
+        case West: firstBuffer[EntityCoordX * MAP_SIZE_X + EntityCoordY] = 'W'; break;
         }
     }
 
     if (!monster->getEntityCoord(&EntityCoordX, &EntityCoordY))
     {
-        firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = 'M';
+        firstBuffer[EntityCoordX * MAP_SIZE_X + EntityCoordY] = 'M';
     }
 
     //отображение пуль
@@ -217,7 +193,7 @@ int game::vivod()
         if (you->firstGun->getActiveBullet(i) == 1)
         {
             you->firstGun->bullets[i]->getEntityCoord(&EntityCoordX, &EntityCoordY);
-            firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = '0';
+            firstBuffer[EntityCoordX * MAP_SIZE_X + EntityCoordY] = '0';
         }
     }
 
@@ -226,46 +202,30 @@ int game::vivod()
         if (you->secondGun->getActiveBullet(i) == 1)
         {
             you->secondGun->bullets[i]->getEntityCoord(&EntityCoordX, &EntityCoordY);
-            firstBuffer[EntityCoordX * mapSizeX + EntityCoordY] = '0';
+            firstBuffer[EntityCoordX * MAP_SIZE_X + EntityCoordY] = '0';
         }
     }
 
     setcur(0, 0);
     //вывод новой карты
-    for (int i = 0; i < mapSizeX; i++)
+    for (int i = 0; i < MAP_SIZE_X; i++)
     {
-        for (int j = 0; j < mapSizeY; j++)
+        for (int j = 0; j < MAP_SIZE_Y; j++)
         {
-            if (firstBuffer[i * mapSizeX + j] != secondBuffer[i * mapSizeX + j])
+            if (firstBuffer[i * MAP_SIZE_X + j] != secondBuffer[i * MAP_SIZE_X + j])
             {
                 setcur(2*j, i);
-                std::cout << firstBuffer[i * mapSizeX + j] << " ";
+                std::cout << firstBuffer[i * MAP_SIZE_X + j] << " ";
             }
         }
         std::cout << std::endl;
     }
 
-    for (int i = 0; i < mapSizeX; i++)
-        for (int j = 0; j < mapSizeY; j++)
+    for (int i = 0; i < MAP_SIZE_X; i++)
+        for (int j = 0; j < MAP_SIZE_Y; j++)
         {
-            secondBuffer[i * mapSizeX + j] = firstBuffer[i * mapSizeX + j];
+            secondBuffer[i * MAP_SIZE_X + j] = firstBuffer[i * MAP_SIZE_X + j];
         }
     return 0;
 }
 
-int game::getWorldMap(char get_Map[MAX_X][MAX_Y])
-{
-    for (int i = 0; i < mapSizeX; i++)
-    {
-        for (int j = 0; j < mapSizeY; j++)
-        {
-            get_Map[i][j] = *(worldMap + i* mapSizeX + j);
-        }
-    }
-    return 0;
-}
-
-int  game::getMapSizeX()
-{
-    return mapSizeX;
-}

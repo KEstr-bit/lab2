@@ -1,7 +1,7 @@
 #include "player.h"
 
 
-int player::gamePlayerStep(char* world_Map, int map_Size_X, ÑardinalDirections step_Direction)
+int player::gamePlayerStep(char* world_Map, ÑardinalDirections step_Direction)
 {
 
     int fl = 0;
@@ -15,25 +15,25 @@ int player::gamePlayerStep(char* world_Map, int map_Size_X, ÑardinalDirections s
         switch (step_Direction)
         {
         case North:
-            if (!isWall(world_Map, map_Size_X, roundX - 1, roundY))
+            if (!isWall(world_Map, MAP_SIZE_X, roundX - 1, roundY))
                 this->playerStep(North);
             else
                 fl = 2;
             break;
         case East:
-            if (!isWall(world_Map, map_Size_X, roundX, roundY + 1))
+            if (!isWall(world_Map, MAP_SIZE_X, roundX, roundY + 1))
                 this->playerStep(East);
             else
                 fl = 2;
             break;
         case South:
-            if (!isWall(world_Map, map_Size_X, roundX + 1, roundY))
+            if (!isWall(world_Map, MAP_SIZE_X, roundX + 1, roundY))
                 this->playerStep(South);
             else
                 fl = 2;
             break;
         case West:
-            if (!isWall(world_Map, map_Size_X, roundX, roundY - 1))
+            if (!isWall(world_Map, MAP_SIZE_X, roundX, roundY - 1))
                 this->playerStep(West);
             else
                 fl = 2;

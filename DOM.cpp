@@ -12,11 +12,12 @@ int main()
 {
     game* DOM;
     DOM = new game();
+    map* wMap;
+    wMap = new map();
 
     char map[10][10];
     int mapSizeX;
-    DOM->getWorldMap(map);
-    mapSizeX = DOM->getMapSizeX();
+    wMap->getWorldMap(map);
 
     int fl = 1;  //флажок работы игры
     while (fl)
@@ -25,19 +26,19 @@ int main()
         //обработка действий игрока
         if (GetAsyncKeyState(VK_UP))
         {
-            DOM->you->gamePlayerStep(map[0], mapSizeX, North);
+            DOM->you->gamePlayerStep(map[0], North);
         }
         if (GetAsyncKeyState(VK_DOWN))
         {
-            DOM->you->gamePlayerStep(map[0], mapSizeX, South);
+            DOM->you->gamePlayerStep(map[0], South);
         }
         if (GetAsyncKeyState(VK_RIGHT))
         {
-            DOM->you->gamePlayerStep(map[0], mapSizeX, East);
+            DOM->you->gamePlayerStep(map[0], East);
         }
         if (GetAsyncKeyState(VK_LEFT))
         {
-            DOM->you->gamePlayerStep(map[0], mapSizeX, West);
+            DOM->you->gamePlayerStep(map[0], West);
         }
         if (GetAsyncKeyState(VK_LCONTROL))
         {
@@ -51,7 +52,7 @@ int main()
         }
 
        
-        DOM->interaction();      //взаимодействие объектов
+        DOM->interaction(map);      //взаимодействие объектов
 
         //проверка окончания игры
         if (DOM->you->getEntityHitPoints() <= 0)
@@ -66,7 +67,7 @@ int main()
         }
 
         //вывод состояния игры
-        DOM->vivod();
+        DOM->vivod(map);
         Sleep(50);
 
 

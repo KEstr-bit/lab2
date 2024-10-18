@@ -3,6 +3,7 @@
 #include "shotGun.h"
 #include "avtomat.h"
 #include "helper.h"
+#include "map.h"
 
 class player : public entity
 {
@@ -23,7 +24,7 @@ public:
     //ïîëó÷åíèå êîîğäèíàò èãğîêà
     ÑardinalDirections getPlayerDirection();
 
-    int gamePlayerStep(char* world_Map, int map_Size_X, ÑardinalDirections step_Direction);
+    int gamePlayerStep(char* world_Map, ÑardinalDirections step_Direction);
     int changeActiveWeapon();
     int shot();
 };
