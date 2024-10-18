@@ -4,6 +4,7 @@
 #include "final.h"
 #include "helper.h"
 #include "game.h"
+#include "drawer.h"
 using namespace std;
 
 final ending;
@@ -14,6 +15,9 @@ int main()
     DOM = new game();
     map* wMap;
     wMap = new map();
+    drawer* dr;
+    dr = new drawer();
+
 
     char map[10][10];
     int mapSizeX;
@@ -67,7 +71,7 @@ int main()
         }
 
         //вывод состояния игры
-        DOM->vivod(map);
+        dr->draw(map, DOM);
         Sleep(50);
 
 

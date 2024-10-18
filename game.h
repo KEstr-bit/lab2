@@ -18,6 +18,4 @@ public:
 
     //взаимодействие объектов
     int interaction(char world_Map[MAP_SIZE_X][MAP_SIZE_Y]);
-    //вывод текущего состояния игры
-    int vivod(char world_Map[MAP_SIZE_X][MAP_SIZE_Y]);
 };
