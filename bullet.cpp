@@ -43,23 +43,24 @@ int bullet::getBulletCoords(int* final_coord_X, int* final_coord_Y)
 
 int bullet::bulletMovment()
 {
+    double deltaX = finalCoordX - coordX;
+    double deltaY = finalCoordY - coordY;
+
     //движение пули к конечной точке
-    if (abss(finalCoordX - coordX) > abss(finalCoordY - coordY))
+    if (abss(deltaX) > abss(deltaY))
     {
-        if (finalCoordX < coordX)
+        if (deltaX < 0)
             this->entityStep(North);
         else
-            if (finalCoordX > coordX)
-                this->entityStep(South);
+            this->entityStep(South);
 
     }
     else
     {
-        if (finalCoordY > coordY)
+        if (deltaY > 0)
             this->entityStep(East);
         else
-            if (finalCoordY < coordY)
-                this->entityStep(West);
+            this->entityStep(West);
     }
 
     return 0;

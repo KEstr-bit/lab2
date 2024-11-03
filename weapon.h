@@ -1,27 +1,22 @@
 #pragma once
 #include "bullet.h"
 #include "helper.h"
+#include <vector>
 
 class weapon
 {
 protected:
     int bulletCount;                    //количество пуль, выпускаемых за раз
-    double bulletSpeed;                       //скорость полета пули
-    int bulletDamage;                         //урон, наносимы пулей
-    int activeBullets[10];              //список, существующих пуль
-    int countActiveBullets;
-public:
-    bullet* bullets[MAX_BULLETS];         //массив пуль
+    double bulletSpeed;                 //скорость полета пули
+    int bulletDamage;                   //урон, наносимы пулей
 
 public:
+
+
+public:
+    virtual int shot(double coord_X, double coord_Y, СardinalDirections shot_Direction, std::vector<bullet>& bullets) = 0;
     weapon(int bullet_Count, double bullet_Speed, int bullet_Damage);
     weapon();
     ~weapon();
-    //получит характеристики оружия
-    int getCountActiveBullets();
-    int setActiveBullet(int index, int active);
-    int getActiveBullet(int index);
-    int changeCountActiveBullets(int change);
-    int allBulletMovment();
 
 };

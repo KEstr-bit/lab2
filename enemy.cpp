@@ -24,35 +24,35 @@ enemy::~enemy()
 {
 }
 
-int enemy::enemyMovment(char* world_Map, int map_Size_X, player* pl)
+int enemy::enemyMovment(char* world_Map, int map_Size_X, double player_X, double player_Y)
 {
-    int i = 0;      //флаг живого игрока
-    double playerX, playerY;
     int enemyRoundX, enemyRoundY;
 
-    pl->getEntityCoord(&playerX, &playerY);
     this->getEntityCoord(&enemyRoundX, &enemyRoundY);
+
+    double deltaX = player_X - coordX;
+    double deltaY = player_Y - coordY;
 
     //если враг живой
     if (hitPoints > 0)
     {
-        if (playersVision(world_Map, map_Size_X, pl))
+        if (playersVision(world_Map, map_Size_X, player_X, player_Y))
         {
-            if (abss(coordX - playerX) > abss(coordY - playerY))
+            if (abss(deltaX) > abss(deltaY))
             {
-                if (!isWall(world_Map, map_Size_X, enemyRoundX + 1, enemyRoundY) && coordX < playerX)
+                if (!isWall(world_Map, map_Size_X, enemyRoundX + 1, enemyRoundY) && deltaX > 0)
                     this->entityStep(South);
                 else
-                    if (!isWall(world_Map, map_Size_X, enemyRoundX - 1, enemyRoundY) && coordX > playerX)
+                    if (!isWall(world_Map, map_Size_X, enemyRoundX - 1, enemyRoundY) && deltaX < 0)
                         this->entityStep(North);
 
             }
             else
             {
-                if (!isWall(world_Map, map_Size_X, enemyRoundX, enemyRoundY - 1) && coordY > playerY)
+                if (!isWall(world_Map, map_Size_X, enemyRoundX, enemyRoundY - 1) && deltaY < 0)
                     this->entityStep(West);
                 else
-                    if (!isWall(world_Map, map_Size_X, enemyRoundX, enemyRoundY + 1) && coordY < playerY)
+                    if (!isWall(world_Map, map_Size_X, enemyRoundX, enemyRoundY + 1) && deltaY > 0)
                         this->entityStep(East);
             }
         }
@@ -80,26 +80,24 @@ int enemy::enemyMovment(char* world_Map, int map_Size_X, player* pl)
     return 0;
 }
 
-int enemy::playersVision(char* world_map, int map_Size_X, player* pl)
+int enemy::playersVision(char* world_map, int map_Size_X, double player_X, double player_Y)
 {
-    double playerX, playerY;
     double enemyX, enemyY;
 
     this->getEntityCoord(&enemyX, &enemyY);
-    pl->getEntityCoord(&playerX, &playerY);
 
     int fl = 1;
-    double distance = calcDistance(enemyX, enemyY, playerX, playerY);
+    double distance = calcDistance(enemyX, enemyY, player_X, player_Y);
 
     //проверка: видит ли враг игрока
     while (distance > speed && fl)
     {
 
 
-        enemyX = (K * playerX + (distance - K) * enemyX) / distance;
-        enemyY = (K * playerY + (distance - K) * enemyY) / distance;
+        enemyX = (K * player_X + (distance - K) * enemyX) / distance;
+        enemyY = (K * player_Y + (distance - K) * enemyY) / distance;
 
-        distance = calcDistance(enemyX, enemyY, playerX, playerY);
+        distance = calcDistance(enemyX, enemyY, player_X, player_Y);
 
         if ( isWall( world_map, map_Size_X, roundd(enemyX), roundd(enemyY) ) )
             fl = 0;

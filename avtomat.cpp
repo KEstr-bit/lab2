@@ -1,15 +1,11 @@
 #include "avtomat.h"
 
-int avtomat::shot(double coord_X, double coord_Y, ÑardinalDirections shot_Direction)
+int avtomat::shot(double coord_X, double coord_Y, ÑardinalDirections shot_Direction, std::vector<bullet>& bullets)
 {
     double final_coord_X = 0, final_coord_Y = 0;
 
     int sideShift = 0 - bulletCount / 2;
-    int fl = 0;
-    int bulletIndex = 0;
-    //åñëè îðóæèå âûñòðåëèâàåò áîëüøå 0 ïóëü è íà êàðòå íè îäíîé ïóëè
-    if (bulletCount > 0 && countActiveBullets == 0)
-    {
+
         for (int i = 0; i < bulletCount; i++)
         {
             double x, y;
@@ -40,18 +36,11 @@ int avtomat::shot(double coord_X, double coord_Y, ÑardinalDirections shot_Direct
                 break;
             }
             sideShift += 1;
-            // èíèöèàëèçàöèÿ ïóëü
-            for (int fl = 1; bulletIndex < 10 && fl; bulletIndex++)
-                if (this->getActiveBullet(bulletIndex) == 0)
-                {
-                    bullets[bulletIndex] = new bullet(x, y, final_coord_X, final_coord_Y, bulletDamage, bulletSpeed);
-                    this->changeCountActiveBullets(1);
-                    this->setActiveBullet(bulletIndex, 1);
-                    fl = 0;
-                }
+
+            bullets.emplace_back(x, y, final_coord_X, final_coord_Y, bulletDamage, bulletSpeed);
+
         }
-    }
-    else
-        fl = 1;
-    return fl;
+    
+
+    return 0;
 }

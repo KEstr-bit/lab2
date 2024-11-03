@@ -1,7 +1,7 @@
 #include "map.h"
 #include <iostream>
 
-map::map(char pre_Map[MAP_SIZE_X][MAP_SIZE_Y])
+GameMap::GameMap(char pre_Map[MAP_SIZE_X][MAP_SIZE_Y])
 {
     for (int x = 0; x < MAP_SIZE_X; x++)
     {
@@ -12,7 +12,7 @@ map::map(char pre_Map[MAP_SIZE_X][MAP_SIZE_Y])
     }
 }
 
-map::map()
+GameMap::GameMap()
 {
     worldMap = (char*)calloc(MAP_SIZE_X * MAP_SIZE_Y, sizeof(char));
     char preMap[MAP_SIZE_X][MAP_SIZE_Y] =
@@ -38,11 +38,11 @@ map::map()
     }
 }
 
-map::~map()
+GameMap::~GameMap()
 {
 }
 
-int map::getWorldMap(char get_Map[MAP_SIZE_X][MAP_SIZE_Y])
+int GameMap::getWorldMap(char get_Map[MAP_SIZE_X][MAP_SIZE_Y])
 {
 
         for (int x = 0; x < MAP_SIZE_X; x++)

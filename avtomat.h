@@ -4,5 +4,5 @@
 class avtomat : public weapon
 {
 public:
-    int shot(double coord_X, double coord_Y, ÑardinalDirections shot_Direction);
+    int shot(double coord_X, double coord_Y, ÑardinalDirections shot_Direction, std::vector<bullet>& bullets) override;
 };

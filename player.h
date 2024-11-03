@@ -5,11 +5,18 @@
 #include "helper.h"
 #include "map.h"
 
+
+
+
 class player : public entity
 {
 private:
     ÑardinalDirections playerDirection;
     WeaponOption activeWeapon;
+public:
+    double visionCorner;
+    const double VISION_SPEED = 1;
+    const int FOV = 60;
 
 public:
     shotGun* firstGun;                        //îğóæèå èãğîêà
@@ -24,7 +31,8 @@ public:
     //ïîëó÷åíèå êîîğäèíàò èãğîêà
     ÑardinalDirections getPlayerDirection();
 
+    void changeVision(ÑardinalDirections direct_pl);
     int gamePlayerStep(char* world_Map, ÑardinalDirections step_Direction);
     int changeActiveWeapon();
-    int shot();
+    int shot(std::vector<bullet>& bullets);
 };

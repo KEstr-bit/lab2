@@ -57,12 +57,14 @@ player::player(double coord_X, double coord_Y, double entity_Speed, int hit_Poin
     activeWeapon = ShotGun;
     firstGun = new shotGun();
     secondGun = new avtomat();
+
+    visionCorner = 0;
 }
 
 player::player()
 {
-    coordX = 8;
-    coordY = 1;
+    coordX = 7;
+    coordY = 2;
     hitPoints = 100;
     speed = 1;
     damage = 50;
@@ -71,6 +73,8 @@ player::player()
     activeWeapon = ShotGun;
     firstGun = new shotGun();
     secondGun = new avtomat();
+
+    visionCorner = 0;
 
 }
 
@@ -110,17 +114,41 @@ int player::changeActiveWeapon()
     return activeWeapon;
 };
 
-int player::shot()
+int player::shot(std::vector<bullet>& bullets)
 {
     switch (activeWeapon)
     {
     case ShotGun:   
-        this->firstGun->shot(coordX, coordY, playerDirection);
+        this->firstGun->shot(coordX, coordY, playerDirection, bullets);
         break;
     case Automat:
-        this->secondGun->shot(coordX, coordY, playerDirection);
+        this->secondGun->shot(coordX, coordY, playerDirection, bullets);
         break;
     }
 
     return activeWeapon;
+};
+
+void player::changeVision(ÑardinalDirections direct_pl)
+{
+    switch (direct_pl)
+    {
+    case East:
+        visionCorner -= VISION_SPEED;
+        break;
+    case West:
+        visionCorner += VISION_SPEED;
+        break;
+    default:
+        break;
+    };
+
+    if (abss(visionCorner) >= 360)
+    {
+        visionCorner = 0;
+    }
+
+
+    
+
 };
