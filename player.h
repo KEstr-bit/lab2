@@ -11,7 +11,6 @@
 class player : public entity
 {
 private:
-    ÑardinalDirections playerDirection;
     WeaponOption activeWeapon;
 public:
     double visionCorner;
@@ -23,14 +22,12 @@ public:
     avtomat* secondGun;
 
 public:
-    player(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage, ÑardinalDirections direction);
+    player(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage);
     player();
     ~player();
     //ïåğåìùåíèå èãğîêà
     int playerStep(ÑardinalDirections step_Direction);
     //ïîëó÷åíèå êîîğäèíàò èãğîêà
-    ÑardinalDirections getPlayerDirection();
-
     void changeVision(ÑardinalDirections direct_pl);
     int gamePlayerStep(char* world_Map, ÑardinalDirections step_Direction);
     int changeActiveWeapon();

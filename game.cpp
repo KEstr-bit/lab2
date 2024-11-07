@@ -50,16 +50,13 @@ int game::interaction(char world_Map[MAP_SIZE_X][MAP_SIZE_Y])
             you->attackEntity(monster->getEntityDamage());
         }
     }
- 
 
     //если на карте есть пули первого оружия
         for (int i = 0; i < bullets.size(); i++)
         {
 
                 int bulletCoordX, bulletCoordY;
-                int bulletFinalCoordX, bulletFinalCoordY;
 
-                bullets[i].getBulletCoords(&bulletFinalCoordX, &bulletFinalCoordY);
                 bullets[i].getEntityCoord(&bulletCoordX, &bulletCoordY);
                 
 
@@ -68,25 +65,10 @@ int game::interaction(char world_Map[MAP_SIZE_X][MAP_SIZE_Y])
                 {
                     bullets.erase(bullets.begin() + i);
                 }
-                else
+                else if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY && monsterIsAlive)
                 {
-                    
-                    //если пуля попала во врага
-
-                    if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY && monsterIsAlive)
-                    {
                         monster->attackEntity(bullets[i].getEntityDamage());
                         bullets.erase(bullets.begin() + i);
-
-                    }
-                    else
-                    {
-                        //если пуля достигла своей конечной точки
-                        if (bulletCoordX == bulletFinalCoordX && bulletCoordY == bulletFinalCoordY)
-                        {
-                            bullets.erase(bullets.begin() + i);
-                        }
-                    }
                 }
             }
         

@@ -1,4 +1,5 @@
 #pragma once
+#include <math.h>
 
 constexpr auto K = 0.2;
 constexpr auto MAX_BULLETS = 10;

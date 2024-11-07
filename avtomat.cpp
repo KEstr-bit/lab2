@@ -1,43 +1,22 @@
 #include "avtomat.h"
 
-int avtomat::shot(double coord_X, double coord_Y, ÑardinalDirections shot_Direction, std::vector<bullet>& bullets)
+int avtomat::shot(double coord_X, double coord_Y, double shot_corner, std::vector<bullet>& bullets)
 {
-    double final_coord_X = 0, final_coord_Y = 0;
-
-    int sideShift = 0 - bulletCount / 2;
-
+    double cosi = cos(shot_corner * 3.14 / 180);
+    double sinu = sin(shot_corner * 3.14 / 180);
+    
+    int sideShift = 0;
         for (int i = 0; i < bulletCount; i++)
         {
+            sideShift += this->bulletSpeed;
             double x, y;
-            x = coord_X;
-            y = coord_Y;
-            //âûáîð êîîðäèíà â çàâèñèìîñòè îò íàïðàâëåíèÿ
-            switch (shot_Direction)
-            {
-            case North:
-                final_coord_X = coord_X - 10;
-                final_coord_Y = coord_Y;
-                x -= sideShift;
-                break;
-            case East:
-                final_coord_X = coord_X;
-                final_coord_Y = coord_Y + 10;
-                y += sideShift;
-                break;
-            case South:
-                final_coord_X = coord_X + 10;
-                final_coord_Y = coord_Y;
-                x += sideShift;
-                break;
-            case West:
-                final_coord_X = coord_X;
-                final_coord_Y = coord_Y - 10;
-                y -= sideShift;
-                break;
-            }
-            sideShift += 1;
+            x = sideShift*cosi;
+            y = sideShift*sinu;
+            
+            x += coord_X;
+            y += coord_Y;
 
-            bullets.emplace_back(x, y, final_coord_X, final_coord_Y, bulletDamage, bulletSpeed);
+            bullets.emplace_back(x, y, shot_corner, this->bulletDamage, this->bulletSpeed);
 
         }
     

@@ -7,53 +7,54 @@ int player::gamePlayerStep(char* world_Map, ÑardinalDirections step_Direction)
     int fl = 0;
     if (hitPoints > 0)
     {
-        int roundX, roundY;
-        this->getEntityCoord(&roundX, &roundY);
+        double x, y;
+        this->getEntityCoord(&x, &y);
 
 
         //èçìåíåíèå êîîðäèíàò èãðîêà â çàâèñèìîñòè îò íàïðàâëåíèÿ
-        switch (step_Direction)
+        this->playerStep(step_Direction);
+        double newX, newY;
+        double dX, dY;
+        this->getEntityCoord(&newX, &newY);
+        try
         {
-        case North:
-            if (!isWall(world_Map, MAP_SIZE_X, roundX - 1, roundY))
-                this->playerStep(North);
-            else
-                fl = 2;
-            break;
-        case East:
-            if (!isWall(world_Map, MAP_SIZE_X, roundX, roundY + 1))
-                this->playerStep(East);
-            else
-                fl = 2;
-            break;
-        case South:
-            if (!isWall(world_Map, MAP_SIZE_X, roundX + 1, roundY))
-                this->playerStep(South);
-            else
-                fl = 2;
-            break;
-        case West:
-            if (!isWall(world_Map, MAP_SIZE_X, roundX, roundY - 1))
-                this->playerStep(West);
-            else
-                fl = 2;
-            break;
-        default:
-            fl = 1;
+            if (isWall(world_Map, MAP_SIZE_X, roundd(newX), roundd(newY)))
+            {
+                dX = newX - x;
+                dY = newY - y;
+                if (!isWall(world_Map, MAP_SIZE_X, roundd(x + dX), roundd(y)))
+                {
+                    this->coordX = x + dX;
+                    this->coordY = y;
+                }
+                else if (!isWall(world_Map, MAP_SIZE_X, roundd(x), roundd(y + dY)))
+                {
+                    this->coordX = x;
+                    this->coordY = y + dY;
+                }
+                else
+                {
+                    this->coordX = x;
+                    this->coordY = y;
+                }
+            }
+        }
+        catch (const std::exception&)
+        {
+            this->coordX = x;
+            this->coordY = y;
         }
     }
     return fl;
 }
 
-player::player(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage, ÑardinalDirections direction)
+player::player(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage)
 {
     damage = entity_Damage;
     hitPoints = hit_Points;
     coordX = coord_X;
     coordY = coord_Y;
     speed = entity_Speed;
-
-    playerDirection = direction;
     activeWeapon = ShotGun;
     firstGun = new shotGun();
     secondGun = new avtomat();
@@ -66,10 +67,8 @@ player::player()
     coordX = 7;
     coordY = 2;
     hitPoints = 100;
-    speed = 1;
+    speed = 0.05;
     damage = 50;
-
-    playerDirection = North;
     activeWeapon = ShotGun;
     firstGun = new shotGun();
     secondGun = new avtomat();
@@ -85,20 +84,30 @@ player::~player()
 
 int player::playerStep(ÑardinalDirections step_Direction)
 {
-    int i = 0;
 
-    playerDirection = step_Direction;
+    if (hitPoints > 0)
+    {
+        double corner = this->visionCorner;
+        int i = 0;
+        switch (step_Direction)
+        {
+        case East: corner -= 90; break;
+        case South: corner += 180; break;
+        case West: corner += 90; break;
+        default: i = 1;
+        }
+        corner = (corner * 3.14) / 180;
+        double x = this->speed * cos(corner);
+        double y = this->speed * sin(corner);
 
-    i = this->entityStep(step_Direction);
-
-    return i;
+        this->coordX += x;
+        this->coordY += y;
+        return i;
+    }
+    return 2;
 
 }
 
-ÑardinalDirections player::getPlayerDirection()
-{
-    return playerDirection;
-}
 
 int player::changeActiveWeapon() 
 {
@@ -119,10 +128,10 @@ int player::shot(std::vector<bullet>& bullets)
     switch (activeWeapon)
     {
     case ShotGun:   
-        this->firstGun->shot(coordX, coordY, playerDirection, bullets);
+        this->firstGun->shot(coordX, coordY, visionCorner, bullets);
         break;
     case Automat:
-        this->secondGun->shot(coordX, coordY, playerDirection, bullets);
+        this->secondGun->shot(coordX, coordY, visionCorner, bullets);
         break;
     }
 

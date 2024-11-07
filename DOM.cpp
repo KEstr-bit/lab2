@@ -36,9 +36,7 @@ int main()
                 window.close();
         }
 
-        if (s > 50)
-        {
-            s = 0;
+
             //обработка действий игрока
             if (GetAsyncKeyState(VK_UP))
             {
@@ -69,7 +67,7 @@ int main()
             }
 
             
-        }
+
 
 
             DOM->interaction(map);      //взаимодействие объектов
@@ -87,7 +85,7 @@ int main()
             }
         
 
-        s++;
+
         if (GetAsyncKeyState(0X41))
         {
             DOM->you->changeVision(West);
@@ -102,13 +100,14 @@ int main()
         window.clear(sf::Color::Black);
 
         //рисование кадра
+        
         dr->newDraw(map, DOM, window);
-
+        dr->entityDraw(map, DOM, window);
 
         //отображение содержимого окна
         window.display();
 
-        Sleep(1);
+        Sleep(0.1);
 
     }
 }

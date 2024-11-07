@@ -11,10 +11,12 @@ public:
 	int draw(char world_Map[MAP_SIZE_X][MAP_SIZE_Y], game* gm);
 	int newDraw(char world_Map[MAP_SIZE_X][MAP_SIZE_Y], game* gm, sf::RenderWindow& window);
 	void drawVerticalSegment(sf::RenderWindow& window, float length, float width, float low_X, float low_Y, sf::Color color);
+	int entityDraw(char world_Map[MAP_SIZE_X][MAP_SIZE_Y], game* gm, sf::RenderWindow& window);
 	drawer();
 	~drawer();
 
 private:
+	double mas[800];
 	char* firstBuffer;
 	char* secondBuffer;
 };

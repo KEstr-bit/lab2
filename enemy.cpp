@@ -17,7 +17,7 @@ enemy::enemy()
     hitPoints = 100;
     coordX = 1;
     coordY = 8;
-    speed = 0.2;
+    speed = 0.02;
 }
 
 enemy::~enemy()
@@ -90,7 +90,7 @@ int enemy::playersVision(char* world_map, int map_Size_X, double player_X, doubl
     double distance = calcDistance(enemyX, enemyY, player_X, player_Y);
 
     //проверка: видит ли враг игрока
-    while (distance > speed && fl)
+    while (distance > 0.2 && fl)
     {
 
 
