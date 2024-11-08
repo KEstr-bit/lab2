@@ -1,13 +1,16 @@
 #pragma once
 #include "entity.h"
 #include "player.h"
+#include "GameMap.h"
 
 class enemy : public entity
 {
 public:
-    enemy(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage);
+    static const double VISSION_STEP;
+
+    enemy(double coordX, double coordY, double speed, int hitPoints, int damage);
     enemy();
     ~enemy();
-    int enemyMovment(char* world_Map, int map_Size_X, double player_X, double player_Y);
-    int playersVision(char* world_Map, int map_Size_X, double player_X, double player_Y);
+    int enemyMovment(GameMap* map, double playerX, double playerY);
+    bool playersVision(GameMap* map, double playerX, double playerY);
 };

@@ -1,22 +1,21 @@
 #include "avtomat.h"
 
-int avtomat::shot(double coord_X, double coord_Y, double shot_corner, std::vector<bullet>& bullets)
+int avtomat::shot(double coordX, double coordY, double shotAngle, std::vector<bullet>& bullets)
 {
-    double cosi = cos(shot_corner * 3.14 / 180);
-    double sinu = sin(shot_corner * 3.14 / 180);
-    
-    int sideShift = 0;
+    double sideShift = 0;
+
         for (int i = 0; i < bulletCount; i++)
         {
-            sideShift += this->bulletSpeed;
-            double x, y;
-            x = sideShift*cosi;
-            y = sideShift*sinu;
-            
-            x += coord_X;
-            y += coord_Y;
+            sideShift += bulletSpeed;
 
-            bullets.emplace_back(x, y, shot_corner, this->bulletDamage, this->bulletSpeed);
+            double x, y;
+            x = projectionToX(sideShift, degToRad(shotAngle));
+            y = projectionToY(sideShift, degToRad(shotAngle));
+            
+            x += coordX;
+            y += coordY;
+
+            bullets.emplace_back(x, y, shotAngle, this->bulletDamage, this->bulletSpeed);
 
         }
     

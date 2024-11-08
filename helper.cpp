@@ -67,3 +67,28 @@ bool isWall(char* world_Map, int map_Size_X, int coord_X, int coord_Y)
 double calcDistance(double first_X, double first_Y, double second_X, double second_Y) {
     return sqrt((first_X - second_X) * (first_X - second_X) + (first_Y - second_Y) * (first_Y - second_Y));
 };
+
+double degToRad(double deg)
+{
+    return deg * 3.14 / 180;
+}
+
+double radToDeg(double rad)
+{
+    return rad * 180 / 3.14;
+}
+
+double projectionToX(double len, double rad_Angle)
+{
+    return len * cos(rad_Angle);
+}
+
+double projectionToY(double len, double rad_Angle)
+{
+    return len * sin(rad_Angle);
+}
+
+double interpolateCoord(double startCoord, double finalCoord, double step, double distance)
+{
+    return (step * finalCoord + (distance - step) * startCoord) / distance;
+}

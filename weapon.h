@@ -14,8 +14,8 @@ public:
 
 
 public:
-    virtual int shot(double coord_X, double coord_Y, double shot_corner, std::vector<bullet>& bullets) = 0;
-    weapon(int bullet_Count, double bullet_Speed, int bullet_Damage);
+    virtual int shot(double coordX, double coordY, double shotAngle, std::vector<bullet>& bullets) = 0;
+    weapon(int bulletCount, double bulletSpeed, int bulletDamage);
     weapon();
     ~weapon();
 

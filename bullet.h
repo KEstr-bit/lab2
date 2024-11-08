@@ -4,14 +4,11 @@
 class bullet : public entity
 {
 public:
-    bullet(double coord_X, double coord_Y, double flight_Angle, int entity_Damage, double entity_Speed);
+    bullet(double coordX, double coordY, double flightAngle, int damage, double speed);
     bullet();
     ~bullet();
-    //получение координат точки назначения пули
-    double getBulletAngle();
     //движение пули
-    int bulletMovment();
-
+    bool bulletMapStep(GameMap* map);
 private:
-    double flightAngle;
+    double remainLen;
 };

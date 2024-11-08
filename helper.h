@@ -1,9 +1,6 @@
 #pragma once
 #include <math.h>
 
-constexpr auto K = 0.2;
-constexpr auto MAX_BULLETS = 10;
-
 enum EndingOption { WinGame, LooseGame };
 enum ÑardinalDirections { North, East, South, West };
 enum WeaponOption {ShotGun, Automat};
@@ -23,3 +20,12 @@ bool isWall(char* world_Map, int map_Size_X, int coord_X, int coord_Y);
 
 double calcDistance(double first_X, double first_Y, double second_X, double second_Y);
 
+double degToRad(double deg);
+
+double radToDeg(double rad);
+
+double projectionToX(double len, double rad_Angle);
+
+double projectionToY(double len, double rad_Angle);
+
+double interpolateCoord(double startCoord, double finalCoord, double step, double distance);

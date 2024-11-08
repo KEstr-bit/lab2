@@ -1,7 +1,7 @@
 #pragma once
 #include "player.h"
 #include "enemy.h"
-#include "map.h"
+#include "GameMap.h"
 #include <vector>
 
 #define MAX_X 10
@@ -19,6 +19,6 @@ public:
     ~game();
 
     //взаимодействие объектов
-    int interaction(char world_Map[MAP_SIZE_X][MAP_SIZE_Y]);
-    int allBulletMovment();
+    int interaction(GameMap* map);
+    int allBulletMovment(GameMap* map);
 };

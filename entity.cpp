@@ -1,12 +1,13 @@
 #include "entity.h"
 
-entity::entity(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage)
+entity::entity(double coordX, double coordY, double speed, int hitPoints, int damage)
 {
-    damage = entity_Damage;
-    hitPoints = hit_Points;
-    coordX = coord_X;
-    coordY = coord_Y;
-    speed = entity_Speed;
+    this->damage = damage;
+    this->hitPoints = hitPoints;
+    this->coordX = coordX;
+    this->coordY = coordY;
+    this->speed = speed;
+    viewAngle = 0;
 
 }
 
@@ -17,16 +18,17 @@ entity::entity()
     hitPoints = 100;
     speed = 1;
     damage = 50;
+    viewAngle = 0;
 }
 
 entity::~entity()
 {
 }
 
-int entity::getEntityCoord(double* coord_X, double* coord_Y)
+int entity::getEntityCoord(double* coordX, double* coordY)
 {
-    *coord_X = coordX;
-    *coord_Y = coordY;
+    *coordX = this->coordX;
+    *coordY = this->coordY;
     return 0;
 }
 
@@ -40,42 +42,70 @@ int entity::getEntityHitPoints()
     return hitPoints;
 }
 
-int entity::attackEntity(int entity_Damage)
+double entity::getEntityAngle()
+{
+    return viewAngle;
+}
+
+int entity::attackEntity(int damage)
 {
     if (hitPoints > 0)
     {
-        hitPoints -= entity_Damage;
+        hitPoints -= damage;
         return 0;
     }
     else
         return 1;
 }
 
-int entity::entityStep(ÑardinalDirections step_Direction)
+int entity::entityStep()
 {
     if (hitPoints > 0)
     {
-        int i = 0;
-        switch (step_Direction)
-        {
-        case North: coordX -= speed; break;
-        case East: coordY += speed; break;
-        case South: coordX += speed; break;
-        case West: coordY -= speed; break;
-        default: i = 1;
-        }
-
-        return i;
+        coordX += projectionToX(speed, degToRad(viewAngle));
+        coordY += projectionToY(speed, degToRad(viewAngle));
+        return 0;
     }
-    return 2;
+    return 1;
 }
 
-int entity::getEntityCoord(int* coord_X, int* coord_Y)
+int entity::entityMapStep(GameMap* map)
+{
+    double oldX, oldY;
+    this->getEntityCoord(&oldX, &oldY);
+
+    this->entityStep();
+
+    if (map->isWall(this->coordX, this->coordY))
+    {
+        double deltaX = this->coordX - oldX;
+        double deltaY = this->coordY - oldY;
+
+        if (!map->isWall(oldX + deltaX, oldY))
+        {
+            this->coordX = oldX + deltaX;
+            this->coordY = oldY;
+        }
+        else if (!map->isWall(oldX, oldY + deltaY))
+        {
+            this->coordX = oldX;
+            this->coordY = oldY + deltaY;
+        }
+        else
+        {
+            this->coordX = oldX;
+            this->coordY = oldY;
+        }
+    }
+    return 0;
+}
+
+int entity::getEntityCoord(int* coordX, int* coordY)
 {
     if (hitPoints > 0)
     {
-        *coord_X = roundd(coordX);
-        *coord_Y = roundd(coordY);
+        *coordX = roundd(this->coordX);
+        *coordY = roundd(this->coordY);
         return 0;
     }
     return 1;

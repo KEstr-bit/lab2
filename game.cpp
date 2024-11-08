@@ -16,34 +16,31 @@ game::~game()
 {
 }
 
-int game::allBulletMovment()
+int game::allBulletMovment(GameMap* map)
 {
-
     for (int i = 0; i < bullets.size(); i++)
     {
-        bullets[i].bulletMovment();
-
+        if(bullets[i].bulletMapStep(map))
+            bullets.erase(bullets.begin() + i);
     }
     return 0;
 }
 
-int game::interaction(char world_Map[MAP_SIZE_X][MAP_SIZE_Y])
+int game::interaction(GameMap* map)
 {
+    this->allBulletMovment(map);                    //движение пуль
 
-    
-    this->allBulletMovment();                    //движение пуль
-
-    int monsterIsAlive = 0;
+    bool monsterIsAlive = false;
     int monsterCoordX, monsterCoordY;
     if (!monster->getEntityCoord(&monsterCoordX, &monsterCoordY))
     {
-        monsterIsAlive = 1;
+        monsterIsAlive = true;
     }
 
     int playerCoordX, playerCoordY;
     if (!you->getEntityCoord(&playerCoordX, &playerCoordY) && monsterIsAlive)
     {
-        this->monster->enemyMovment(world_Map[0], MAP_SIZE_X, playerCoordX, playerCoordY);     //движение врага
+        this->monster->enemyMovment(map, playerCoordX, playerCoordY);     //движение врага
         //если враг достиг игрока
         if (monsterCoordX == playerCoordX && monsterCoordY == playerCoordY)
         {
@@ -51,26 +48,19 @@ int game::interaction(char world_Map[MAP_SIZE_X][MAP_SIZE_Y])
         }
     }
 
-    //если на карте есть пули первого оружия
-        for (int i = 0; i < bullets.size(); i++)
+    //если на карте есть пули
+    for (int i = 0; i < bullets.size(); i++)
+    {
+        int bulletCoordX, bulletCoordY;
+
+        bullets[i].getEntityCoord(&bulletCoordX, &bulletCoordY);
+
+        if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY && monsterIsAlive)
         {
-
-                int bulletCoordX, bulletCoordY;
-
-                bullets[i].getEntityCoord(&bulletCoordX, &bulletCoordY);
-                
-
-                //если пуля столкнулась со стеной
-                if(isWall(world_Map[0], MAP_SIZE_X, bulletCoordX, bulletCoordY))
-                {
-                    bullets.erase(bullets.begin() + i);
-                }
-                else if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY && monsterIsAlive)
-                {
-                        monster->attackEntity(bullets[i].getEntityDamage());
-                        bullets.erase(bullets.begin() + i);
-                }
-            }
+            monster->attackEntity(bullets[i].getEntityDamage());
+            bullets.erase(bullets.begin() + i);
+        }
+    }
         
 
     return 0;

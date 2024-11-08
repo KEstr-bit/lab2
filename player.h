@@ -3,7 +3,7 @@
 #include "shotGun.h"
 #include "avtomat.h"
 #include "helper.h"
-#include "map.h"
+#include "GameMap.h"
 
 
 
@@ -12,24 +12,21 @@ class player : public entity
 {
 private:
     WeaponOption activeWeapon;
-public:
-    double visionCorner;
-    const double VISION_SPEED = 1;
-    const int FOV = 60;
 
 public:
+    static const int VISION_SPEED = 1;
+    static const int FOV = 60;
     shotGun* firstGun;                        //îğóæèå èãğîêà
     avtomat* secondGun;
 
 public:
-    player(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage);
+    player(double coordX, double coordY, double speed, int hitPoints, int damage);
     player();
     ~player();
     //ïåğåìùåíèå èãğîêà
-    int playerStep(ÑardinalDirections step_Direction);
+    int playerMapStep(ÑardinalDirections step_Direction, GameMap* map);
     //ïîëó÷åíèå êîîğäèíàò èãğîêà
     void changeVision(ÑardinalDirections direct_pl);
-    int gamePlayerStep(char* world_Map, ÑardinalDirections step_Direction);
     int changeActiveWeapon();
     int shot(std::vector<bullet>& bullets);
 };

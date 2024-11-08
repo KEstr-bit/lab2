@@ -1,22 +1,24 @@
 #include "bullet.h"
 #include "helper.h"
 
-bullet::bullet(double coord_X, double coord_Y, double flight_Angle, int entity_Damage, double entity_Speed)
+bullet::bullet(double coordX, double coordY, double flightAngle, int damage, double speed)
 {
-    coordX = coord_X;
-    coordY = coord_Y;
-    flightAngle = flight_Angle;
-    speed = entity_Speed;
-    damage = entity_Damage;
+    this->coordX = coordX;
+    this->coordY = coordY;
+    this->speed = speed;
+    this->damage = damage;
+    viewAngle = flightAngle;
+    remainLen = 10;
 }
 
 bullet::bullet()
 {
     coordX = -1;
     coordY = -1;
-    flightAngle = 0;
     speed = 0.2;
     damage = 50;
+    viewAngle = 0;
+    remainLen = 10;
 }
 
 bullet::~bullet()
@@ -24,20 +26,18 @@ bullet::~bullet()
 }
 
 
-
-double bullet::getBulletAngle()
+bool bullet::bulletMapStep(GameMap* map)
 {
-    return flightAngle;
-}
+    if (remainLen > 0)
+    {
+        this->entityStep();
+        remainLen -= speed;
 
-
-int bullet::bulletMovment()
-{
-    double deltaX = speed * cos(flightAngle * 3.14 / 180);
-    double deltaY = speed * sin(flightAngle * 3.14 / 180);
-
-    this->coordX += deltaX;
-    this->coordY += deltaY;
-
-    return 0;
+        if (map->isWall(coordX, coordY))
+        {
+            remainLen = 0;
+            return true;
+        }
+    }
+    return remainLen <= 0;
 }

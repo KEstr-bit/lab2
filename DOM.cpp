@@ -23,8 +23,6 @@ int main()
     dr = new drawer();
     SetConsoleOutputCP(866);
 
-    char map[10][10];
-    wMap->getWorldMap(map);
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "Vertical Segment Drawing");
     int s = 0;
@@ -40,20 +38,20 @@ int main()
             //обработка действий игрока
             if (GetAsyncKeyState(VK_UP))
             {
-                DOM->you->gamePlayerStep(map[0], North);
+                DOM->you->playerMapStep(North, wMap);
             }
             if (GetAsyncKeyState(VK_DOWN))
             {
-                DOM->you->gamePlayerStep(map[0], South);
+                DOM->you->playerMapStep(South, wMap);
             }
             if (GetAsyncKeyState(VK_RIGHT))
             {
-                DOM->you->gamePlayerStep(map[0], East);
+                DOM->you->playerMapStep(East, wMap);
             }
             if (GetAsyncKeyState(VK_LEFT))
             {
 
-                DOM->you->gamePlayerStep(map[0], West);
+                DOM->you->playerMapStep(West, wMap);
             }
             if (GetAsyncKeyState(VK_LCONTROL))
             {
@@ -70,7 +68,7 @@ int main()
 
 
 
-            DOM->interaction(map);      //взаимодействие объектов
+            DOM->interaction(wMap);      //взаимодействие объектов
 
             //проверка окончания игры
             if (DOM->you->getEntityHitPoints() <= 0)
@@ -101,8 +99,8 @@ int main()
 
         //рисование кадра
         
-        dr->newDraw(map, DOM, window);
-        dr->entityDraw(map, DOM, window);
+        dr->newDraw(wMap, DOM, window);
+        dr->entityDraw(DOM, window);
 
         //отображение содержимого окна
         window.display();

@@ -1,65 +1,20 @@
 #include "player.h"
 
 
-int player::gamePlayerStep(char* world_Map, ÑardinalDirections step_Direction)
+
+player::player(double coordX, double coordY, double speed, int hitPoints, int damage)
 {
+    this->damage = damage;
+    this->hitPoints = hitPoints;
+    this->coordX = coordX;
+    this->coordY = coordY;
+    this->speed = speed;
 
-    int fl = 0;
-    if (hitPoints > 0)
-    {
-        double x, y;
-        this->getEntityCoord(&x, &y);
-
-
-        //èçìåíåíèå êîîðäèíàò èãðîêà â çàâèñèìîñòè îò íàïðàâëåíèÿ
-        this->playerStep(step_Direction);
-        double newX, newY;
-        double dX, dY;
-        this->getEntityCoord(&newX, &newY);
-        try
-        {
-            if (isWall(world_Map, MAP_SIZE_X, roundd(newX), roundd(newY)))
-            {
-                dX = newX - x;
-                dY = newY - y;
-                if (!isWall(world_Map, MAP_SIZE_X, roundd(x + dX), roundd(y)))
-                {
-                    this->coordX = x + dX;
-                    this->coordY = y;
-                }
-                else if (!isWall(world_Map, MAP_SIZE_X, roundd(x), roundd(y + dY)))
-                {
-                    this->coordX = x;
-                    this->coordY = y + dY;
-                }
-                else
-                {
-                    this->coordX = x;
-                    this->coordY = y;
-                }
-            }
-        }
-        catch (const std::exception&)
-        {
-            this->coordX = x;
-            this->coordY = y;
-        }
-    }
-    return fl;
-}
-
-player::player(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage)
-{
-    damage = entity_Damage;
-    hitPoints = hit_Points;
-    coordX = coord_X;
-    coordY = coord_Y;
-    speed = entity_Speed;
     activeWeapon = ShotGun;
     firstGun = new shotGun();
     secondGun = new avtomat();
 
-    visionCorner = 0;
+    viewAngle = 0;
 }
 
 player::player()
@@ -69,12 +24,12 @@ player::player()
     hitPoints = 100;
     speed = 0.05;
     damage = 50;
+
     activeWeapon = ShotGun;
     firstGun = new shotGun();
     secondGun = new avtomat();
 
-    visionCorner = 0;
-
+    viewAngle = 0;
 }
 
 player::~player()
@@ -82,30 +37,25 @@ player::~player()
 }
 
 
-int player::playerStep(ÑardinalDirections step_Direction)
+int player::playerMapStep(ÑardinalDirections stepDirection, GameMap* map)
 {
-
     if (hitPoints > 0)
     {
-        double corner = this->visionCorner;
-        int i = 0;
-        switch (step_Direction)
+        double oldAngle = viewAngle;
+
+        switch (stepDirection)
         {
-        case East: corner -= 90; break;
-        case South: corner += 180; break;
-        case West: corner += 90; break;
-        default: i = 1;
+        case East: viewAngle -= 90; break;
+        case South: viewAngle += 180; break;
+        case West: viewAngle += 90; break;
+        default: break;
         }
-        corner = (corner * 3.14) / 180;
-        double x = this->speed * cos(corner);
-        double y = this->speed * sin(corner);
 
-        this->coordX += x;
-        this->coordY += y;
-        return i;
+        this->entityMapStep(map);
+        viewAngle = oldAngle;
+
     }
-    return 2;
-
+    return 0;
 }
 
 
@@ -128,33 +78,33 @@ int player::shot(std::vector<bullet>& bullets)
     switch (activeWeapon)
     {
     case ShotGun:   
-        this->firstGun->shot(coordX, coordY, visionCorner, bullets);
+        this->firstGun->shot(coordX, coordY, viewAngle, bullets);
         break;
     case Automat:
-        this->secondGun->shot(coordX, coordY, visionCorner, bullets);
+        this->secondGun->shot(coordX, coordY, viewAngle, bullets);
         break;
     }
 
     return activeWeapon;
 };
 
-void player::changeVision(ÑardinalDirections direct_pl)
+void player::changeVision(ÑardinalDirections direct)
 {
-    switch (direct_pl)
+    switch (direct)
     {
     case East:
-        visionCorner -= VISION_SPEED;
+        viewAngle -= VISION_SPEED;
         break;
     case West:
-        visionCorner += VISION_SPEED;
+        viewAngle += VISION_SPEED;
         break;
     default:
         break;
     };
 
-    if (abss(visionCorner) >= 360)
+    if (abss(viewAngle) >= 360)
     {
-        visionCorner = 0;
+        viewAngle = 0;
     }
 
 

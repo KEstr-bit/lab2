@@ -1,5 +1,6 @@
 #pragma once
 #include "helper.h"
+#include "GameMap.h"
 
 class entity
 {
@@ -9,16 +10,19 @@ protected:
     int hitPoints;             //очки здоровья 
     int damage;                 //урон наносимый
     double speed;               //скорость 
+    double viewAngle;          //угол обзора
 public:
-    entity(double coord_X, double coord_Y, double entity_Speed, int hit_Points, int entity_Damage);
+    entity(double coordX, double coordY, double speed, int hitPoints, int damage);
     entity();
     ~entity();
-    int getEntityCoord(double* coord_X, double* coord_Y);
-    int getEntityCoord(int* coord_X, int* coord_Y);
+    int getEntityCoord(double* coordX, double* coordY);
+    int getEntityCoord(int* coordX, int* coordY);
     int getEntityDamage();
     int getEntityHitPoints();
-    int attackEntity(int entity_Damage);
-    int entityStep(СardinalDirections step_Direction);
+    double getEntityAngle();
+    int attackEntity(int damage);
+    int entityStep();
+    int entityMapStep(GameMap* map);
 
 
 };

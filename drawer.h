@@ -1,5 +1,5 @@
 #pragma once
-#include "map.h"
+#include "GameMap.h"
 #include "game.h"
 #include <SFML/Graphics.hpp>
 
@@ -8,16 +8,20 @@ using namespace sf;
 class drawer
 {
 public:
-	int draw(char world_Map[MAP_SIZE_X][MAP_SIZE_Y], game* gm);
-	int newDraw(char world_Map[MAP_SIZE_X][MAP_SIZE_Y], game* gm, sf::RenderWindow& window);
+	int newDraw(GameMap* map, game* gm, sf::RenderWindow& window);
 	void drawVerticalSegment(sf::RenderWindow& window, float length, float width, float low_X, float low_Y, sf::Color color);
-	int entityDraw(char world_Map[MAP_SIZE_X][MAP_SIZE_Y], game* gm, sf::RenderWindow& window);
+	int entityDraw(game* gm, sf::RenderWindow& window);
 	drawer();
 	~drawer();
 
+public:
+	static const double RAY_STEP;
+	static const int SCREEN_WIDTH = 800;
+	static const int SCREEN_HEIGHT = 600;
+
 private:
-	double mas[800];
-	char* firstBuffer;
-	char* secondBuffer;
+	double mas[SCREEN_WIDTH];
+
+
 };
 
