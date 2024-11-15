@@ -1,7 +1,6 @@
 #pragma once
-#include "bullet.h"
-#include "helper.h"
-#include <vector>
+#include <map>
+#include "entity.h"
 
 class weapon
 {

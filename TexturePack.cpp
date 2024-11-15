@@ -1,6 +1,5 @@
 #include "TexturePack.h"
 
-
 void TexturePack::addTexture(sf::Texture texture)
 {
 	textures.emplace_back(texture);

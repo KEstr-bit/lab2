@@ -1,12 +1,5 @@
-#include <iostream>
 #include "game.h"
-#include "entity.h"
-#include "player.h"
-#include "enemy.h"
-#include "helper.h"
-#include <exception> 
-
-
+#include "bullet.h"
 
 game::game()
 {
@@ -14,6 +7,11 @@ game::game()
     tPack = new TexturePack();
     entities.emplace(entity::lastID, new enemy());
     entities.emplace(entity::lastID, new enemy(1, 5, 0.01, 100, 50));
+
+    bullet bul1;
+    bullet bul2;
+
+    entities.emplace(entity::lastID, new bullet(bul1 + bul2));
 
     sf::Texture texture;
     texture.loadFromFile("image.png");

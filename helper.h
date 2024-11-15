@@ -1,5 +1,4 @@
 #pragma once
-#include <math.h>
 
 enum EndingOption { WinGame, LooseGame };
 enum ÑardinalDirections { North, East, South, West };
@@ -11,7 +10,7 @@ void setcur(int x, int y);
 
 char* strcopy(char* _Destination, const char* _Source);
 
-int roundd(double number);
+int myRound(double number);
 
 int abss(int number);
 

@@ -1,4 +1,6 @@
 #include "shotGun.h"
+#include "helper.h"
+#include "bullet.h"
 
 int shotGun::shot(double coordX, double coordY, double shotAngle, std::map<int, entity*> &entiyes)
 {

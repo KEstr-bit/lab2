@@ -1,6 +1,5 @@
 #pragma once
 #include "weapon.h"
-#include <vector>
 
 class shotGun : public weapon
 {

@@ -1,5 +1,16 @@
 #include "bullet.h"
-#include "helper.h"
+
+bullet::bullet(bullet* b)
+{
+    this->coordX = b->coordX;
+    this->coordY = b->coordY;
+    this->speed = b->speed;
+    this->damage = b->damage;
+    this->texture = b->texture;
+    this->viewAngle = b->viewAngle;
+    this->remainLen = b->remainLen;
+    this->size = b->size;
+}
 
 bullet::bullet(double coordX, double coordY, double flightAngle, int damage, double speed, textureType texture)
 {
@@ -27,11 +38,11 @@ bullet::bullet(double coordX, double coordY, double flightAngle, int damage, dou
 
 bullet::bullet()
 {
-    coordX = -1;
-    coordY = -1;
+    coordX = 8;
+    coordY = 1;
     speed = 0.2;
     damage = 50;
-    viewAngle = 0;
+    viewAngle = 90;
     remainLen = 10;
     size = 0.2;
     texture = Bullet1;

@@ -1,7 +1,5 @@
 #include "player.h"
 
-
-
 player::player(double coordX, double coordY, double speed, int hitPoints, int damage)
 {
     this->damage = damage;
@@ -29,7 +27,7 @@ player::player()
     firstGun = new shotGun();
     secondGun = new avtomat();
 
-    viewAngle = 0;
+    viewAngle = 180;
 }
 
 player::~player()
@@ -111,9 +109,6 @@ void player::changeVision(ÑardinalDirections direct)
     {
         viewAngle += 360;
     }
-
-
-    
 
 };
 

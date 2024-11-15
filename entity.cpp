@@ -1,4 +1,5 @@
 #include "entity.h"
+#include "helper.h"
 
 entity::entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture)
 {
@@ -109,8 +110,8 @@ int entity::getEntityCoord(int* coordX, int* coordY)
 {
     if (hitPoints > 0)
     {
-        *coordX = roundd(this->coordX);
-        *coordY = roundd(this->coordY);
+        *coordX = myRound(this->coordX);
+        *coordY = myRound(this->coordY);
         return 0;
     }
     return 1;

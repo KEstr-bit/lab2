@@ -1,6 +1,5 @@
 #include "enemy.h"
 #include "helper.h"
-#include <windows.h>
 
 const double enemy::VISSION_STEP = 0.2;
 

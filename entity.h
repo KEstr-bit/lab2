@@ -1,7 +1,6 @@
 #pragma once
-#include "helper.h"
-#include "GameMap.h"
 #include "TexturePack.h"
+#include "GameMap.h"
 
 class entity
 {
@@ -33,6 +32,7 @@ public:
     textureType getTextureType();
     double getSize();
     virtual bool entityMovment(GameMap* map, double playerX, double playerY) = 0;
+
 
 };
 

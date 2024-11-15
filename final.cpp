@@ -1,38 +1,48 @@
-#include "final.h"
 #include <iostream>
+#include "final.h"
 
-
-
-final::final(EndingOption option, char win_mes[10], char loose_mes[10])
-{
-    gameEndType = option;
-    strcopy(winMessage, win_mes);
-    strcopy(looseMessage, loose_mes);
-}
 
 final::final()
 {
     gameEndType = WinGame;
-    strcopy(winMessage, "You WIN!");
-    strcopy(looseMessage, "You Loose");
 }
 
 final::~final()
 {
 }
 
+void final::displayMessage(sf::RenderWindow& window, const std::string& message, sf::Color color) {
+    sf::Font font;
+    if (!font.loadFromFile("ComicSansMS.ttf")) { // Замените "arial.ttf" на путь к вашему шрифту
+        //Обработка ошибки - можно вывести сообщение об ошибке или завершить работу программы
+        return;
+    }
 
-int final::changeType(EndingOption option)
-{
-    gameEndType = option;
-    return 0;
+    sf::Text text(message, font, 70);
+    text.setFillColor(color);
+    sf::FloatRect textRect = text.getLocalBounds();
+    text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+    text.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
+    window.draw(text);
 }
 
-int final::outputFinal()
+void final::outputFinal(sf::RenderWindow& window)
 {
-    if (gameEndType == WinGame)
-        std::cout << '\n' << winMessage << '\n' << std::endl;
-    if (gameEndType == LooseGame)
-        std::cout << '\n' << looseMessage << '\n' << std::endl;
-    return 0;
+    switch (gameEndType)
+    {
+    case LooseGame:
+        displayMessage(window, "YOU LOOSE!!!", sf::Color::Red);
+        break;
+    case WinGame:
+        displayMessage(window, "You Win!", sf::Color::White);
+        break;
+    default:
+        break;
+    }
+    
+}
+
+void final::changeFinal(EndingOption option)
+{
+    gameEndType = option;
 }

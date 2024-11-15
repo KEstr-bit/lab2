@@ -1,8 +1,8 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 #include "GameMap.h"
 #include "game.h"
-#include <SFML/Graphics.hpp>
-#include <map>
+#include "entity.h"
 
 using namespace sf;
 

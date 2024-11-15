@@ -1,7 +1,5 @@
 ﻿#include "drawer.h"
-#include <iostream>
 #include "helper.h"
-#include <map>
 
 const double drawer::RAY_STEP = 0.01;
 
@@ -139,7 +137,7 @@ int drawer::entityDraw(game* gm, sf::RenderWindow& window) {
         if (sinRotAngle < 0)
             rotAngle *= -1;
 
-        rotAngle = roundd(rotAngle * 1000) / 1000.0;
+        rotAngle = myRound(rotAngle * 1000) / 1000.0;
         if (abs(rotAngle) > gm->you->FOV)
             continue;
 

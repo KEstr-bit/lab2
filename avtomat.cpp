@@ -1,4 +1,6 @@
 #include "avtomat.h"
+#include "helper.h"
+#include "bullet.h"
 
 int avtomat::shot(double coordX, double coordY, double shotAngle, std::map<int, entity*> &entiyes)
 {

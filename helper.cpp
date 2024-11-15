@@ -1,8 +1,6 @@
 #include "helper.h"
-#include <windows.h>
 #include <iostream>
-
-
+#include <windows.h>
 
 void setcur(int x, int y)
 {
@@ -20,7 +18,7 @@ char* strcopy(char* _Destination, const char* _Source)
     return temp;
 };
 
-int roundd(double number)
+int myRound(double number)
 {
     if (number > 0) 
     {

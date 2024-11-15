@@ -3,10 +3,6 @@
 #include "shotGun.h"
 #include "avtomat.h"
 #include "helper.h"
-#include "GameMap.h"
-
-
-
 
 class player : public entity
 {

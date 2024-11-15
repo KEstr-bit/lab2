@@ -1,5 +1,4 @@
 #include "GameMap.h"
-#include <iostream>
 #include "helper.h"
 
 GameMap::GameMap(std::string worldMap[MAPSIZEX])
@@ -36,8 +35,8 @@ bool GameMap::isWall(int coord_X, int coord_Y)
 
 bool GameMap::isWall(double coord_X, double coord_Y)
 {
-    int x = roundd(coord_X);
-    int y = roundd(coord_Y);
+    int x = myRound(coord_X);
+    int y = myRound(coord_Y);
     if (worldMap[x][y] == '#')
         return true;
     else

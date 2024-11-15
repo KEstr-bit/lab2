@@ -1,10 +1,7 @@
 #pragma once
 #include "player.h"
 #include "enemy.h"
-#include "GameMap.h"
-#include <vector>
-#include <map>
-#include "TexturePack.h"
+#include "helper.h"
 
 #define MAX_X 10
 #define MAX_Y 10
@@ -26,4 +23,28 @@ public:
     int getCountEntity();
     int interaction(GameMap* map);
     int allEntityMovment(GameMap* map);
+
+    game& operator++() {
+        double x, y, a;
+        a = you->getEntityAngle();
+        you->getEntityCoord(&x, &y);
+
+        x += 2 * cos(degToRad(a));
+        y += 2 * sin(degToRad(a));
+
+        entities.emplace(entity::lastID, new enemy(x, y, 0.01, 100, 10));
+        return *this;
+    }
+
+    game operator++(int) {
+        game temp = *this;  
+        ++(*this);       
+        return temp;       
+    }
+
+
+
+    friend bool isEnd(game* gm);
 };
+
+

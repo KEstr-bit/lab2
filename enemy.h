@@ -1,7 +1,5 @@
 #pragma once
 #include "entity.h"
-#include "player.h"
-#include "GameMap.h"
 
 class enemy : public entity
 {
