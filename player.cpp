@@ -73,15 +73,15 @@ int player::changeActiveWeapon()
     return activeWeapon;
 };
 
-int player::shot(std::vector<bullet>& bullets)
+int player::shot(std::map<int, entity*> &entiyes)
 {
     switch (activeWeapon)
     {
     case ShotGun:   
-        this->firstGun->shot(coordX, coordY, viewAngle, bullets);
+        this->firstGun->shot(coordX, coordY, viewAngle, entiyes);
         break;
     case Automat:
-        this->secondGun->shot(coordX, coordY, viewAngle, bullets);
+        this->secondGun->shot(coordX, coordY, viewAngle, entiyes);
         break;
     }
 
@@ -102,12 +102,22 @@ void player::changeVision(ÑardinalDirections direct)
         break;
     };
 
-    if (abss(viewAngle) >= 360)
+    if (viewAngle > 360)
     {
-        viewAngle = 0;
+        viewAngle -= 360;
+    }
+
+    if (viewAngle < 0)
+    {
+        viewAngle += 360;
     }
 
 
     
 
 };
+
+bool player::entityMovment(GameMap* map, double playerX, double playerY)
+{
+    return false;
+}

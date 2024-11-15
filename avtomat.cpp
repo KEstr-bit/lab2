@@ -1,12 +1,12 @@
 #include "avtomat.h"
 
-int avtomat::shot(double coordX, double coordY, double shotAngle, std::vector<bullet>& bullets)
+int avtomat::shot(double coordX, double coordY, double shotAngle, std::map<int, entity*> &entiyes)
 {
     double sideShift = 0;
 
         for (int i = 0; i < bulletCount; i++)
         {
-            sideShift += bulletSpeed;
+            sideShift += 10*bulletSpeed;
 
             double x, y;
             x = projectionToX(sideShift, degToRad(shotAngle));
@@ -15,7 +15,7 @@ int avtomat::shot(double coordX, double coordY, double shotAngle, std::vector<bu
             x += coordX;
             y += coordY;
 
-            bullets.emplace_back(x, y, shotAngle, this->bulletDamage, this->bulletSpeed);
+            entiyes.emplace(entity::lastID, new bullet(x, y, shotAngle, this->bulletDamage, this->bulletSpeed));
 
         }
     

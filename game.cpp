@@ -4,64 +4,130 @@
 #include "player.h"
 #include "enemy.h"
 #include "helper.h"
+#include <exception> 
+
 
 
 game::game()
 {
     you = new player();
-    monster = new enemy();
+    tPack = new TexturePack();
+    entities.emplace(entity::lastID, new enemy());
+    entities.emplace(entity::lastID, new enemy(1, 5, 0.01, 100, 50));
+
+    sf::Texture texture;
+    texture.loadFromFile("image.png");
+    tPack->addTexture(texture);
+    texture.loadFromFile("image1.png");
+    tPack->addTexture(texture);
 }
 
 game::~game()
 {
 }
 
-int game::allBulletMovment(GameMap* map)
+
+int game::allEntityMovment(GameMap* map)
 {
-    for (int i = 0; i < bullets.size(); i++)
+    double playerCoordX, playerCoordY;
+    this->you->getEntityCoord(&playerCoordX, &playerCoordY);
+    for (auto e = entities.begin(); e != entities.end();)
     {
-        if(bullets[i].bulletMapStep(map))
-            bullets.erase(bullets.begin() + i);
+        if (e->second->entityMovment(map, playerCoordX, playerCoordY))
+        {
+            delete e->second;
+            e = entities.erase(e);
+        }
+        else ++e;
     }
     return 0;
 }
 
+entity* game::findEntityByID(int id)
+{
+    auto e = entities.find(id);
+    if (e == entities.end())
+        return nullptr;
+
+    return e->second;
+}
+
+entity* game::getEntityByIndex(int index)
+{
+    if (index >= entities.size())
+        return nullptr;
+
+    auto it = entities.begin();
+    std::advance(it, index);
+
+    return it->second;
+}
+
+void game::playerShot()
+{
+    you->shot(entities);
+}
+
+int game::getCountEntity()
+{
+    return entities.size();
+}
+
 int game::interaction(GameMap* map)
 {
-    this->allBulletMovment(map);                    //движение пуль
+    this->allEntityMovment(map);                    //движение пуль
 
-    bool monsterIsAlive = false;
     int monsterCoordX, monsterCoordY;
-    if (!monster->getEntityCoord(&monsterCoordX, &monsterCoordY))
+    int monstersMap[map->MAPSIZEX][map->MAPSIZEY];
+
+    for (int i = map->MAPSIZEX * map->MAPSIZEY - 1; i >= 0; i--)
     {
-        monsterIsAlive = true;
+        *(monstersMap[0] + i) = -1;
+    }
+
+    for (auto it = entities.begin(); it != entities.end(); it++) {
+        // Пробуем выполнить динамическое приведение
+        if (enemy* e = dynamic_cast<enemy*>(it->second)) 
+        {
+            e->getEntityCoord(&monsterCoordX, &monsterCoordY);
+            monstersMap[monsterCoordX][monsterCoordY] = it->first;
+        }
     }
 
     int playerCoordX, playerCoordY;
-    if (!you->getEntityCoord(&playerCoordX, &playerCoordY) && monsterIsAlive)
+    int id = -1;
+
+    if (!this->you->getEntityCoord(&playerCoordX, &playerCoordY))
+        id = monstersMap[playerCoordX][playerCoordY];
+
+    if (id != -1)
     {
-        this->monster->enemyMovment(map, playerCoordX, playerCoordY);     //движение врага
-        //если враг достиг игрока
-        if (monsterCoordX == playerCoordX && monsterCoordY == playerCoordY)
-        {
-            you->attackEntity(monster->getEntityDamage());
-        }
+        entity* e = this->findEntityByID(id);
+        this->you->attackEntity(e->getEntityDamage());
     }
 
     //если на карте есть пули
-    for (int i = 0; i < bullets.size(); i++)
+    for (auto it = entities.begin(); it != entities.end(); it++)
     {
-        int bulletCoordX, bulletCoordY;
-
-        bullets[i].getEntityCoord(&bulletCoordX, &bulletCoordY);
-
-        if (bulletCoordX == monsterCoordX && bulletCoordY == monsterCoordY && monsterIsAlive)
+        if (bullet* b = dynamic_cast<bullet*>(it->second))
         {
-            monster->attackEntity(bullets[i].getEntityDamage());
-            bullets.erase(bullets.begin() + i);
+            int bulletCoordX, bulletCoordY;
+
+            b->getEntityCoord(&bulletCoordX, &bulletCoordY);
+
+            int id = monstersMap[bulletCoordX][bulletCoordY];
+
+            if (id == -1)
+                continue;
+
+            entity* e = this->findEntityByID(id);
+
+            e->attackEntity(b->getEntityDamage());
+            b->setRemLen(0);
+            break;
         }
+
     }
-        
 
     return 0;
 }

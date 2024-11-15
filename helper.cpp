@@ -3,6 +3,7 @@
 #include <iostream>
 
 
+
 void setcur(int x, int y)
 {
     COORD coord;

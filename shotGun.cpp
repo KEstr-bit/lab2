@@ -1,6 +1,6 @@
 #include "shotGun.h"
 
-int shotGun::shot(double coordX, double coordY, double shotAngle, std::vector<bullet>& bullets)
+int shotGun::shot(double coordX, double coordY, double shotAngle, std::map<int, entity*> &entiyes)
 {
 
     double sideShift = SPREAD_ANGLE / (bulletCount - 1);
@@ -15,7 +15,7 @@ int shotGun::shot(double coordX, double coordY, double shotAngle, std::vector<bu
             x += coordX;
             y += coordY;
 
-            bullets.emplace_back(x, y, shotAngle, bulletDamage, bulletSpeed);
+            entiyes.emplace(entity::lastID, new bullet(x, y, shotAngle, bulletDamage, bulletSpeed));
 
             shotAngle += sideShift;
         }

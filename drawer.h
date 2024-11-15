@@ -2,6 +2,7 @@
 #include "GameMap.h"
 #include "game.h"
 #include <SFML/Graphics.hpp>
+#include <map>
 
 using namespace sf;
 
@@ -11,6 +12,8 @@ public:
 	int newDraw(GameMap* map, game* gm, sf::RenderWindow& window);
 	void drawVerticalSegment(sf::RenderWindow& window, float length, float width, float low_X, float low_Y, sf::Color color);
 	int entityDraw(game* gm, sf::RenderWindow& window);
+	void dependSorting(std::vector<double>& mainMas, std::vector<entity*>& sideMas, int left, int right);
+	void drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, float width, float height);
 	drawer();
 	~drawer();
 

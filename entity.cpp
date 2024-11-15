@@ -1,14 +1,16 @@
 #include "entity.h"
 
-entity::entity(double coordX, double coordY, double speed, int hitPoints, int damage)
+entity::entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture)
 {
     this->damage = damage;
     this->hitPoints = hitPoints;
     this->coordX = coordX;
     this->coordY = coordY;
     this->speed = speed;
+    this->texture = texture;
     viewAngle = 0;
-
+    lastID++;
+    size = 1;
 }
 
 entity::entity()
@@ -19,6 +21,9 @@ entity::entity()
     speed = 1;
     damage = 50;
     viewAngle = 0;
+    lastID++;
+    size = 1;
+    texture = Enemy1;
 }
 
 entity::~entity()
@@ -109,4 +114,14 @@ int entity::getEntityCoord(int* coordX, int* coordY)
         return 0;
     }
     return 1;
+}
+
+double entity::getSize()
+{
+    return size;
+}
+
+textureType entity::getTextureType()
+{
+    return texture;
 }

@@ -2,6 +2,12 @@
 #include <iostream>
 #include "helper.h"
 
+GameMap::GameMap(std::string worldMap[MAPSIZEX])
+{
+    for (int i = 0; i < MAPSIZEX; i++)
+        this->worldMap[i] = worldMap[i];
+}
+
 GameMap::GameMap()
 {
     worldMap[0] += "##########";

@@ -1,6 +1,7 @@
 #pragma once
 #include "helper.h"
 #include "GameMap.h"
+#include "TexturePack.h"
 
 class entity
 {
@@ -11,8 +12,14 @@ protected:
     int damage;                 //урон наносимый
     double speed;               //скорость 
     double viewAngle;          //угол обзора
-public:
-    entity(double coordX, double coordY, double speed, int hitPoints, int damage);
+    double size;
+    textureType texture;
+
+
+public: 
+    static int lastID;
+
+    entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture);
     entity();
     ~entity();
     int getEntityCoord(double* coordX, double* coordY);
@@ -23,7 +30,10 @@ public:
     int attackEntity(int damage);
     int entityStep();
     int entityMapStep(GameMap* map);
-
+    textureType getTextureType();
+    double getSize();
+    virtual bool entityMovment(GameMap* map, double playerX, double playerY) = 0;
 
 };
+
 

@@ -26,8 +26,11 @@ enemy::~enemy()
 {
 }
 
-int enemy::enemyMovment(GameMap* map, double playerX, double playerY)
+bool enemy::entityMovment(GameMap* map, double playerX, double playerY)
 {
+    if (hitPoints <= 0)
+        return true;
+
     double deltaX = playerX - this->coordX;
     double deltaY = playerY - this->coordY;
 
@@ -40,33 +43,30 @@ int enemy::enemyMovment(GameMap* map, double playerX, double playerY)
         this->entityMapStep(map);
     }
 
-    return 0;
+    return false;
 }
 
 
 bool enemy::playersVision(GameMap* map, double playerX, double playerY)
 {
-    if (hitPoints > 0)
+    double enemyX, enemyY;
+    this->getEntityCoord(&enemyX, &enemyY);
+
+    bool flVission = true;
+    double distance = calcDistance(enemyX, enemyY, playerX, playerY);
+
+    //проверка: видит ли враг игрока
+    while (distance > VISSION_STEP && flVission)
     {
-        double enemyX, enemyY;
-        this->getEntityCoord(&enemyX, &enemyY);
+        enemyX = interpolateCoord(enemyX, playerX, VISSION_STEP, distance);
+        enemyY = interpolateCoord(enemyY, playerY, VISSION_STEP, distance);
 
-        bool fl = true;
-        double distance = calcDistance(enemyX, enemyY, playerX, playerY);
+        distance = calcDistance(enemyX, enemyY, playerX, playerY);
 
-        //проверка: видит ли враг игрока
-        while (distance > VISSION_STEP && fl)
-        {
-            enemyX = interpolateCoord(enemyX, playerX, VISSION_STEP, distance);
-            enemyY = interpolateCoord(enemyY, playerY, VISSION_STEP, distance);
+        if (map->isWall(enemyX, enemyY))
+            flVission = false;
+    }
 
-            distance = calcDistance(enemyX, enemyY, playerX, playerY);
-
-            if (map->isWall(enemyX, enemyY))
-                fl = false;
-        }
-
-        return fl;
-    } 
-    return false;
+    return flVission;
 }
+

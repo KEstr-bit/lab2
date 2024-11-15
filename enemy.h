@@ -11,6 +11,6 @@ public:
     enemy(double coordX, double coordY, double speed, int hitPoints, int damage);
     enemy();
     ~enemy();
-    int enemyMovment(GameMap* map, double playerX, double playerY);
+    bool entityMovment(GameMap* map, double playerX, double playerY) override;
     bool playersVision(GameMap* map, double playerX, double playerY);
 };

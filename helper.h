@@ -5,6 +5,7 @@ enum EndingOption { WinGame, LooseGame };
 enum СardinalDirections { North, East, South, West };
 enum WeaponOption {ShotGun, Automat};
 
+
 //установка курсора на позицию  x y 
 void setcur(int x, int y);
 

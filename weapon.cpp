@@ -1,6 +1,6 @@
 #include "weapon.h"
 
-weapon::weapon(int bulletCount, double bulletSpeed, int bulle_Damage)
+weapon::weapon(int bulletCount, double bulletSpeed, int bulletDamage)
 {
     this->bulletDamage = bulletDamage;
     this->bulletCount = bulletCount;
@@ -11,7 +11,7 @@ weapon::weapon(int bulletCount, double bulletSpeed, int bulle_Damage)
 weapon::weapon()
 {
     bulletCount = 3;
-    bulletSpeed = 0.5;
+    bulletSpeed = 0.05;
     bulletDamage = 50;
 }
 

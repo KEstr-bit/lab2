@@ -13,12 +13,27 @@ using namespace std;
 using namespace sf;
 final ending;
 
+int entity::lastID = 0;
+
 int main()
 {
     game* DOM;
     DOM = new game();
+
+    std::string worldMap[10];
+    worldMap[0] += "##########";
+    worldMap[1] += "#........#";
+    worldMap[2] += "#........#";
+    worldMap[3] += "#...##...#";
+    worldMap[4] += "#...##...#";
+    worldMap[5] += "#...##...#";
+    worldMap[6] += "#...##...#";
+    worldMap[7] += "#..#..#..#";
+    worldMap[8] += "#........#";
+    worldMap[9] += "##########";
+
     GameMap* wMap;
-    wMap = new GameMap();
+    wMap = new GameMap(worldMap);
     drawer* dr;
     dr = new drawer();
     SetConsoleOutputCP(866);
@@ -27,6 +42,10 @@ int main()
     sf::RenderWindow window(sf::VideoMode(800, 600), "Vertical Segment Drawing");
     int s = 0;
     int fl = 1;  //флажок работы игры
+
+    bool shotfl = true;
+    bool swapfl = true;
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -53,17 +72,28 @@ int main()
 
                 DOM->you->playerMapStep(West, wMap);
             }
+
             if (GetAsyncKeyState(VK_LCONTROL))
             {
-
-                DOM->you->changeActiveWeapon();
+                if (swapfl)
+                {
+                    DOM->you->changeActiveWeapon();
+                    swapfl = false;
+                }
             }
+            else 
+                swapfl = true;
+
             if (GetAsyncKeyState(VK_LSHIFT))
             {
-
-                DOM->you->shot(DOM->bullets);
+                if (shotfl)
+                {
+                    DOM->playerShot();
+                    shotfl = false;
+                }
             }
-
+            else 
+                shotfl = true;
             
 
 
@@ -74,11 +104,6 @@ int main()
             if (DOM->you->getEntityHitPoints() <= 0)
             {
                 ending.changeType(LooseGame);
-                fl = 0;
-            }
-            if (DOM->monster->getEntityHitPoints() <= 0)
-            {
-                ending.changeType(WinGame);
                 fl = 0;
             }
         
@@ -105,7 +130,6 @@ int main()
         //отображение содержимого окна
         window.display();
 
-        Sleep(0.1);
 
     }
 }

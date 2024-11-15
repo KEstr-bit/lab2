@@ -28,5 +28,7 @@ public:
     //получение координат игрока
     void changeVision(СardinalDirections direct_pl);
     int changeActiveWeapon();
-    int shot(std::vector<bullet>& bullets);
+    int shot(std::map<int, entity*> &entiyes);
+
+    bool entityMovment(GameMap* map, double playerX, double playerY) override;
 };
