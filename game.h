@@ -9,26 +9,26 @@
 class game
 {
 public:
-    player* you;            //игрок
-    TexturePack* tPack;     //хранилище текстур
+    player* you;            //РёРіСЂРѕРє
+    TexturePack* tPack;     //С…СЂР°РЅРёР»РёС‰Рµ С‚РµРєСЃС‚СѓСЂ
 private:
-    std::map<int, entity*> entities;    //вектор объектов
+    std::map<int, entity*> entities;    //РІРµРєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ
 public:
     game();
     ~game();
-    //поиск entity по id
+    //РїРѕРёСЃРє entity РїРѕ id
     entity* findEntityByID(int id);
-    //получение entity по индексу
+    //РїРѕР»СѓС‡РµРЅРёРµ entity РїРѕ РёРЅРґРµРєСЃСѓ
     entity* getEntityByIndex(int index);
-    //выстрел игрока
+    //РІС‹СЃС‚СЂРµР» РёРіСЂРѕРєР°
     void playerShot();
     int getCountEntity();
-    //взаимодействие объектов
+    //РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ РѕР±СЉРµРєС‚РѕРІ
     int interaction(GameMap* map);
-    //движение всех объектов
+    //РґРІРёР¶РµРЅРёРµ РІСЃРµС… РѕР±СЉРµРєС‚РѕРІ
     int allEntityMovment(GameMap* map);
 
-    //спавн врага по взгляду игрока на расстоянии 2м
+    //СЃРїР°РІРЅ РІСЂР°РіР° РїРѕ РІР·РіР»СЏРґСѓ РёРіСЂРѕРєР° РЅР° СЂР°СЃСЃС‚РѕСЏРЅРёРё 2Рј
     game& operator++() {
         double x, y, a;
         a = you->getEntityAngle();
@@ -48,7 +48,7 @@ public:
     }
 
 
-    //дружественная функция
+    //РґСЂСѓР¶РµСЃС‚РІРµРЅРЅР°СЏ С„СѓРЅРєС†РёСЏ
     friend bool isEnd(game* gm);
 };
 

@@ -10,16 +10,16 @@ public:
     bullet();
     ~bullet();
 
-    //движение пули
+    //РґРІРёР¶РµРЅРёРµ РїСѓР»Рё
     bool entityMovment(GameMap* map, double playerX, double playerY) override;
 
-    //установка оставшейся длины
+    //СѓСЃС‚Р°РЅРѕРІРєР° РѕСЃС‚Р°РІС€РµР№СЃСЏ РґР»РёРЅС‹
     void setRemLen(double len){remainLen = len;}
 
-    //сложение угла полета, урона и скорости двух пуль
+    //СЃР»РѕР¶РµРЅРёРµ СѓРіР»Р° РїРѕР»РµС‚Р°, СѓСЂРѕРЅР° Рё СЃРєРѕСЂРѕСЃС‚Рё РґРІСѓС… РїСѓР»СЊ
     bullet operator+(const bullet& other) const {
         return bullet(this->coordX, this->coordY, this->viewAngle + other.viewAngle, this->damage + other.damage, this->speed + other.speed);
     }
 private:
-    double remainLen;   //оставшаяся длина пути
+    double remainLen;   //РѕСЃС‚Р°РІС€Р°СЏСЃСЏ РґР»РёРЅР° РїСѓС‚Рё
 };

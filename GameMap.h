@@ -4,17 +4,17 @@
 class GameMap
 {
 public:
-	static const int MAPSIZEX = 10;			//размер карты по X
-	static const int MAPSIZEY = 10;			//размер карты по Y
+	static const int MAPSIZEX = 10;			//СЂР°Р·РјРµСЂ РєР°СЂС‚С‹ РїРѕ X
+	static const int MAPSIZEY = 10;			//СЂР°Р·РјРµСЂ РєР°СЂС‚С‹ РїРѕ Y
 
 private:
-	std::string worldMap[MAPSIZEY];         //карта
+	std::string worldMap[MAPSIZEY];         //РєР°СЂС‚Р°
 
 public:
 	GameMap(std::string worldMap[MAPSIZEX]);
 	GameMap();
 	~GameMap();
-	//проверка на стену
+	//РїСЂРѕРІРµСЂРєР° РЅР° СЃС‚РµРЅСѓ
 	bool isWall(int coord_X, int coord_Y);
 	bool isWall(double coord_X, double coord_Y);
 };

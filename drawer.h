@@ -9,28 +9,28 @@ using namespace sf;
 class drawer
 {
 public:
-	//отрисовка стен
+	//РѕС‚СЂРёСЃРѕРІРєР° СЃС‚РµРЅ
 	int drawWalls(GameMap* map, game* gm, sf::RenderWindow& window);
-	//отрисовка объектов
+	//РѕС‚СЂРёСЃРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ
 	int entityDraw(game* gm, sf::RenderWindow& window);
 	drawer();
 	~drawer();
 
 private:
-	//отрисовка текстуры по координатам
+	//РѕС‚СЂРёСЃРѕРІРєР° С‚РµРєСЃС‚СѓСЂС‹ РїРѕ РєРѕРѕСЂРґРёРЅР°С‚Р°Рј
 	void drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, float width, float height);
-	//отрисовка вертикальной полосы
+	//РѕС‚СЂРёСЃРѕРІРєР° РІРµСЂС‚РёРєР°Р»СЊРЅРѕР№ РїРѕР»РѕСЃС‹
 	void drawVerticalSegment(sf::RenderWindow& window, float length, float width, float low_X, float low_Y, sf::Color color);
-	//зависимая сортировка
+	//Р·Р°РІРёСЃРёРјР°СЏ СЃРѕСЂС‚РёСЂРѕРІРєР°
 	void dependSorting(std::vector<double>& mainMas, std::vector<entity*>& sideMas, int left, int right);
 
 public:
-	static const double RAY_STEP;			//шаг луча
-	static const int SCREEN_WIDTH = 800;	//ширина экрана
-	static const int SCREEN_HEIGHT = 600;	//высота экрана
+	static const double RAY_STEP;			//С€Р°Рі Р»СѓС‡Р°
+	static const int SCREEN_WIDTH = 800;	//С€РёСЂРёРЅР° СЌРєСЂР°РЅР°
+	static const int SCREEN_HEIGHT = 600;	//РІС‹СЃРѕС‚Р° СЌРєСЂР°РЅР°
 
 private:
-	double mas[SCREEN_WIDTH];				//массив  длин вертикальных полос
+	double mas[SCREEN_WIDTH];				//РјР°СЃСЃРёРІ  РґР»РёРЅ РІРµСЂС‚РёРєР°Р»СЊРЅС‹С… РїРѕР»РѕСЃ
 
 
 };

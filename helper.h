@@ -1,34 +1,34 @@
 #pragma once
 
 enum EndingOption { WinGame, LooseGame };
-enum СardinalDirections { North, East, South, West };
+enum РЎardinalDirections { North, East, South, West };
 enum WeaponOption {ShotGun, Automat};
 
 
-//установка курсора на позицию  x y 
+//СѓСЃС‚Р°РЅРѕРІРєР° РєСѓСЂСЃРѕСЂР° РЅР° РїРѕР·РёС†РёСЋ  x y 
 void setcur(int x, int y);
 
 char* strcopy(char* _Destination, const char* _Source);
 
-//округление
+//РѕРєСЂСѓРіР»РµРЅРёРµ
 int myRound(double number);
 
-//модуль
+//РјРѕРґСѓР»СЊ
 int myAbs(int number);
 double myAbs(double number);
 
-//расстояние между двумя точками
+//СЂР°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ РґРІСѓРјСЏ С‚РѕС‡РєР°РјРё
 double calcDistance(double first_X, double first_Y, double second_X, double second_Y);
 
-//перевод градусов в радианы
+//РїРµСЂРµРІРѕРґ РіСЂР°РґСѓСЃРѕРІ РІ СЂР°РґРёР°РЅС‹
 double degToRad(double deg);
 
-//перевод радиан в градусы
+//РїРµСЂРµРІРѕРґ СЂР°РґРёР°РЅ РІ РіСЂР°РґСѓСЃС‹
 double radToDeg(double rad);
 
-//проекция вектора на ось
+//РїСЂРѕРµРєС†РёСЏ РІРµРєС‚РѕСЂР° РЅР° РѕСЃСЊ
 double projectionToX(double len, double rad_Angle);
 double projectionToY(double len, double rad_Angle);
 
-//интерполяция координат
+//РёРЅС‚РµСЂРїРѕР»СЏС†РёСЏ РєРѕРѕСЂРґРёРЅР°С‚
 double interpolateCoord(double startCoord, double finalCoord, double step, double distance);

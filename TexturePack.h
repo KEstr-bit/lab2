@@ -11,11 +11,11 @@ enum textureType
 class TexturePack
 {
 private:
-	//вектор текстур
+	//РІРµРєС‚РѕСЂ С‚РµРєСЃС‚СѓСЂ
 	std::vector<sf::Texture> textures;
 public:
-	//загрузить текстуру
+	//Р·Р°РіСЂСѓР·РёС‚СЊ С‚РµРєСЃС‚СѓСЂСѓ
 	void addTexture(sf::Texture);
-	//получить указатель на текстуру
+	//РїРѕР»СѓС‡РёС‚СЊ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° С‚РµРєСЃС‚СѓСЂСѓ
 	sf::Texture* getTexture(textureType type);
 };

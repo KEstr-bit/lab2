@@ -4,6 +4,6 @@
 class avtomat : public weapon
 {
 public:
-    //переопределение выстрела
+    //РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ РІС‹СЃС‚СЂРµР»Р°
     int shot(double coordX, double coordY, double shotAngle, std::map<int, entity*> &entiyes) override;
 };

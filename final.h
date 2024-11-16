@@ -5,14 +5,14 @@
 class final
 {
 private:
-    EndingOption gameEndType;       //Парамтр окончания игры
+    EndingOption gameEndType;       //РџР°СЂР°РјС‚СЂ РѕРєРѕРЅС‡Р°РЅРёСЏ РёРіСЂС‹
 
 public:
     final();
     ~final();
-    //Вывести сообщение об завершении игры
+    //Р’С‹РІРµСЃС‚Рё СЃРѕРѕР±С‰РµРЅРёРµ РѕР± Р·Р°РІРµСЂС€РµРЅРёРё РёРіСЂС‹
     void outputFinal(sf::RenderWindow& window);
-    //Изменить параметр окончания
+    //РР·РјРµРЅРёС‚СЊ РїР°СЂР°РјРµС‚СЂ РѕРєРѕРЅС‡Р°РЅРёСЏ
     void changeFinal(EndingOption);
 private:
     void displayMessage(sf::RenderWindow& window, const std::string& message, sf::Color color);

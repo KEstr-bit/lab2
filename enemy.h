@@ -4,15 +4,15 @@
 class enemy : public entity
 {
 public:
-    static const double VISSION_STEP; //шаг луча взгляда
+    static const double VISSION_STEP; //С€Р°Рі Р»СѓС‡Р° РІР·РіР»СЏРґР°
 
     enemy(double coordX, double coordY, double speed, int hitPoints, int damage);
     enemy();
     ~enemy();
 
-    //движение врага
+    //РґРІРёР¶РµРЅРёРµ РІСЂР°РіР°
     bool entityMovment(GameMap* map, double playerX, double playerY) override;
 
-    //обнаружение игрока
+    //РѕР±РЅР°СЂСѓР¶РµРЅРёРµ РёРіСЂРѕРєР°
     bool playersVision(GameMap* map, double playerX, double playerY);
 };

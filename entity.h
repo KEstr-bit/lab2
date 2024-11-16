@@ -5,18 +5,18 @@
 class entity
 {
 protected:
-    double coordX;             //координата по X
-    double coordY;             //координата по Y
-    int hitPoints;             //очки здоровья 
-    int damage;                //урон наносимый
-    double speed;              //скорость 
-    double viewAngle;          //угол обзора
-    double size;               //размер
-    textureType texture;       //текстура 
+    double coordX;             //РєРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ X
+    double coordY;             //РєРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ Y
+    int hitPoints;             //РѕС‡РєРё Р·РґРѕСЂРѕРІСЊСЏ 
+    int damage;                //СѓСЂРѕРЅ РЅР°РЅРѕСЃРёРјС‹Р№
+    double speed;              //СЃРєРѕСЂРѕСЃС‚СЊ 
+    double viewAngle;          //СѓРіРѕР» РѕР±Р·РѕСЂР°
+    double size;               //СЂР°Р·РјРµСЂ
+    textureType texture;       //С‚РµРєСЃС‚СѓСЂР° 
 
 
 public: 
-    static int lastID;          //последний записанный id
+    static int lastID;          //РїРѕСЃР»РµРґРЅРёР№ Р·Р°РїРёСЃР°РЅРЅС‹Р№ id
 
     entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture);
     entity();
@@ -29,15 +29,15 @@ public:
     double getSize();
     textureType getTextureType();
 
-    //нанести урон объекту
+    //РЅР°РЅРµСЃС‚Рё СѓСЂРѕРЅ РѕР±СЉРµРєС‚Сѓ
     int attackEntity(int damage);
 
-    //движение вдоль направления взгляда
+    //РґРІРёР¶РµРЅРёРµ РІРґРѕР»СЊ РЅР°РїСЂР°РІР»РµРЅРёСЏ РІР·РіР»СЏРґР°
     int entityStep();
-    //движение с учетом стен
+    //РґРІРёР¶РµРЅРёРµ СЃ СѓС‡РµС‚РѕРј СЃС‚РµРЅ
     int entityMapStep(GameMap* map);
     
-    //виртуальная функция движения для наследников
+    //РІРёСЂС‚СѓР°Р»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ РґРІРёР¶РµРЅРёСЏ РґР»СЏ РЅР°СЃР»РµРґРЅРёРєРѕРІ
     virtual bool entityMovment(GameMap* map, double playerX, double playerY) = 0;
 
 

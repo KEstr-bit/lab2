@@ -5,16 +5,16 @@
 class weapon
 {
 protected:
-    int bulletCount;                    //количество пуль, выпускаемых за раз
-    double bulletSpeed;                 //скорость полета пули
-    int bulletDamage;                   //урон, наносимы пулей
+    int bulletCount;                    //РєРѕР»РёС‡РµСЃС‚РІРѕ РїСѓР»СЊ, РІС‹РїСѓСЃРєР°РµРјС‹С… Р·Р° СЂР°Р·
+    double bulletSpeed;                 //СЃРєРѕСЂРѕСЃС‚СЊ РїРѕР»РµС‚Р° РїСѓР»Рё
+    int bulletDamage;                   //СѓСЂРѕРЅ, РЅР°РЅРѕСЃРёРјС‹ РїСѓР»РµР№
 
 public:
     weapon(int bulletCount, double bulletSpeed, int bulletDamage);
     weapon();
     ~weapon();
 
-    //выстрел из оружия
+    //РІС‹СЃС‚СЂРµР» РёР· РѕСЂСѓР¶РёСЏ
     virtual int shot(double coordX, double coordY, double shotAngle, std::map<int, entity*>& entiyes) = 0;
 
 };

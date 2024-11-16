@@ -7,25 +7,25 @@
 class player : public entity
 {
 private:
-    WeaponOption activeWeapon;  //активное оружие
+    WeaponOption activeWeapon;  //Р°РєС‚РёРІРЅРѕРµ РѕСЂСѓР¶РёРµ
 
 public:
-    static const int VISION_SPEED = 1;  //скорость изменения угла обзора
-    static const int FOV = 60;          //ширина обзора
-    shotGun* firstGun;                  //оружие игрока1
-    avtomat* secondGun;                 //оружие игрока2
+    static const int VISION_SPEED = 1;  //СЃРєРѕСЂРѕСЃС‚СЊ РёР·РјРµРЅРµРЅРёСЏ СѓРіР»Р° РѕР±Р·РѕСЂР°
+    static const int FOV = 60;          //С€РёСЂРёРЅР° РѕР±Р·РѕСЂР°
+    shotGun* firstGun;                  //РѕСЂСѓР¶РёРµ РёРіСЂРѕРєР°1
+    avtomat* secondGun;                 //РѕСЂСѓР¶РёРµ РёРіСЂРѕРєР°2
 
 public:
     player(double coordX, double coordY, double speed, int hitPoints, int damage);
     player();
     ~player();
-    //перемщение игрока
-    bool playerMapStep(СardinalDirections step_Direction, GameMap* map);
-    //поворот угла обзора
-    void changeVision(СardinalDirections direct_pl);
-    //смена оружия
+    //РїРµСЂРµРјС‰РµРЅРёРµ РёРіСЂРѕРєР°
+    bool playerMapStep(РЎardinalDirections step_Direction, GameMap* map);
+    //РїРѕРІРѕСЂРѕС‚ СѓРіР»Р° РѕР±Р·РѕСЂР°
+    void changeVision(РЎardinalDirections direct_pl);
+    //СЃРјРµРЅР° РѕСЂСѓР¶РёСЏ
     int changeActiveWeapon();
-    //выстрел 
+    //РІС‹СЃС‚СЂРµР» 
     int shot(std::map<int, entity*> &entiyes);
 
     bool entityMovment(GameMap* map, double playerX, double playerY) override;
