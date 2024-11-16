@@ -39,7 +39,7 @@ void drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, flo
     // Рассчитываем масштаб для изменения размера
     float scaleX = width / (*texture).getSize().x;  // Масштаб по оси X
     float scaleY = height / (*texture).getSize().y; // Масштаб по оси Y
-    sprite.setScale(scaleX, scaleY);              // Применяем масштаб
+    sprite.setScale(scaleX, scaleY);                // Применяем масштаб
 
     // Рисуем спрайт в окне
     window.draw(sprite);
@@ -55,12 +55,11 @@ void drawer::dependSorting(std::vector<double> &mainMas, std::vector<entity*> &s
 
     //Делим массив
     do {
-        //Пробегаем элементы, ищем те, которые нужно перекинуть в другую часть
-        //В левой части массива пропускаем(оставляем на месте) элементы, которые меньше центрального
+
         while (mainMas[i] > mid) {
             i++;
         }
-        //В правой части пропускаем элементы, которые больше центрального
+
         while (mainMas[j] < mid) {
             j--;
         }
@@ -88,18 +87,17 @@ int drawer::entityDraw(game* gm, sf::RenderWindow& window) {
 
     int countEnt = gm->getCountEntity();
     if (countEnt < 1)
-        return 1;
+        throw std::exception("В игре не осталось entity");
 
     double EntityCoordX, EntityCoordY;
     double PlayerCoordX, PlayerCoordY;
 
     gm->you->getEntityCoord(&PlayerCoordX, &PlayerCoordY);
 
-    
+    std::vector<double> distToEntity;       //вектор расстояний до объектов
+    std::vector<entity*> pointersEntity;    //вектор указателей на объекты
 
-    std::vector<double> distToEntity;
-    std::vector<entity*> pointersEntity;
-
+    //заполнение векторов distToEntity и pointersEntity
     for (int i = 0; i < countEnt; i++)
     {
         entity* e = gm->getEntityByIndex(i);
@@ -108,6 +106,7 @@ int drawer::entityDraw(game* gm, sf::RenderWindow& window) {
         pointersEntity.emplace_back(e);
     }
 
+    //сортировка по убыванию расстояний
     dependSorting(distToEntity, pointersEntity, 0, distToEntity.size() - 1);
 
     double playerAngle = gm->you->getEntityAngle();
@@ -124,30 +123,34 @@ int drawer::entityDraw(game* gm, sf::RenderWindow& window) {
         double cosPlEnLine = (EntityCoordX - PlayerCoordX) / distance;
         double sinPlEnLine = (EntityCoordY - PlayerCoordY) / distance;
 
+        //разность угла взгляда игрока и угла прямой, соединяющей игрока и объект
         double cosRotAngle = cos(degToRad(playerAngle)) * cosPlEnLine + sin(degToRad(playerAngle)) * sinPlEnLine;
         double sinRotAngle = sin(degToRad(playerAngle)) * cosPlEnLine - cos(degToRad(playerAngle)) * sinPlEnLine;
+
         if (cosRotAngle > 1)
             cosRotAngle = 1;
 
         if (cosRotAngle < -1)
             cosRotAngle = -1;
 
-        double rotAngle = radToDeg(acos(cosRotAngle));
+        //угол на который игроку нужно повернуться, чтобы смотреть ровно на объект
+        double rotAngle = radToDeg(acos(cosRotAngle));     
 
         if (sinRotAngle < 0)
             rotAngle *= -1;
 
+        //если объект находится за обзором игрока
         rotAngle = myRound(rotAngle * 1000) / 1000.0;
         if (abs(rotAngle) > gm->you->FOV)
             continue;
 
-        int vertLineNum = SCREEN_WIDTH * rotAngle / gm->you->FOV;
+        int vertLineNum = SCREEN_WIDTH * rotAngle / gm->you->FOV;       //номер вертикальной полосы
 
         vertLineNum += SCREEN_WIDTH / 2;
 
         spriteSize *= SCREEN_HEIGHT / distance;
 
-
+        //отрисовка объекта
         drawImage(window, gm->tPack->getTexture(e->getTextureType()), vertLineNum - spriteSize / 2, (SCREEN_HEIGHT - spriteSize) / 2, spriteSize, spriteSize);
 
         vertLineNum -= spriteSize / 2;
@@ -155,17 +158,20 @@ int drawer::entityDraw(game* gm, sf::RenderWindow& window) {
 
         if (vertLineNum < 0)
             vertLineNum = 0;
+
         if (rightBorder > SCREEN_WIDTH)
             rightBorder = SCREEN_WIDTH;
 
+        //отрисовка вертикальных полос, перекрывающих объект
         for (; vertLineNum < rightBorder; vertLineNum++)
         {
-
+            //если вертикальная полоса находится позади объекта
             if (mas[vertLineNum] > distance)
                 continue;
 
             double len = SCREEN_HEIGHT / distance;
 
+            //вычисление цвета вертикальной полосы
             double Ws = 255 / sqrt(mas[vertLineNum]);
             if (Ws > 255)
                 Ws = 255;
@@ -179,7 +185,7 @@ int drawer::entityDraw(game* gm, sf::RenderWindow& window) {
     return 0;
 }
 
-int drawer::newDraw(GameMap* map, game* gm, sf::RenderWindow& window) {
+int drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
     double EntityCoordX, EntityCoordY;
 
 

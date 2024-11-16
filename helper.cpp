@@ -31,7 +31,7 @@ int myRound(double number)
 
 };
 
-int abss(int number)
+int myAbs(int number)
 {
     if (number > 0) 
     {
@@ -43,7 +43,7 @@ int abss(int number)
     }
 };
 
-double abss(double number)
+double myAbs(double number)
 {
     if (number > 0)
     {
@@ -55,13 +55,6 @@ double abss(double number)
     }
 };
 
-bool isWall(char* world_Map, int map_Size_X, int coord_X, int coord_Y)
-{
-    if (*(world_Map + coord_X * map_Size_X + coord_Y) == '#')
-        return true;
-    else
-        return false;
-};
 
 double calcDistance(double first_X, double first_Y, double second_X, double second_Y) {
     return sqrt((first_X - second_X) * (first_X - second_X) + (first_Y - second_Y) * (first_Y - second_Y));

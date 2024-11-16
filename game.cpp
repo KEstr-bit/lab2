@@ -13,11 +13,7 @@ game::game()
 
     entities.emplace(entity::lastID, new bullet(bul1 + bul2));
 
-    sf::Texture texture;
-    texture.loadFromFile("image.png");
-    tPack->addTexture(texture);
-    texture.loadFromFile("image1.png");
-    tPack->addTexture(texture);
+
 }
 
 game::~game()
@@ -29,8 +25,10 @@ int game::allEntityMovment(GameMap* map)
 {
     double playerCoordX, playerCoordY;
     this->you->getEntityCoord(&playerCoordX, &playerCoordY);
+
     for (auto e = entities.begin(); e != entities.end();)
     {
+        //если entity больше не может двигаться
         if (e->second->entityMovment(map, playerCoordX, playerCoordY))
         {
             delete e->second;
@@ -73,10 +71,10 @@ int game::getCountEntity()
 
 int game::interaction(GameMap* map)
 {
-    this->allEntityMovment(map);                    //движение пуль
+    this->allEntityMovment(map);                    //движение всех лбъектов
 
-    int monsterCoordX, monsterCoordY;
-    int monstersMap[map->MAPSIZEX][map->MAPSIZEY];
+    int monsterCoordX, monsterCoordY;               //координаты врагов
+    int monstersMap[map->MAPSIZEX][map->MAPSIZEY];  //карта id врагов
 
     for (int i = map->MAPSIZEX * map->MAPSIZEY - 1; i >= 0; i--)
     {
@@ -87,6 +85,7 @@ int game::interaction(GameMap* map)
         // Пробуем выполнить динамическое приведение
         if (enemy* e = dynamic_cast<enemy*>(it->second)) 
         {
+            //запись id врага в monstersMap по координатам
             e->getEntityCoord(&monsterCoordX, &monsterCoordY);
             monstersMap[monsterCoordX][monsterCoordY] = it->first;
         }
@@ -95,6 +94,7 @@ int game::interaction(GameMap* map)
     int playerCoordX, playerCoordY;
     int id = -1;
 
+    //проверка столкновения игрока с врагом
     if (!this->you->getEntityCoord(&playerCoordX, &playerCoordY))
         id = monstersMap[playerCoordX][playerCoordY];
 
@@ -104,7 +104,7 @@ int game::interaction(GameMap* map)
         this->you->attackEntity(e->getEntityDamage());
     }
 
-    //если на карте есть пули
+    //перебор пуль
     for (auto it = entities.begin(); it != entities.end(); it++)
     {
         if (bullet* b = dynamic_cast<bullet*>(it->second))
@@ -113,14 +113,18 @@ int game::interaction(GameMap* map)
 
             b->getEntityCoord(&bulletCoordX, &bulletCoordY);
 
+            //провекра столкновения пули с врагом
             int id = monstersMap[bulletCoordX][bulletCoordY];
 
             if (id == -1)
                 continue;
 
+            //поиск врага по id
             entity* e = this->findEntityByID(id);
 
+            //нанесение урона врагу
             e->attackEntity(b->getEntityDamage());
+
             b->setRemLen(0);
             break;
         }

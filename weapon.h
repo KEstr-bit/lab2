@@ -10,12 +10,11 @@ protected:
     int bulletDamage;                   //урон, наносимы пулей
 
 public:
-
-
-public:
-    virtual int shot(double coordX, double coordY, double shotAngle, std::map<int, entity*> &entiyes) = 0;
     weapon(int bulletCount, double bulletSpeed, int bulletDamage);
     weapon();
     ~weapon();
+
+    //выстрел из оружия
+    virtual int shot(double coordX, double coordY, double shotAngle, std::map<int, entity*>& entiyes) = 0;
 
 };

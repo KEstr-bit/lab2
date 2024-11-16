@@ -35,25 +35,28 @@ player::~player()
 }
 
 
-int player::playerMapStep(СardinalDirections stepDirection, GameMap* map)
+bool player::playerMapStep(СardinalDirections stepDirection, GameMap* map)
 {
-    if (hitPoints > 0)
+    if (hitPoints <= 0)
+        return true;
+
+    double oldAngle = viewAngle;
+
+    //изменение угла в зависимости от направления движения
+    switch (stepDirection)
     {
-        double oldAngle = viewAngle;
-
-        switch (stepDirection)
-        {
-        case East: viewAngle -= 90; break;
-        case South: viewAngle += 180; break;
-        case West: viewAngle += 90; break;
-        default: break;
-        }
-
-        this->entityMapStep(map);
-        viewAngle = oldAngle;
-
+    case East: viewAngle -= 90; break;
+    case South: viewAngle += 180; break;
+    case West: viewAngle += 90; break;
+    default: break;
     }
-    return 0;
+
+    this->entityMapStep(map);
+    //возвращение исходного угла
+    viewAngle = oldAngle;
+
+
+    return false;
 }
 
 

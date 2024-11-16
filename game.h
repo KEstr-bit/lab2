@@ -10,20 +10,25 @@ class game
 {
 public:
     player* you;            //игрок
-    TexturePack* tPack;
+    TexturePack* tPack;     //хранилище текстур
 private:
-    std::map<int, entity*> entities;
+    std::map<int, entity*> entities;    //вектор объектов
 public:
     game();
     ~game();
-    //взаимодействие объектов
+    //поиск entity по id
     entity* findEntityByID(int id);
+    //получение entity по индексу
     entity* getEntityByIndex(int index);
+    //выстрел игрока
     void playerShot();
     int getCountEntity();
+    //взаимодействие объектов
     int interaction(GameMap* map);
+    //движение всех объектов
     int allEntityMovment(GameMap* map);
 
+    //спавн врага по взгляду игрока на расстоянии 2м
     game& operator++() {
         double x, y, a;
         a = you->getEntityAngle();
@@ -43,7 +48,7 @@ public:
     }
 
 
-
+    //дружественная функция
     friend bool isEnd(game* gm);
 };
 

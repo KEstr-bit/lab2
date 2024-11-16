@@ -4,6 +4,7 @@
 
 int avtomat::shot(double coordX, double coordY, double shotAngle, std::map<int, entity*> &entiyes)
 {
+    //смещение пули от точки выстрела
     double sideShift = 0;
 
         for (int i = 0; i < bulletCount; i++)
@@ -17,6 +18,7 @@ int avtomat::shot(double coordX, double coordY, double shotAngle, std::map<int, 
             x += coordX;
             y += coordY;
 
+            //инициализация новой пули
             entiyes.emplace(entity::lastID, new bullet(x, y, shotAngle, this->bulletDamage, this->bulletSpeed));
 
         }

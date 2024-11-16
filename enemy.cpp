@@ -33,6 +33,7 @@ bool enemy::entityMovment(GameMap* map, double playerX, double playerY)
     double deltaX = playerX - this->coordX;
     double deltaY = playerY - this->coordY;
 
+    //если враг видит игрока
     if (playersVision(map, playerX, playerY))
     {
         double distance = calcDistance(playerX, playerY, this->coordX, this->coordY);
@@ -54,7 +55,7 @@ bool enemy::playersVision(GameMap* map, double playerX, double playerY)
     bool flVission = true;
     double distance = calcDistance(enemyX, enemyY, playerX, playerY);
 
-    //проверка: видит ли враг игрока
+    //движение луча взгляда к игроку
     while (distance > VISSION_STEP && flVission)
     {
         enemyX = interpolateCoord(enemyX, playerX, VISSION_STEP, distance);
@@ -62,6 +63,7 @@ bool enemy::playersVision(GameMap* map, double playerX, double playerY)
 
         distance = calcDistance(enemyX, enemyY, playerX, playerY);
 
+        //если луч столкнулся со стеной
         if (map->isWall(enemyX, enemyY))
             flVission = false;
     }

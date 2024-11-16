@@ -82,16 +82,19 @@ int entity::entityMapStep(GameMap* map)
 
     this->entityStep();
 
+    //если объект шагнул в стену
     if (map->isWall(this->coordX, this->coordY))
     {
         double deltaX = this->coordX - oldX;
         double deltaY = this->coordY - oldY;
 
+        //если можно продолжить движение по оси X
         if (!map->isWall(oldX + deltaX, oldY))
         {
             this->coordX = oldX + deltaX;
             this->coordY = oldY;
         }
+        //если можно продолжить движение по оси Y
         else if (!map->isWall(oldX, oldY + deltaY))
         {
             this->coordX = oldX;

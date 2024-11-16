@@ -31,6 +31,12 @@ int main()
     game* DOM;
     DOM = new game();
 
+    sf::Texture texture;
+    texture.loadFromFile("image.png");
+    DOM->tPack->addTexture(texture);
+    texture.loadFromFile("image1.png");
+    DOM->tPack->addTexture(texture);
+
     std::string worldMap[GameMap::MAPSIZEX];
     worldMap[0] += "##########";
     worldMap[1] += "#........#";
@@ -47,12 +53,10 @@ int main()
     wMap = new GameMap(worldMap);
     drawer* dr;
     dr = new drawer();
-    SetConsoleOutputCP(866);
-
-
-    sf::RenderWindow window(sf::VideoMode(drawer::SCREEN_WIDTH, drawer::SCREEN_HEIGHT), "Vertical Segment Drawing");
+ 
+    sf::RenderWindow window(sf::VideoMode(drawer::SCREEN_WIDTH, drawer::SCREEN_HEIGHT), "Graphic Test");
     int s = 0;
-    bool endFl = false;  //флажок работы игры
+    bool endFl = false;         //флажок работы игры
     bool resProcFl = true;
     bool shotfl = true;
     bool swapfl = true;
@@ -128,12 +132,21 @@ int main()
 
             DOM->interaction(wMap);      //взаимодействие объектов
 
-            
+
 
             //рисование кадра
-            dr->newDraw(wMap, DOM, window);
-            dr->entityDraw(DOM, window);
-            
+            dr->drawWalls(wMap, DOM, window);
+
+
+            try
+            {
+                dr->entityDraw(DOM, window);
+            }
+            catch (const std::exception& ex)
+            {
+                endFl = true;
+            }
+
         }
         else if (resProcFl)
         {

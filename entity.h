@@ -8,15 +8,15 @@ protected:
     double coordX;             //координата по X
     double coordY;             //координата по Y
     int hitPoints;             //очки здоровья 
-    int damage;                 //урон наносимый
-    double speed;               //скорость 
+    int damage;                //урон наносимый
+    double speed;              //скорость 
     double viewAngle;          //угол обзора
-    double size;
-    textureType texture;
+    double size;               //размер
+    textureType texture;       //текстура 
 
 
 public: 
-    static int lastID;
+    static int lastID;          //последний записанный id
 
     entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture);
     entity();
@@ -26,11 +26,18 @@ public:
     int getEntityDamage();
     int getEntityHitPoints();
     double getEntityAngle();
-    int attackEntity(int damage);
-    int entityStep();
-    int entityMapStep(GameMap* map);
-    textureType getTextureType();
     double getSize();
+    textureType getTextureType();
+
+    //нанести урон объекту
+    int attackEntity(int damage);
+
+    //движение вдоль направления взгляда
+    int entityStep();
+    //движение с учетом стен
+    int entityMapStep(GameMap* map);
+    
+    //виртуальная функция движения для наследников
     virtual bool entityMovment(GameMap* map, double playerX, double playerY) = 0;
 
 
