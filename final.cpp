@@ -13,19 +13,19 @@ final::~final()
 
 void final::displayMessage(sf::RenderWindow& window, const std::string& message, sf::Color color) {
     sf::Font font;
-    //загрузка шрифта
+    //Р·Р°РіСЂСѓР·РєР° С€СЂРёС„С‚Р°
     if (!font.loadFromFile("ComicSansMS.ttf")) { 
-        throw std::exception("Не удалось загрузить шрифт");
+        throw std::exception("РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ С€СЂРёС„С‚");
     }
 
-    //созданеие текстового блока
+    //СЃРѕР·РґР°РЅРµРёРµ С‚РµРєСЃС‚РѕРІРѕРіРѕ Р±Р»РѕРєР°
     sf::Text text(message, font, 70);
     text.setFillColor(color);
     sf::FloatRect textRect = text.getLocalBounds();
     text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
     text.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
 
-    //вывод
+    //РІС‹РІРѕРґ
     window.draw(text);
 }
 

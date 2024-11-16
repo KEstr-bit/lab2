@@ -35,14 +35,14 @@ player::~player()
 }
 
 
-bool player::playerMapStep(СardinalDirections stepDirection, GameMap* map)
+bool player::playerMapStep(РЎardinalDirections stepDirection, GameMap* map)
 {
     if (hitPoints <= 0)
         return true;
 
     double oldAngle = viewAngle;
 
-    //изменение угла в зависимости от направления движения
+    //РёР·РјРµРЅРµРЅРёРµ СѓРіР»Р° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РЅР°РїСЂР°РІР»РµРЅРёСЏ РґРІРёР¶РµРЅРёСЏ
     switch (stepDirection)
     {
     case East: viewAngle -= 90; break;
@@ -52,7 +52,7 @@ bool player::playerMapStep(СardinalDirections stepDirection, GameMap* map)
     }
 
     this->entityMapStep(map);
-    //возвращение исходного угла
+    //РІРѕР·РІСЂР°С‰РµРЅРёРµ РёСЃС…РѕРґРЅРѕРіРѕ СѓРіР»Р°
     viewAngle = oldAngle;
 
 
@@ -89,7 +89,7 @@ int player::shot(std::map<int, entity*> &entiyes)
     return activeWeapon;
 };
 
-void player::changeVision(СardinalDirections direct)
+void player::changeVision(РЎardinalDirections direct)
 {
     switch (direct)
     {

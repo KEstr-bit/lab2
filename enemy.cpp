@@ -33,7 +33,7 @@ bool enemy::entityMovment(GameMap* map, double playerX, double playerY)
     double deltaX = playerX - this->coordX;
     double deltaY = playerY - this->coordY;
 
-    //åñëè âðàã âèäèò èãðîêà
+    //ÐµÑÐ»Ð¸ Ð²Ñ€Ð°Ð³ Ð²Ð¸Ð´Ð¸Ñ‚ Ð¸Ð³Ñ€Ð¾ÐºÐ°
     if (playersVision(map, playerX, playerY))
     {
         double distance = calcDistance(playerX, playerY, this->coordX, this->coordY);
@@ -55,7 +55,7 @@ bool enemy::playersVision(GameMap* map, double playerX, double playerY)
     bool flVission = true;
     double distance = calcDistance(enemyX, enemyY, playerX, playerY);
 
-    //äâèæåíèå ëó÷à âçãëÿäà ê èãðîêó
+    //Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ðµ Ð»ÑƒÑ‡Ð° Ð²Ð·Ð³Ð»ÑÐ´Ð° Ðº Ð¸Ð³Ñ€Ð¾ÐºÑƒ
     while (distance > VISSION_STEP && flVission)
     {
         enemyX = interpolateCoord(enemyX, playerX, VISSION_STEP, distance);
@@ -63,7 +63,7 @@ bool enemy::playersVision(GameMap* map, double playerX, double playerY)
 
         distance = calcDistance(enemyX, enemyY, playerX, playerY);
 
-        //åñëè ëó÷ ñòîëêíóëñÿ ñî ñòåíîé
+        //ÐµÑÐ»Ð¸ Ð»ÑƒÑ‡ ÑÑ‚Ð¾Ð»ÐºÐ½ÑƒÐ»ÑÑ ÑÐ¾ ÑÑ‚ÐµÐ½Ð¾Ð¹
         if (map->isWall(enemyX, enemyY))
             flVission = false;
     }

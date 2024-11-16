@@ -4,7 +4,7 @@
 
 int shotGun::shot(double coordX, double coordY, double shotAngle, std::map<int, entity*> &entiyes)
 {
-    //смещение угла полета
+    //СЃРјРµС‰РµРЅРёРµ СѓРіР»Р° РїРѕР»РµС‚Р°
     double sideShift = SPREAD_ANGLE / (bulletCount - 1);
     shotAngle -= SPREAD_ANGLE / 2;
     
@@ -17,7 +17,7 @@ int shotGun::shot(double coordX, double coordY, double shotAngle, std::map<int, 
             x += coordX;
             y += coordY;
 
-            //инициализация новой пули
+            //РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РЅРѕРІРѕР№ РїСѓР»Рё
             entiyes.emplace(entity::lastID, new bullet(x, y, shotAngle, bulletDamage, bulletSpeed));
 
             shotAngle += sideShift;

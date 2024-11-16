@@ -58,11 +58,11 @@ bool bullet::entityMovment(GameMap* map, double playerX, double playerY)
     if (remainLen <= 0)
         return 1;
 
-    //óìåíüøåíèå îñòàâøåãîñÿ ïóòè ïðè óñïåøíîì äâèæåíèè
+    //ÑƒÐ¼ÐµÐ½ÑŒÑˆÐµÐ½Ð¸Ðµ Ð¾ÑÑ‚Ð°Ð²ÑˆÐµÐ³Ð¾ÑÑ Ð¿ÑƒÑ‚Ð¸ Ð¿Ñ€Ð¸ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾Ð¼ Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ð¸
     if(!this->entityStep());
         remainLen -= speed;
 
-    //åñëè ïóëÿ âðåçàëàñü â ñòåíó
+    //ÐµÑÐ»Ð¸ Ð¿ÑƒÐ»Ñ Ð²Ñ€ÐµÐ·Ð°Ð»Ð°ÑÑŒ Ð² ÑÑ‚ÐµÐ½Ñƒ
     if (map->isWall(coordX, coordY))
     {
         remainLen = 0;
