@@ -11,8 +11,8 @@ void shotGun::shot(double coordX, double coordY, double shotAngle, std::map<int,
     for (int i = 0; i < bulletCount; i++)
     {
         double x, y;
-        x = projectionToX(bulletSpeed, degToRad(shotAngle));
-        y = projectionToY(bulletSpeed, degToRad(shotAngle));
+        x = helper::projectionToX(bulletSpeed, helper::degToRad(shotAngle));
+        y = helper::projectionToY(bulletSpeed, helper::degToRad(shotAngle));
 
         x += coordX;
         y += coordY;

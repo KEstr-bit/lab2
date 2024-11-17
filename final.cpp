@@ -4,11 +4,7 @@
 
 final::final()
 {
-    try {
-        font.loadFromFile("ComicSansMS.ttf");
-    }
-    catch (std::exception) {
-    }
+    font.loadFromFile("ComicSansMS.ttf");
     gameEndType = WinGame;
 }
 

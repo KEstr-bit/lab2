@@ -119,7 +119,12 @@ void game::interaction(GameMap* map)
             b->getEntityCoord(&bulletCoordX, &bulletCoordY);
 
             //провекра столкновения пули с врагом
-            int id = monstersMap[bulletCoordX][bulletCoordY];
+            try {
+                id = monstersMap[bulletCoordX][bulletCoordY];
+            }
+            catch (std::out_of_range) {
+                id = -1;
+            }
 
             if (id == -1)
                 continue;

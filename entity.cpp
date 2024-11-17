@@ -40,8 +40,8 @@ bool entity::getEntityCoord(double* coordX, double* coordY)
 
 bool entity::getEntityCoord(int* coordX, int* coordY)
 {
-    *coordX = myRound(this->coordX);
-    *coordY = myRound(this->coordY);
+    *coordX = helper::myRound(this->coordX);
+    *coordY = helper::myRound(this->coordY);
     return hitPoints <= 0;
 }
 
@@ -73,8 +73,8 @@ bool entity::attackEntity(int damage)
 
 bool entity::entityStep()
 {
-    coordX += projectionToX(speed, degToRad(viewAngle));
-    coordY += projectionToY(speed, degToRad(viewAngle));
+    coordX += helper::projectionToX(speed, helper::degToRad(viewAngle));
+    coordY += helper::projectionToY(speed, helper::degToRad(viewAngle));
     return hitPoints <= 0;
 }
 

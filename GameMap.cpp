@@ -35,7 +35,7 @@ bool GameMap::isWall(int coordX, int coordY)
 
 bool GameMap::isWall(double coord_X, double coord_Y)
 {
-    int x = myRound(coord_X);
-    int y = myRound(coord_Y);
+    int x = helper::myRound(coord_X);
+    int y = helper::myRound(coord_Y);
     return isWall(x, y);
 };

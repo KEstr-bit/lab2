@@ -83,8 +83,8 @@ void drawer::dependSorting(std::vector<double> &mainMas, std::vector<entity*> &s
 }
 
 double drawer::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine) {
-    double cosRotAngle = cos(degToRad(playerAngle)) * cosPlEnLine + sin(degToRad(playerAngle)) * sinPlEnLine;
-    double sinRotAngle = sin(degToRad(playerAngle)) * cosPlEnLine - cos(degToRad(playerAngle)) * sinPlEnLine;
+    double cosRotAngle = cos(helper::degToRad(playerAngle)) * cosPlEnLine + sin(helper::degToRad(playerAngle)) * sinPlEnLine;
+    double sinRotAngle = sin(helper::degToRad(playerAngle)) * cosPlEnLine - cos(helper::degToRad(playerAngle)) * sinPlEnLine;
 
     if (cosRotAngle > 1)
         cosRotAngle = 1;
@@ -93,7 +93,7 @@ double drawer::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlE
         cosRotAngle = -1;
 
     //угол на который игроку нужно повернуться, чтобы смотреть ровно на объект
-    double rotAngle = radToDeg(acos(cosRotAngle));
+    double rotAngle = helper::radToDeg(acos(cosRotAngle));
 
     if (sinRotAngle < 0)
         rotAngle *= -1;
@@ -122,7 +122,7 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
     {
         entity* e = gm->getEntityByIndex(i);
         e->getEntityCoord(&EntityCoordX, &EntityCoordY);
-        distToEntity.emplace_back(calcDistance(EntityCoordX, EntityCoordY, PlayerCoordX, PlayerCoordY));
+        distToEntity.emplace_back(helper::calcDistance(EntityCoordX, EntityCoordY, PlayerCoordX, PlayerCoordY));
         pointersEntity.emplace_back(e);
     }
 
@@ -203,8 +203,8 @@ void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
             //флаг найденной стены в этом направлении
             bool flNotWall = true;
 
-            double currentCosinus = cos(degToRad(curentPlayerAngle));
-            double currentSinus = sin(degToRad(curentPlayerAngle));
+            double currentCosinus = cos(helper::degToRad(curentPlayerAngle));
+            double currentSinus = sin(helper::degToRad(curentPlayerAngle));
 
 
             //поиск стены на пути луча
@@ -220,7 +220,7 @@ void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
                 if (map->isWall(x, y))
                 {
                     //исправление эффекта рыбьего глаза по оси Y
-                    distance = distance * cos(degToRad(curentPlayerAngle - realPlayerAngle));
+                    distance = distance * cos(helper::degToRad(curentPlayerAngle - realPlayerAngle));
 
                     mas[i] = distance;
 
@@ -238,8 +238,8 @@ void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
 
             }
             //исправление эффекта рыбьего глаза по оси X
-            curentPlayerAngle = atan(tan(degToRad(curentPlayerAngle - realPlayerAngle)) - (2 * tan(degToRad(gm->you->FOV * 0.5)) / SCREEN_WIDTH));
-            curentPlayerAngle = radToDeg(curentPlayerAngle);
+            curentPlayerAngle = atan(tan(helper::degToRad(curentPlayerAngle - realPlayerAngle)) - (2 * tan(helper::degToRad(gm->you->FOV * 0.5)) / SCREEN_WIDTH));
+            curentPlayerAngle = helper::radToDeg(curentPlayerAngle);
             curentPlayerAngle += realPlayerAngle;
         }
     }

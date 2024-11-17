@@ -34,8 +34,8 @@ public:
         a = you->getEntityAngle();
         you->getEntityCoord(&x, &y);
 
-        x += 2 * cos(degToRad(a));
-        y += 2 * sin(degToRad(a));
+        x += 2 * cos(helper::degToRad(a));
+        y += 2 * sin(helper::degToRad(a));
 
         entities.emplace(entity::lastID, new enemy(x, y, 0.01, 100, 10));
         return *this;

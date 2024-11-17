@@ -36,10 +36,10 @@ bool enemy::entityMovment(GameMap* map, double playerX, double playerY)
     //если враг видит игрока
     if (playersVision(map, playerX, playerY))
     {
-        double distance = calcDistance(playerX, playerY, this->coordX, this->coordY);
+        double distance = helper::calcDistance(playerX, playerY, this->coordX, this->coordY);
         double angleCos = deltaX / distance;
         double angleSin = deltaY / distance;
-        this->viewAngle = radToDeg(atan2(angleSin, angleCos));
+        this->viewAngle = helper::radToDeg(atan2(angleSin, angleCos));
         this->entityMapStep(map);
     }
 
@@ -53,15 +53,15 @@ bool enemy::playersVision(GameMap* map, double playerX, double playerY)
     this->getEntityCoord(&enemyX, &enemyY);
 
     bool flVission = true;
-    double distance = calcDistance(enemyX, enemyY, playerX, playerY);
+    double distance = helper::calcDistance(enemyX, enemyY, playerX, playerY);
 
     //движение луча взгляда к игроку
     while (distance > VISSION_STEP && flVission)
     {
-        enemyX = interpolateCoord(enemyX, playerX, VISSION_STEP, distance);
-        enemyY = interpolateCoord(enemyY, playerY, VISSION_STEP, distance);
+        enemyX = helper::interpolateCoord(enemyX, playerX, VISSION_STEP, distance);
+        enemyY = helper::interpolateCoord(enemyY, playerY, VISSION_STEP, distance);
 
-        distance = calcDistance(enemyX, enemyY, playerX, playerY);
+        distance = helper::calcDistance(enemyX, enemyY, playerX, playerY);
 
         //если луч столкнулся со стеной
         if (map->isWall(enemyX, enemyY))
