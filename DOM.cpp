@@ -11,32 +11,15 @@
 using namespace std;
 using namespace sf;
 
-final ending;
-
 int entity::lastID = 0;
 
-bool isEnd(game* gm)
+void changeFinal(EndingOption option, final* f)
 {
-    if (gm->entities.size() == 0)
-        return true;
-
-    if (gm->you->getEntityHitPoints() <= 0)
-        return true;
-
-    return false;
+    f->gameEndType = option;
 }
 
 int main()
 {
-    game* DOM;
-    DOM = new game();
-
-    sf::Texture texture;
-    texture.loadFromFile("image.png");
-    DOM->tPack->addTexture(texture);
-    texture.loadFromFile("image1.png");
-    DOM->tPack->addTexture(texture);
-
     std::string worldMap[GameMap::MAPSIZEX];
     worldMap[0] += "##########";
     worldMap[1] += "#........#";
@@ -53,11 +36,13 @@ int main()
     wMap = new GameMap(worldMap);
     drawer* dr;
     dr = new drawer();
+    final* ending;
+    ending = new final;
+    game* DOM;
+    DOM = new game();
  
     sf::RenderWindow window(sf::VideoMode(drawer::SCREEN_WIDTH, drawer::SCREEN_HEIGHT), "Graphic Test");
-    int s = 0;
     bool endFl = false;         //флажок работы игры
-    bool resProcFl = true;
     bool shotfl = true;
     bool swapfl = true;
 
@@ -72,7 +57,6 @@ int main()
 
         if (!endFl)
         {
-            endFl = isEnd(DOM);
             //обработка действий игрока
             if (GetAsyncKeyState(VK_UP))
             {
@@ -130,32 +114,30 @@ int main()
                 (*DOM)++;
             }
 
-            DOM->interaction(wMap);      //взаимодействие объектов
-
-
+            //взаимодействие объектов
+            DOM->interaction(wMap);      
 
             //рисование кадра
             dr->drawWalls(wMap, DOM, window);
-
 
             try
             {
                 dr->entityDraw(DOM, window);
             }
-            catch (const std::exception& ex)
+            catch (std::out_of_range)
             {
+                changeFinal(WinGame, ending);
+                endFl = true;
+            }
+            catch (std::logic_error)
+            {
+                changeFinal(LooseGame, ending);
                 endFl = true;
             }
 
         }
-        else if (resProcFl)
-        {
-            if (DOM->you->getEntityHitPoints() <= 0)
-                ending.changeFinal(LooseGame);
-            resProcFl = false;
-        }
         else
-            ending.outputFinal(window);
+            ending->outputFinal(window);
 
         window.display();
     }

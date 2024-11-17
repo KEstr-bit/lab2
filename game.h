@@ -24,9 +24,9 @@ public:
     void playerShot();
     int getCountEntity();
     //взаимодействие объектов
-    int interaction(GameMap* map);
+    void interaction(GameMap* map);
     //движение всех объектов
-    int allEntityMovment(GameMap* map);
+    void allEntityMovment(GameMap* map);
 
     //спавн врага по взгляду игрока на расстоянии 2м
     game& operator++() {
@@ -46,10 +46,6 @@ public:
         ++(*this);       
         return temp;       
     }
-
-
-    //дружественная функция
-    friend bool isEnd(game* gm);
 };
 
 

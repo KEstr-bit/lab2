@@ -31,11 +31,18 @@ entity::~entity()
 {
 }
 
-int entity::getEntityCoord(double* coordX, double* coordY)
+bool entity::getEntityCoord(double* coordX, double* coordY)
 {
     *coordX = this->coordX;
     *coordY = this->coordY;
-    return 0;
+    return hitPoints <= 0;
+}
+
+bool entity::getEntityCoord(int* coordX, int* coordY)
+{
+    *coordX = myRound(this->coordX);
+    *coordY = myRound(this->coordY);
+    return hitPoints <= 0;
 }
 
 int entity::getEntityDamage()
@@ -53,29 +60,25 @@ double entity::getEntityAngle()
     return viewAngle;
 }
 
-int entity::attackEntity(int damage)
+bool entity::attackEntity(int damage)
 {
     if (hitPoints > 0)
     {
         hitPoints -= damage;
-        return 0;
+        return false;
     }
     else
-        return 1;
+        return true;
 }
 
-int entity::entityStep()
+bool entity::entityStep()
 {
-    if (hitPoints > 0)
-    {
-        coordX += projectionToX(speed, degToRad(viewAngle));
-        coordY += projectionToY(speed, degToRad(viewAngle));
-        return 0;
-    }
-    return 1;
+    coordX += projectionToX(speed, degToRad(viewAngle));
+    coordY += projectionToY(speed, degToRad(viewAngle));
+    return hitPoints <= 0;
 }
 
-int entity::entityMapStep(GameMap* map)
+void entity::entityMapStep(GameMap* map)
 {
     double oldX, oldY;
     this->getEntityCoord(&oldX, &oldY);
@@ -106,19 +109,9 @@ int entity::entityMapStep(GameMap* map)
             this->coordY = oldY;
         }
     }
-    return 0;
 }
 
-int entity::getEntityCoord(int* coordX, int* coordY)
-{
-    if (hitPoints > 0)
-    {
-        *coordX = myRound(this->coordX);
-        *coordY = myRound(this->coordY);
-        return 0;
-    }
-    return 1;
-}
+
 
 double entity::getSize()
 {

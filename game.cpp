@@ -4,7 +4,15 @@
 game::game()
 {
     you = new player();
-    tPack = new TexturePack();
+
+    try {
+        tPack = new TexturePack();
+    }
+    catch (std::exception) {
+        delete tPack;
+        tPack = new TexturePack(1);
+    }
+
     entities.emplace(entity::lastID, new enemy());
     entities.emplace(entity::lastID, new enemy(1, 5, 0.01, 100, 50));
 
@@ -12,8 +20,6 @@ game::game()
     bullet bul2;
 
     entities.emplace(entity::lastID, new bullet(bul1 + bul2));
-
-
 }
 
 game::~game()
@@ -21,7 +27,7 @@ game::~game()
 }
 
 
-int game::allEntityMovment(GameMap* map)
+void game::allEntityMovment(GameMap* map)
 {
     double playerCoordX, playerCoordY;
     this->you->getEntityCoord(&playerCoordX, &playerCoordY);
@@ -36,7 +42,6 @@ int game::allEntityMovment(GameMap* map)
         }
         else ++e;
     }
-    return 0;
 }
 
 entity* game::findEntityByID(int id)
@@ -69,7 +74,7 @@ int game::getCountEntity()
     return entities.size();
 }
 
-int game::interaction(GameMap* map)
+void game::interaction(GameMap* map)
 {
     this->allEntityMovment(map);                    //движение всех лбъектов
 
@@ -128,8 +133,5 @@ int game::interaction(GameMap* map)
             b->setRemLen(0);
             break;
         }
-
     }
-
-    return 0;
 }

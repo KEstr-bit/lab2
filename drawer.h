@@ -10,9 +10,9 @@ class drawer
 {
 public:
 	//отрисовка стен
-	int drawWalls(GameMap* map, game* gm, sf::RenderWindow& window);
+	void drawWalls(GameMap* map, game* gm, sf::RenderWindow& window);
 	//отрисовка объектов
-	int entityDraw(game* gm, sf::RenderWindow& window);
+	void entityDraw(game* gm, sf::RenderWindow& window);
 	drawer();
 	~drawer();
 
@@ -23,6 +23,8 @@ private:
 	void drawVerticalSegment(sf::RenderWindow& window, float length, float width, float low_X, float low_Y, sf::Color color);
 	//зависимая сортировка
 	void dependSorting(std::vector<double>& mainMas, std::vector<entity*>& sideMas, int left, int right);
+	//вычслить угол поворта
+	double getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine);
 
 public:
 	static const double RAY_STEP;			//шаг луча

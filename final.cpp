@@ -4,6 +4,11 @@
 
 final::final()
 {
+    try {
+        font.loadFromFile("ComicSansMS.ttf");
+    }
+    catch (std::exception) {
+    }
     gameEndType = WinGame;
 }
 
@@ -12,12 +17,6 @@ final::~final()
 }
 
 void final::displayMessage(sf::RenderWindow& window, const std::string& message, sf::Color color) {
-    sf::Font font;
-    //загрузка шрифта
-    if (!font.loadFromFile("ComicSansMS.ttf")) { 
-        throw std::exception("Не удалось загрузить шрифт");
-    }
-
     //созданеие текстового блока
     sf::Text text(message, font, 70);
     text.setFillColor(color);
@@ -45,7 +44,4 @@ void final::outputFinal(sf::RenderWindow& window)
     
 }
 
-void final::changeFinal(EndingOption option)
-{
-    gameEndType = option;
-}
+

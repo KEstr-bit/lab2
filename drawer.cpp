@@ -7,7 +7,6 @@ drawer::drawer()
 {
     for (int i = 0; i < SCREEN_WIDTH; i++)
         mas[i] = 0;
-
 }
 
 drawer::~drawer()
@@ -83,16 +82,37 @@ void drawer::dependSorting(std::vector<double> &mainMas, std::vector<entity*> &s
         dependSorting(mainMas, sideMas, i, right);
 }
 
-int drawer::entityDraw(game* gm, sf::RenderWindow& window) {
+double drawer::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine) {
+    double cosRotAngle = cos(degToRad(playerAngle)) * cosPlEnLine + sin(degToRad(playerAngle)) * sinPlEnLine;
+    double sinRotAngle = sin(degToRad(playerAngle)) * cosPlEnLine - cos(degToRad(playerAngle)) * sinPlEnLine;
 
-    int countEnt = gm->getCountEntity();
-    if (countEnt < 1)
-        throw std::exception("В игре не осталось entity");
+    if (cosRotAngle > 1)
+        cosRotAngle = 1;
 
+    if (cosRotAngle < -1)
+        cosRotAngle = -1;
+
+    //угол на который игроку нужно повернуться, чтобы смотреть ровно на объект
+    double rotAngle = radToDeg(acos(cosRotAngle));
+
+    if (sinRotAngle < 0)
+        rotAngle *= -1;
+
+    //если объект находится за обзором игрока
+    rotAngle = round(rotAngle * 1000) / 1000.0;
+    return rotAngle;
+}
+
+void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
     double EntityCoordX, EntityCoordY;
     double PlayerCoordX, PlayerCoordY;
 
-    gm->you->getEntityCoord(&PlayerCoordX, &PlayerCoordY);
+    int countEnt = gm->getCountEntity();
+    if (countEnt < 1)
+        throw std::out_of_range("В игре не осталось entity");
+
+    if(gm->you->getEntityCoord(&PlayerCoordX, &PlayerCoordY))
+        throw std::logic_error("В игре не осталось entity");
 
     std::vector<double> distToEntity;       //вектор расстояний до объектов
     std::vector<entity*> pointersEntity;    //вектор указателей на объекты
@@ -123,24 +143,7 @@ int drawer::entityDraw(game* gm, sf::RenderWindow& window) {
         double cosPlEnLine = (EntityCoordX - PlayerCoordX) / distance;
         double sinPlEnLine = (EntityCoordY - PlayerCoordY) / distance;
 
-        //разность угла взгляда игрока и угла прямой, соединяющей игрока и объект
-        double cosRotAngle = cos(degToRad(playerAngle)) * cosPlEnLine + sin(degToRad(playerAngle)) * sinPlEnLine;
-        double sinRotAngle = sin(degToRad(playerAngle)) * cosPlEnLine - cos(degToRad(playerAngle)) * sinPlEnLine;
-
-        if (cosRotAngle > 1)
-            cosRotAngle = 1;
-
-        if (cosRotAngle < -1)
-            cosRotAngle = -1;
-
-        //угол на который игроку нужно повернуться, чтобы смотреть ровно на объект
-        double rotAngle = radToDeg(acos(cosRotAngle));     
-
-        if (sinRotAngle < 0)
-            rotAngle *= -1;
-
-        //если объект находится за обзором игрока
-        rotAngle = myRound(rotAngle * 1000) / 1000.0;
+        double rotAngle = getRotAngle(playerAngle, cosPlEnLine, sinPlEnLine);
         if (abs(rotAngle) > gm->you->FOV)
             continue;
 
@@ -182,10 +185,9 @@ int drawer::entityDraw(game* gm, sf::RenderWindow& window) {
 
 
     }
-    return 0;
 }
 
-int drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
+void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
     double EntityCoordX, EntityCoordY;
 
 
@@ -241,7 +243,6 @@ int drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
             curentPlayerAngle += realPlayerAngle;
         }
     }
-        return 0;
 }
 
 

@@ -21,8 +21,8 @@ public:
     entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture);
     entity();
     ~entity();
-    int getEntityCoord(double* coordX, double* coordY);
-    int getEntityCoord(int* coordX, int* coordY);
+    bool getEntityCoord(double* coordX, double* coordY);
+    bool getEntityCoord(int* coordX, int* coordY);
     int getEntityDamage();
     int getEntityHitPoints();
     double getEntityAngle();
@@ -30,12 +30,11 @@ public:
     textureType getTextureType();
 
     //нанести урон объекту
-    int attackEntity(int damage);
-
+    bool attackEntity(int damage);
     //движение вдоль направления взгляда
-    int entityStep();
+    bool entityStep();
     //движение с учетом стен
-    int entityMapStep(GameMap* map);
+    void entityMapStep(GameMap* map);
     
     //виртуальная функция движения для наследников
     virtual bool entityMovment(GameMap* map, double playerX, double playerY) = 0;

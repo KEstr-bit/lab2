@@ -5,6 +5,7 @@
 class final
 {
 private:
+    sf::Font font;
     EndingOption gameEndType;       //Парамтр окончания игры
 
 public:
@@ -13,7 +14,7 @@ public:
     //Вывести сообщение об завершении игры
     void outputFinal(sf::RenderWindow& window);
     //Изменить параметр окончания
-    void changeFinal(EndingOption);
+    friend void changeFinal(EndingOption, final*);
 private:
     void displayMessage(sf::RenderWindow& window, const std::string& message, sf::Color color);
 };

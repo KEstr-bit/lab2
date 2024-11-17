@@ -56,10 +56,10 @@ bullet::~bullet()
 bool bullet::entityMovment(GameMap* map, double playerX, double playerY)
 {
     if (remainLen <= 0)
-        return 1;
+        return true;
 
     //уменьшение оставшегося пути при успешном движении
-    if(!this->entityStep());
+    if(!this->entityStep())
         remainLen -= speed;
 
     //если пуля врезалась в стену
@@ -68,5 +68,9 @@ bool bullet::entityMovment(GameMap* map, double playerX, double playerY)
         remainLen = 0;
     }
     
-    return 0;
+    return false;
+}
+
+void bullet::setRemLen(double len) {
+    remainLen = len;
 }

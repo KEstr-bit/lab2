@@ -20,13 +20,13 @@ public:
     player();
     ~player();
     //перемщение игрока
-    bool playerMapStep(СardinalDirections step_Direction, GameMap* map);
+    void playerMapStep(СardinalDirections step_Direction, GameMap* map);
     //поворот угла обзора
     void changeVision(СardinalDirections direct_pl);
     //смена оружия
-    int changeActiveWeapon();
+    void changeActiveWeapon();
     //выстрел 
-    int shot(std::map<int, entity*> &entiyes);
+    void shot(std::map<int, entity*> &entiyes);
 
     bool entityMovment(GameMap* map, double playerX, double playerY) override;
 };
