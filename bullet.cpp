@@ -21,7 +21,7 @@ bullet::bullet(double coordX, double coordY, double flightAngle, int damage, dou
     this->texture = texture;
     viewAngle = flightAngle;
     remainLen = 10;
-    size = 0.2;
+    size = 0.5;
 }
 
 bullet::bullet(double coordX, double coordY, double flightAngle, int damage, double speed)
@@ -32,7 +32,7 @@ bullet::bullet(double coordX, double coordY, double flightAngle, int damage, dou
     this->damage = damage;
     viewAngle = flightAngle;
     remainLen = 10;
-    size = 0.2;
+    size = 0.5;
     texture = Bullet1;
 }
 

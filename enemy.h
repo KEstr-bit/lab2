@@ -1,7 +1,7 @@
 #pragma once
 #include "entity.h"
 
-class enemy : public entity
+class enemy : public Entity
 {
 public:
     static const double VISSION_STEP; //шаг луча взгляда

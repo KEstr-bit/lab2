@@ -1,7 +1,7 @@
 #include "entity.h"
 #include "helper.h"
 
-entity::entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture)
+Entity::Entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture)
 {
     this->damage = damage;
     this->hitPoints = hitPoints;
@@ -14,7 +14,7 @@ entity::entity(double coordX, double coordY, double speed, int hitPoints, int da
     size = 1;
 }
 
-entity::entity()
+Entity::Entity()
 {
     coordX = 8;
     coordY = 1;
@@ -27,40 +27,40 @@ entity::entity()
     texture = Enemy1;
 }
 
-entity::~entity()
+Entity::~Entity()
 {
 }
 
-bool entity::getEntityCoord(double* coordX, double* coordY)
+bool Entity::getEntityCoord(double* coordX, double* coordY)
 {
     *coordX = this->coordX;
     *coordY = this->coordY;
     return hitPoints <= 0;
 }
 
-bool entity::getEntityCoord(int* coordX, int* coordY)
+bool Entity::getEntityCoord(int* coordX, int* coordY)
 {
     *coordX = helper::myRound(this->coordX);
     *coordY = helper::myRound(this->coordY);
     return hitPoints <= 0;
 }
 
-int entity::getEntityDamage()
+int Entity::getEntityDamage()
 {
     return damage;
 }
 
-int entity::getEntityHitPoints()
+int Entity::getEntityHitPoints()
 {
     return hitPoints;
 }
 
-double entity::getEntityAngle()
+double Entity::getEntityAngle()
 {
     return viewAngle;
 }
 
-bool entity::attackEntity(int damage)
+bool Entity::attackEntity(int damage)
 {
     if (hitPoints > 0)
     {
@@ -71,14 +71,14 @@ bool entity::attackEntity(int damage)
         return true;
 }
 
-bool entity::entityStep()
+bool Entity::entityStep()
 {
     coordX += helper::projectionToX(speed, helper::degToRad(viewAngle));
     coordY += helper::projectionToY(speed, helper::degToRad(viewAngle));
     return hitPoints <= 0;
 }
 
-void entity::entityMapStep(GameMap* map)
+void Entity::entityMapStep(GameMap* map)
 {
     double oldX, oldY;
     this->getEntityCoord(&oldX, &oldY);
@@ -113,12 +113,12 @@ void entity::entityMapStep(GameMap* map)
 
 
 
-double entity::getSize()
+double Entity::getSize()
 {
     return size;
 }
 
-textureType entity::getTextureType()
+textureType Entity::getTextureType()
 {
     return texture;
 }

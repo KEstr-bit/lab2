@@ -11,7 +11,7 @@
 using namespace std;
 using namespace sf;
 
-int entity::lastID = 0;
+int Entity::lastID = 0;
 
 void changeFinal(EndingOption option, final* f)
 {
@@ -45,6 +45,7 @@ int main()
     bool endFl = false;         //флажок работы игры
     bool shotfl = true;
     bool swapfl = true;
+    bool spawnfl = true;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -111,8 +112,14 @@ int main()
 
             if (GetAsyncKeyState(VK_F1))
             {
-                (*DOM)++;
+                if (spawnfl)
+                {
+                    (*DOM)++;
+                    spawnfl = false;
+                }
             }
+            else
+                spawnfl = true;
 
             //взаимодействие объектов
             DOM->interaction(wMap);      

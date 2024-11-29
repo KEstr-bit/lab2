@@ -10,9 +10,9 @@ weapon::weapon(int bulletCount, double bulletSpeed, int bulletDamage)
 
 weapon::weapon()
 {
-    bulletCount = 3;
+    bulletCount = 1;
     bulletSpeed = 0.05;
-    bulletDamage = 50;
+    bulletDamage = 100;
 }
 
 weapon::~weapon()

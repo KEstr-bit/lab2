@@ -67,7 +67,7 @@ void player::changeActiveWeapon()
     }
 };
 
-void player::shot(std::map<int, entity*> &entiyes)
+void player::shot(std::map<int, Entity*> &entiyes)
 {
     switch (activeWeapon)
     {

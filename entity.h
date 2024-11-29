@@ -1,8 +1,9 @@
 #pragma once
 #include "TexturePack.h"
 #include "GameMap.h"
+#include "helper.h"
 
-class entity
+class Entity
 {
 protected:
     double coordX;             //координата по X
@@ -18,9 +19,9 @@ protected:
 public: 
     static int lastID;          //последний записанный id
 
-    entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture);
-    entity();
-    ~entity();
+    Entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture);
+    Entity();
+    ~Entity();
     bool getEntityCoord(double* coordX, double* coordY);
     bool getEntityCoord(int* coordX, int* coordY);
     int getEntityDamage();
@@ -38,6 +39,12 @@ public:
     
     //виртуальная функция движения для наследников
     virtual bool entityMovment(GameMap* map, double playerX, double playerY) = 0;
+
+
+    bool intersects(Entity* other) const {
+        double dist = helper::calcDistance(coordX, coordY, other->coordX, other->coordY);
+        return dist < (size + other->size * 0.7) / 2;
+    }
 
 
 };

@@ -1,6 +1,6 @@
 #include "game.h"
 #include "bullet.h"
-
+#include "QuadTree.h"
 game::game()
 {
     you = new player();
@@ -13,13 +13,13 @@ game::game()
         tPack = new TexturePack(1);
     }
 
-    entities.emplace(entity::lastID, new enemy());
-    entities.emplace(entity::lastID, new enemy(1, 5, 0.01, 100, 50));
+    entities.emplace(Entity::lastID, new enemy());
+    entities.emplace(Entity::lastID, new enemy(1, 5, 0.01, 100, 50));
 
     bullet bul1;
     bullet bul2;
 
-    entities.emplace(entity::lastID, new bullet(bul1 + bul2));
+    entities.emplace(Entity::lastID, new bullet(bul1 + bul2));
 }
 
 game::~game()
@@ -44,7 +44,7 @@ void game::allEntityMovment(GameMap* map)
     }
 }
 
-entity* game::findEntityByID(int id)
+Entity* game::findEntityByID(int id)
 {
     auto e = entities.find(id);
     if (e == entities.end())
@@ -53,7 +53,7 @@ entity* game::findEntityByID(int id)
     return e->second;
 }
 
-entity* game::getEntityByIndex(int index)
+Entity* game::getEntityByIndex(int index)
 {
     if (index >= entities.size())
         return nullptr;
@@ -76,10 +76,37 @@ int game::getCountEntity()
 
 void game::interaction(GameMap* map)
 {
-    this->allEntityMovment(map);                    //движение всех лбъектов
+    this->allEntityMovment(map);                        //движение всех лбъектов
 
-    int monsterCoordX, monsterCoordY;               //координаты врагов
-    int monstersMap[map->MAPSIZEX][map->MAPSIZEY];  //карта id врагов
+    int monsterCoordX, monsterCoordY;                   //координаты врагов
+    
+    QuadTree quadTree(0, 0, 0, GameMap::MAPSIZEX, GameMap::MAPSIZEY);
+
+    for (auto it = entities.begin(); it != entities.end(); it++)
+    {
+        quadTree.insert(it->second);
+    }
+
+    for (auto it = entities.begin(); it != entities.end(); it++)
+    {
+        if (bullet* b = dynamic_cast<bullet*>(it->second))
+        {
+            std::vector<Entity*> potentialCollisions = quadTree.retrieve(b);
+            for (int i = 0; i < potentialCollisions.size(); i++)
+            {
+                if (b == potentialCollisions[i])
+                    continue;
+
+                if (b->intersects(potentialCollisions[i]))
+                {
+                    potentialCollisions[i]->attackEntity(b->getEntityDamage());
+                    b->setRemLen(0);
+                    break;
+                }
+            }
+        }
+    }
+    /*int monstersMap[map->MAPSIZEX][map->MAPSIZEY];      //карта id врагов
 
     for (int i = map->MAPSIZEX * map->MAPSIZEY - 1; i >= 0; i--)
     {
@@ -105,7 +132,7 @@ void game::interaction(GameMap* map)
 
     if (id != -1)
     {
-        entity* e = this->findEntityByID(id);
+        Entity* e = this->findEntityByID(id);
         this->you->attackEntity(e->getEntityDamage());
     }
 
@@ -130,7 +157,7 @@ void game::interaction(GameMap* map)
                 continue;
 
             //поиск врага по id
-            entity* e = this->findEntityByID(id);
+            Entity* e = this->findEntityByID(id);
 
             //нанесение урона врагу
             e->attackEntity(b->getEntityDamage());
@@ -139,4 +166,5 @@ void game::interaction(GameMap* map)
             break;
         }
     }
+    */
 }

@@ -2,11 +2,17 @@
 #include "helper.h"
 #include "bullet.h"
 
-void shotGun::shot(double coordX, double coordY, double shotAngle, std::map<int, entity*>& entiyes)
+void shotGun::shot(double coordX, double coordY, double shotAngle, std::map<int, Entity*>& entiyes)
 {
     //смещение угла полета
-    double sideShift = SPREAD_ANGLE / (bulletCount - 1);
-    shotAngle -= SPREAD_ANGLE / 2;
+    double sideShift = 0;
+    if (bulletCount > 1)
+    {
+        sideShift = SPREAD_ANGLE / (bulletCount - 1);
+        shotAngle -= SPREAD_ANGLE / 2;
+    }
+
+    
 
     for (int i = 0; i < bulletCount; i++)
     {
@@ -18,7 +24,7 @@ void shotGun::shot(double coordX, double coordY, double shotAngle, std::map<int,
         y += coordY;
 
         //инициализация новой пули
-        entiyes.emplace(entity::lastID, new bullet(x, y, shotAngle, bulletDamage, bulletSpeed));
+        entiyes.emplace(Entity::lastID, new bullet(x, y, shotAngle, bulletDamage, bulletSpeed));
 
         shotAngle += sideShift;
     }

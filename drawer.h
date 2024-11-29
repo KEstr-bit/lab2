@@ -22,7 +22,7 @@ private:
 	//отрисовка вертикальной полосы
 	void drawVerticalSegment(sf::RenderWindow& window, float length, float width, float low_X, float low_Y, sf::Color color);
 	//зависимая сортировка
-	void dependSorting(std::vector<double>& mainMas, std::vector<entity*>& sideMas, int left, int right);
+	void dependSorting(std::vector<double>& mainMas, std::vector<Entity*>& sideMas, int left, int right);
 	//вычслить угол поворта
 	double getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine);
 

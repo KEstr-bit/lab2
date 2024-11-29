@@ -2,7 +2,7 @@
 #include "helper.h"
 #include "bullet.h"
 
-void avtomat::shot(double coordX, double coordY, double shotAngle, std::map<int, entity*>& entiyes)
+void avtomat::shot(double coordX, double coordY, double shotAngle, std::map<int, Entity*>& entiyes)
 {
     //смещение пули от точки выстрела
     double sideShift = 0;
@@ -19,7 +19,7 @@ void avtomat::shot(double coordX, double coordY, double shotAngle, std::map<int,
         y += coordY;
 
         //инициализация новой пули
-        entiyes.emplace(entity::lastID, new bullet(x, y, shotAngle, this->bulletDamage, this->bulletSpeed));
+        entiyes.emplace(Entity::lastID, new bullet(x, y, shotAngle, this->bulletDamage, this->bulletSpeed));
 
     }
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "entity.h"
 
-class bullet : public entity
+class bullet : public Entity
 {
 private:
     double remainLen;   //оставшаяся длина пути

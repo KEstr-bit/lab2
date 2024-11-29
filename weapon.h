@@ -15,6 +15,6 @@ public:
     ~weapon();
 
     //выстрел из оружия
-    virtual void shot(double coordX, double coordY, double shotAngle, std::map<int, entity*>& entiyes) = 0;
+    virtual void shot(double coordX, double coordY, double shotAngle, std::map<int, Entity*>& entiyes) = 0;
 
 };

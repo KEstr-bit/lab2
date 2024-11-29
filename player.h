@@ -4,7 +4,7 @@
 #include "avtomat.h"
 #include "helper.h"
 
-class player : public entity
+class player : public Entity
 {
 private:
     WeaponOption activeWeapon;  //активное оружие
@@ -26,7 +26,7 @@ public:
     //смена оружия
     void changeActiveWeapon();
     //выстрел 
-    void shot(std::map<int, entity*> &entiyes);
+    void shot(std::map<int, Entity*> &entiyes);
 
     bool entityMovment(GameMap* map, double playerX, double playerY) override;
 };

@@ -45,7 +45,7 @@ void drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, flo
 }
 
 
-void drawer::dependSorting(std::vector<double> &mainMas, std::vector<entity*> &sideMas, int left, int right) {
+void drawer::dependSorting(std::vector<double> &mainMas, std::vector<Entity*> &sideMas, int left, int right) {
     //Указатели в начало и в конец массива
     int i = left, j = right;
 
@@ -115,12 +115,12 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
         throw std::logic_error("В игре не осталось entity");
 
     std::vector<double> distToEntity;       //вектор расстояний до объектов
-    std::vector<entity*> pointersEntity;    //вектор указателей на объекты
+    std::vector<Entity*> pointersEntity;    //вектор указателей на объекты
 
     //заполнение векторов distToEntity и pointersEntity
     for (int i = 0; i < countEnt; i++)
     {
-        entity* e = gm->getEntityByIndex(i);
+        Entity* e = gm->getEntityByIndex(i);
         e->getEntityCoord(&EntityCoordX, &EntityCoordY);
         distToEntity.emplace_back(helper::calcDistance(EntityCoordX, EntityCoordY, PlayerCoordX, PlayerCoordY));
         pointersEntity.emplace_back(e);
@@ -134,7 +134,7 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
     for (int i = 0; i < countEnt; i++)
     {
         double distance = distToEntity[i];
-        entity* e = pointersEntity[i];
+        Entity* e = pointersEntity[i];
 
         e->getEntityCoord(&EntityCoordX, &EntityCoordY);
 

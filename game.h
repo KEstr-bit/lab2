@@ -12,14 +12,14 @@ public:
     player* you;            //игрок
     TexturePack* tPack;     //хранилище текстур
 private:
-    std::map<int, entity*> entities;    //вектор объектов
+    std::map<int, Entity*> entities;    //вектор объектов
 public:
     game();
     ~game();
     //поиск entity по id
-    entity* findEntityByID(int id);
+    Entity* findEntityByID(int id);
     //получение entity по индексу
-    entity* getEntityByIndex(int index);
+    Entity* getEntityByIndex(int index);
     //выстрел игрока
     void playerShot();
     int getCountEntity();
@@ -37,7 +37,7 @@ public:
         x += 2 * cos(helper::degToRad(a));
         y += 2 * sin(helper::degToRad(a));
 
-        entities.emplace(entity::lastID, new enemy(x, y, 0.01, 100, 10));
+        entities.emplace(Entity::lastID, new enemy(x, y, 0.01, 100, 10));
         return *this;
     }
 
