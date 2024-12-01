@@ -53,7 +53,7 @@ bullet::~bullet()
 }
 
 
-bool bullet::entityMovment(GameMap* map, double playerX, double playerY)
+bool bullet::entityMovment(GameMap* map, std::map<int, Entity*>& entities)
 {
     if (remainLen <= 0)
         return true;

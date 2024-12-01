@@ -25,12 +25,47 @@ GameMap::~GameMap()
 {
 }
 
+int GameMap::whatIsWall(int coordX, int coordY)
+{
+    if (coordX < 0 || coordX >= MAPSIZEX || coordY < 0 || coordY >= MAPSIZEY) {
+        return 0; // Out of bounds is considered a wall
+    }
+
+    switch (worldMap[coordX][coordY])
+    {
+    case '#':
+        return 0;
+        break;
+    case 'w':
+        return 1;
+        break;
+    case 'k':
+        return 2;
+        break;
+    case 'n':
+        return 3;
+        break;
+    case 'd':
+        return 4;
+        break;
+    default:
+        return 0;
+    }
+}
+
+int GameMap::whatIsWall(double coordX, double coordY)
+{
+    int x = helper::myRound(coordX);
+    int y = helper::myRound(coordY);
+    return whatIsWall(x, y);
+}
+
 bool GameMap::isWall(int coordX, int coordY)
 {
     if (coordX < 0 || coordX >= MAPSIZEX || coordY < 0 || coordY >= MAPSIZEY) {
         return true; // Out of bounds is considered a wall
     }
-    return worldMap[coordX][coordY] == '#';
+    return worldMap[coordX][coordY] != '.';
 };
 
 bool GameMap::isWall(double coord_X, double coord_Y)

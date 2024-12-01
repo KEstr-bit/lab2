@@ -9,7 +9,7 @@ void avtomat::shot(double coordX, double coordY, double shotAngle, std::map<int,
 
     for (int i = 0; i < bulletCount; i++)
     {
-        sideShift += 10 * bulletSpeed;
+        sideShift += 20 * bulletSpeed;
 
         double x, y;
         x = helper::projectionToX(sideShift, helper::degToRad(shotAngle));

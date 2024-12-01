@@ -14,8 +14,9 @@ protected:
     double viewAngle;          //угол обзора
     double size;               //размер
     textureType texture;       //текстура 
-
-
+    int textureX;
+    int textureY;
+    bool eventFl = false;
 public: 
     static int lastID;          //последний записанный id
 
@@ -29,16 +30,18 @@ public:
     double getEntityAngle();
     double getSize();
     textureType getTextureType();
-
+    int getTextureX();
+    int getTextureY();
     //нанести урон объекту
-    bool attackEntity(int damage);
+    void attackEntity(int damage);
     //движение вдоль направления взгляда
+    bool isAlive();
     bool entityStep();
     //движение с учетом стен
     void entityMapStep(GameMap* map);
     
     //виртуальная функция движения для наследников
-    virtual bool entityMovment(GameMap* map, double playerX, double playerY) = 0;
+    virtual bool entityMovment(GameMap* map, std::map<int, Entity*>& entities) = 0;
 
 
     bool intersects(Entity* other) const {

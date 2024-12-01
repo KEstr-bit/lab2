@@ -3,6 +3,7 @@
 #include "GameMap.h"
 #include "game.h"
 #include "entity.h"
+#include <vector>
 
 using namespace sf;
 
@@ -18,9 +19,9 @@ public:
 
 private:
 	//отрисовка текстуры по координатам
-	void drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, float width, float height);
+	void drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, int textureX, int textureY, float width, float height);
 	//отрисовка вертикальной полосы
-	void drawVerticalSegment(sf::RenderWindow& window, float length, float width, float low_X, float low_Y, sf::Color color);
+	void drawVerticalSegment(sf::RenderWindow& window, float length, float stripIndex, float x, float y, const sf::Texture* texture);
 	//зависимая сортировка
 	void dependSorting(std::vector<double>& mainMas, std::vector<Entity*>& sideMas, int left, int right);
 	//вычслить угол поворта
@@ -32,7 +33,7 @@ public:
 	static const int SCREEN_HEIGHT = 600;	//высота экрана
 
 private:
-	double mas[SCREEN_WIDTH];				//массив  длин вертикальных полос
+	float mas[SCREEN_WIDTH][2];				//массив  длин вертикальных полос
 
 
 };

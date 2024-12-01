@@ -1,6 +1,6 @@
 #include "player.h"
 
-player::player(double coordX, double coordY, double speed, int hitPoints, int damage)
+Player::Player(double coordX, double coordY, double speed, int hitPoints, int damage)
 {
     this->damage = damage;
     this->hitPoints = hitPoints;
@@ -15,7 +15,7 @@ player::player(double coordX, double coordY, double speed, int hitPoints, int da
     viewAngle = 0;
 }
 
-player::player()
+Player::Player()
 {
     coordX = 7;
     coordY = 2;
@@ -30,12 +30,12 @@ player::player()
     viewAngle = 180;
 }
 
-player::~player()
+Player::~Player()
 {
 }
 
 
-void player::playerMapStep(СardinalDirections stepDirection, GameMap* map)
+void Player::playerMapStep(СardinalDirections stepDirection, GameMap* map)
 {
     double oldAngle = viewAngle;
 
@@ -54,7 +54,7 @@ void player::playerMapStep(СardinalDirections stepDirection, GameMap* map)
 }
 
 
-void player::changeActiveWeapon() 
+void Player::changeActiveWeapon() 
 {
     switch (activeWeapon)
     {
@@ -67,7 +67,7 @@ void player::changeActiveWeapon()
     }
 };
 
-void player::shot(std::map<int, Entity*> &entiyes)
+void Player::shot(std::map<int, Entity*> &entiyes)
 {
     switch (activeWeapon)
     {
@@ -80,19 +80,11 @@ void player::shot(std::map<int, Entity*> &entiyes)
     }
 };
 
-void player::changeVision(СardinalDirections direct)
+void Player::changeVision(double angle)
 {
-    switch (direct)
-    {
-    case East:
-        viewAngle -= VISION_SPEED;
-        break;
-    case West:
-        viewAngle += VISION_SPEED;
-        break;
-    default:
-        break;
-    };
+
+    viewAngle -= angle;
+
 
     if (viewAngle > 360)
     {
@@ -106,7 +98,7 @@ void player::changeVision(СardinalDirections direct)
 
 };
 
-bool player::entityMovment(GameMap* map, double playerX, double playerY)
+bool Player::entityMovment(GameMap* map, std::map<int, Entity*>& entities)
 {
     return false;
 }

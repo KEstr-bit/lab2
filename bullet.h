@@ -14,7 +14,7 @@ public:
     ~bullet();
 
     //движение пули
-    bool entityMovment(GameMap* map, double playerX, double playerY) override;
+    bool entityMovment(GameMap* map, std::map<int, Entity*>& entities) override;
     //установка оставшейся длины
     void setRemLen(double len);
 

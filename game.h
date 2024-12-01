@@ -9,7 +9,7 @@
 class game
 {
 public:
-    player* you;            //игрок
+    Player* you;            //игрок
     TexturePack* tPack;     //хранилище текстур
 private:
     std::map<int, Entity*> entities;    //вектор объектов
@@ -37,7 +37,7 @@ public:
         x += 2 * cos(helper::degToRad(a));
         y += 2 * sin(helper::degToRad(a));
 
-        entities.emplace(Entity::lastID, new enemy(x, y, 0.01, 100, 10));
+        entities.emplace(Entity::lastID, new enemy(x, y, 0.01, 100, 10, you));
         return *this;
     }
 

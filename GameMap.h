@@ -17,5 +17,7 @@ public:
 	//проверка на стену
 	bool isWall(int coord_X, int coord_Y);
 	bool isWall(double coord_X, double coord_Y);
+	int whatIsWall(int coordX, int coordY);
+	int whatIsWall(double coordX, double coordY);
 };
 

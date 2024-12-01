@@ -8,6 +8,7 @@
 #include "GameMap.h"
 #include "entity.h"
 
+
 using namespace std;
 using namespace sf;
 
@@ -18,19 +19,21 @@ void changeFinal(EndingOption option, final* f)
     f->gameEndType = option;
 }
 
+
 int main()
 {
+    srand(time(NULL));
     std::string worldMap[GameMap::MAPSIZEX];
-    worldMap[0] += "##########";
+    worldMap[0] += "##k####d##";
     worldMap[1] += "#........#";
-    worldMap[2] += "#........#";
-    worldMap[3] += "#...##...#";
-    worldMap[4] += "#...##...#";
-    worldMap[5] += "#...##...#";
-    worldMap[6] += "#...##...#";
+    worldMap[2] += "#........w";
+    worldMap[3] += "w...##...#";
+    worldMap[4] += "#...#d...k";
+    worldMap[5] += "#...k#...#";
+    worldMap[6] += "w...#k...w";
     worldMap[7] += "#..#..#..#";
-    worldMap[8] += "#........#";
-    worldMap[9] += "##########";
+    worldMap[8] += "#........n";
+    worldMap[9] += "##d#######";
 
     GameMap* wMap;
     wMap = new GameMap(worldMap);
@@ -47,11 +50,34 @@ int main()
     bool swapfl = true;
     bool spawnfl = true;
 
+
+    window.setMouseCursorVisible(false);
+    sf::Mouse::setPosition(sf::Vector2i(drawer::SCREEN_WIDTH/2, drawer::SCREEN_HEIGHT/2), window);
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) 
+                {
+                    if (shotfl)
+                    {
+                        DOM->playerShot();
+                        shotfl = false;
+                    }
+                }
+            else
+                shotfl = true;
+            
+
+            if (event.type == sf::Event::MouseMoved) {
+                sf::Vector2i currentMousePosition = sf::Mouse::getPosition(window);
+                int deltaX = currentMousePosition.x - drawer::SCREEN_WIDTH/2;
+                DOM->you->changeVision(deltaX*0.1);
+                sf::Mouse::setPosition(sf::Vector2i(drawer::SCREEN_WIDTH/2, drawer::SCREEN_HEIGHT/2), window);
+            }
         }
         
         window.clear(sf::Color::Black);
@@ -59,19 +85,19 @@ int main()
         if (!endFl)
         {
             //обработка действий игрока
-            if (GetAsyncKeyState(VK_UP))
+            if (GetAsyncKeyState(0X57))
             {
                 DOM->you->playerMapStep(North, wMap);
             }
-            if (GetAsyncKeyState(VK_DOWN))
+            if (GetAsyncKeyState(0X53))
             {
                 DOM->you->playerMapStep(South, wMap);
             }
-            if (GetAsyncKeyState(VK_RIGHT))
+            if (GetAsyncKeyState(0X44))
             {
                 DOM->you->playerMapStep(East, wMap);
             }
-            if (GetAsyncKeyState(VK_LEFT))
+            if (GetAsyncKeyState(0X41))
             {
 
                 DOM->you->playerMapStep(West, wMap);
@@ -88,27 +114,6 @@ int main()
             else
                 swapfl = true;
 
-            if (GetAsyncKeyState(VK_LSHIFT))
-            {
-                if (shotfl)
-                {
-                    DOM->playerShot();
-                    shotfl = false;
-                }
-            }
-            else
-                shotfl = true;
-
-            if (GetAsyncKeyState(0X41))
-            {
-                DOM->you->changeVision(West);
-
-            }
-
-            if (GetAsyncKeyState(0X44))
-            {
-                DOM->you->changeVision(East);
-            }
 
             if (GetAsyncKeyState(VK_F1))
             {

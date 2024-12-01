@@ -6,15 +6,18 @@ const double drawer::RAY_STEP = 0.01;
 drawer::drawer()
 {
     for (int i = 0; i < SCREEN_WIDTH; i++)
-        mas[i] = 0;
+    {
+        mas[i][0] = 0;
+        mas[i][1] = 0;
+    }
 }
 
 drawer::~drawer()
 {
 }
 
-void drawer::drawVerticalSegment(sf::RenderWindow& window, float length, float width, float x, float y, sf::Color color) {
-    //вертикальный отрезок
+void drawer::drawVerticalSegment(sf::RenderWindow& window, float length, float stripIndex, float x, float y, const sf::Texture* texture) {
+    /*вертикальный отрезок
     sf::RectangleShape segment(sf::Vector2f(width, length));
 
     segment.setPosition(x, y);
@@ -24,20 +27,37 @@ void drawer::drawVerticalSegment(sf::RenderWindow& window, float length, float w
 
     //рисование
     window.draw(segment);
+    */
+    sf::Sprite stripeSprite(*texture);
+
+    // Устанавливаем текстуру только для нужной полосы шириной в 1 пиксель
+    sf::IntRect textureRect(stripIndex, 0, 1, (*texture).getSize().y); // 1 пиксель шириной, вся высота текстуры
+    stripeSprite.setTextureRect(textureRect);
+
+    // Устанавливаем позицию спрайта
+    stripeSprite.setPosition(x, y);
+
+    // Масштабируем спрайт по высоте, чтобы сделать полоску нужной длины
+    stripeSprite.setScale(1.0, length / (*texture).getSize().y);
+
+    // Рисуем полоску в окне
+    window.draw(stripeSprite);
 }
 
 
-void drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, float width, float height) {
+void drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, int textureX, int textureY, float width, float height) {
     // Создаем спрайт и устанавливаем текстуру
-    sf::Sprite sprite;
-    sprite.setTexture(*texture);
+    sf::Sprite sprite(*texture);
+
+    sf::IntRect textureRect((textureX/4)*128, textureY * 128, 128, 128);
+    sprite.setTextureRect(textureRect);
 
     // Устанавливаем позицию спрайта
     sprite.setPosition(x, y);
 
     // Рассчитываем масштаб для изменения размера
-    float scaleX = width / (*texture).getSize().x;  // Масштаб по оси X
-    float scaleY = height / (*texture).getSize().y; // Масштаб по оси Y
+    float scaleX = width / 128;  // Масштаб по оси X
+    float scaleY = height / 128; // Масштаб по оси Y
     sprite.setScale(scaleX, scaleY);                // Применяем масштаб
 
     // Рисуем спрайт в окне
@@ -154,7 +174,7 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
         spriteSize *= SCREEN_HEIGHT / distance;
 
         //отрисовка объекта
-        drawImage(window, gm->tPack->getTexture(e->getTextureType()), vertLineNum - spriteSize / 2, (SCREEN_HEIGHT - spriteSize) / 2, spriteSize, spriteSize);
+        drawImage(window, gm->tPack->getTexture(e->getTextureType()), vertLineNum - spriteSize / 2, (SCREEN_HEIGHT - spriteSize) / 2, e->getTextureX(), e->getTextureY(), spriteSize, spriteSize);
 
         vertLineNum -= spriteSize / 2;
         int rightBorder = vertLineNum + spriteSize + 2;
@@ -169,17 +189,17 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
         for (; vertLineNum < rightBorder; vertLineNum++)
         {
             //если вертикальная полоса находится позади объекта
-            if (mas[vertLineNum] > distance)
+            if (mas[vertLineNum][0] > distance)
                 continue;
 
-            double len = SCREEN_HEIGHT / distance;
+            double len = SCREEN_HEIGHT / mas[vertLineNum][0];
 
             //вычисление цвета вертикальной полосы
-            double Ws = 255 / sqrt(mas[vertLineNum]);
+            double Ws = 255 / sqrt(mas[vertLineNum][0]);
             if (Ws > 255)
                 Ws = 255;
 
-            drawVerticalSegment(window, len, 1, vertLineNum, (SCREEN_HEIGHT - len) / 2, sf::Color(Ws, Ws, Ws));
+            drawVerticalSegment(window, len, mas[vertLineNum][1], vertLineNum, (SCREEN_HEIGHT - len) / 2, gm->tPack->getTexture(WALL1));
         }
 
 
@@ -222,16 +242,26 @@ void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
                     //исправление эффекта рыбьего глаза по оси Y
                     distance = distance * cos(helper::degToRad(curentPlayerAngle - realPlayerAngle));
 
-                    mas[i] = distance;
+                    
 
+                    
                     double len = SCREEN_HEIGHT / distance;
 
                     //цвет полосы
-                    double Ws = 255 / sqrt(distance);
-                    if (Ws > 255)
-                        Ws = 255;
+                    float stripIndex;
+                    float dx = x - helper::myRound(x) + 0.5;
+                    float dy = y - helper::myRound(y) + 0.5;
+                    stripIndex = (dx + dy) * 128;
+                    if (stripIndex > 128)
+                        stripIndex -= 128;
 
-                    drawVerticalSegment(window, len, 1, i, (SCREEN_HEIGHT - len)/2, sf::Color(Ws, Ws, Ws));
+                    stripIndex += map->whatIsWall(x, y) * 128;
+
+                    mas[i][0] = distance;
+                    mas[i][1] = stripIndex;
+
+
+                    drawVerticalSegment(window, len, stripIndex, i, (SCREEN_HEIGHT - len)/2, gm->tPack->getTexture(WALL1));
 
                     flNotWall = false;
                 }

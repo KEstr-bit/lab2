@@ -6,6 +6,7 @@ enum textureType
 {
 	Enemy1,
 	Bullet1,
+	WALL1,
 	COUNT_TEXTURE
 };
 

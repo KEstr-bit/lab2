@@ -4,7 +4,7 @@
 #include "avtomat.h"
 #include "helper.h"
 
-class player : public Entity
+class Player : public Entity
 {
 private:
     WeaponOption activeWeapon;  //активное оружие
@@ -16,17 +16,17 @@ public:
     avtomat* secondGun;                 //оружие игрока2
 
 public:
-    player(double coordX, double coordY, double speed, int hitPoints, int damage);
-    player();
-    ~player();
+    Player(double coordX, double coordY, double speed, int hitPoints, int damage);
+    Player();
+    ~Player();
     //перемщение игрока
     void playerMapStep(СardinalDirections step_Direction, GameMap* map);
     //поворот угла обзора
-    void changeVision(СardinalDirections direct_pl);
+    void changeVision(double angle);
     //смена оружия
     void changeActiveWeapon();
     //выстрел 
     void shot(std::map<int, Entity*> &entiyes);
 
-    bool entityMovment(GameMap* map, double playerX, double playerY) override;
+    bool entityMovment(GameMap* map, std::map<int, Entity*>& entities) override;
 };

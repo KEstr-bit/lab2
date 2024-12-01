@@ -12,6 +12,8 @@ Entity::Entity(double coordX, double coordY, double speed, int hitPoints, int da
     viewAngle = 0;
     lastID++;
     size = 1;
+    textureX = 0;
+    textureY = 0;
 }
 
 Entity::Entity()
@@ -25,10 +27,22 @@ Entity::Entity()
     lastID++;
     size = 1;
     texture = Enemy1;
+    textureX = 0;
+    textureY = 0;
 }
 
 Entity::~Entity()
 {
+}
+
+int Entity::getTextureX()
+{
+    return textureX;
+}
+
+int Entity::getTextureY()
+{
+    return textureY;
 }
 
 bool Entity::getEntityCoord(double* coordX, double* coordY)
@@ -60,15 +74,20 @@ double Entity::getEntityAngle()
     return viewAngle;
 }
 
-bool Entity::attackEntity(int damage)
+void Entity::attackEntity(int damage)
 {
-    if (hitPoints > 0)
+    hitPoints -= damage;
+    if (!this->isAlive())
     {
-        hitPoints -= damage;
-        return false;
+        textureY = 1;
+        textureX = 0;
+        eventFl = true;
     }
-    else
-        return true;
+}
+
+bool Entity::isAlive()
+{
+    return hitPoints >= 0;
 }
 
 bool Entity::entityStep()

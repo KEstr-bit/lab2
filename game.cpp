@@ -3,7 +3,7 @@
 #include "QuadTree.h"
 game::game()
 {
-    you = new player();
+    you = new Player();
 
     try {
         tPack = new TexturePack();
@@ -13,8 +13,8 @@ game::game()
         tPack = new TexturePack(1);
     }
 
-    entities.emplace(Entity::lastID, new enemy());
-    entities.emplace(Entity::lastID, new enemy(1, 5, 0.01, 100, 50));
+    entities.emplace(Entity::lastID, new enemy(you));
+    entities.emplace(Entity::lastID, new enemy(1, 5, 0.01, 100, 50, you));
 
     bullet bul1;
     bullet bul2;
@@ -35,7 +35,7 @@ void game::allEntityMovment(GameMap* map)
     for (auto e = entities.begin(); e != entities.end();)
     {
         //если entity больше не может двигаться
-        if (e->second->entityMovment(map, playerCoordX, playerCoordY))
+        if (e->second->entityMovment(map, entities))
         {
             delete e->second;
             e = entities.erase(e);
