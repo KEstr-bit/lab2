@@ -5,5 +5,7 @@ class avtomat : public weapon
 {
 public:
     //переопределение выстрела
-    void shot(double coordX, double coordY, double shotAngle, std::map<int, Entity*> &entiyes) override;
+    avtomat(bool friendly);
+    avtomat();
+    bool shot(double coordX, double coordY, double shotAngle, std::vector<Entity*>& entiyes) override;
 };

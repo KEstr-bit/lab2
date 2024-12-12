@@ -14,23 +14,32 @@ public:
 	void drawWalls(GameMap* map, game* gm, sf::RenderWindow& window);
 	//отрисовка объектов
 	void entityDraw(game* gm, sf::RenderWindow& window);
+
+	void drawPlayerWeapon(game* gm, sf::RenderWindow& window)
+	{
+		gm->you->getActiveWeapon()->getTextureX();
+		gm->you->getActiveWeapon()->getTextureY();
+		drawImage(window, gm->tPack->getTexture(gm->you->getActiveWeapon()->texture), SCREEN_WIDTH - SCREEN_HEIGHT,
+			SCREEN_HEIGHT / 3, gm->you->getActiveWeapon()->getTextureX(), gm->you->getActiveWeapon()->getTextureY(), SCREEN_HEIGHT/1.5, SCREEN_HEIGHT/1.5);
+	}
 	drawer();
 	~drawer();
 
 private:
 	//отрисовка текстуры по координатам
-	void drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, int textureX, int textureY, float width, float height);
+	void drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, float textureX, float textureY, float width, float
+	               height);
 	//отрисовка вертикальной полосы
 	void drawVerticalSegment(sf::RenderWindow& window, float length, float stripIndex, float x, float y, const sf::Texture* texture);
 	//зависимая сортировка
 	void dependSorting(std::vector<double>& mainMas, std::vector<Entity*>& sideMas, int left, int right);
 	//вычслить угол поворта
 	double getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine);
-
+	
 public:
 	static const double RAY_STEP;			//шаг луча
-	static const int SCREEN_WIDTH = 800;	//ширина экрана
-	static const int SCREEN_HEIGHT = 600;	//высота экрана
+	static const int SCREEN_WIDTH = 640;	//ширина экрана
+	static const int SCREEN_HEIGHT = 360;	//высота экрана
 
 private:
 	float mas[SCREEN_WIDTH][2];				//массив  длин вертикальных полос

@@ -4,29 +4,29 @@ Player::Player(double coordX, double coordY, double speed, int hitPoints, int da
 {
     this->damage = damage;
     this->hitPoints = hitPoints;
-    this->coordX = coordX;
-    this->coordY = coordY;
+    this->cordX = coordX;
+    this->cordY = coordY;
     this->speed = speed;
-
+    size = 0.5;
     activeWeapon = ShotGun;
-    firstGun = new shotGun();
-    secondGun = new avtomat();
-
+    firstGun = new shotGun(true);
+    secondGun = new avtomat(true);
+    friendly = true;
     viewAngle = 0;
 }
 
 Player::Player()
 {
-    coordX = 7;
-    coordY = 2;
+    cordX = 7;
+    cordY = 2;
     hitPoints = 100;
     speed = 0.05;
     damage = 50;
-
+    size = 0.5;
     activeWeapon = ShotGun;
-    firstGun = new shotGun();
-    secondGun = new avtomat();
-
+    firstGun = new shotGun(true);
+    secondGun = new avtomat(true);
+    friendly = true;
     viewAngle = 180;
 }
 
@@ -65,19 +65,31 @@ void Player::changeActiveWeapon()
         activeWeapon = ShotGun;
         break;
     }
+    this->getActiveWeapon()->setAnimation(3);
 };
 
-void Player::shot(std::map<int, Entity*> &entiyes)
+void Player::shot(std::vector<Entity*>& entiyes)
 {
+
     switch (activeWeapon)
     {
     case ShotGun:   
-        this->firstGun->shot(coordX, coordY, viewAngle, entiyes);
+        this->firstGun->shot(cordX, cordY, viewAngle, entiyes);
         break;
     case Automat:
-        this->secondGun->shot(coordX, coordY, viewAngle, entiyes);
+        this->secondGun->shot(cordX, cordY, viewAngle, entiyes);
         break;
     }
+}
+
+weapon* Player::getActiveWeapon()
+{
+	switch (activeWeapon)
+	{
+	case 0: return firstGun;
+	case 1: return secondGun;
+	}
+	return nullptr;
 };
 
 void Player::changeVision(double angle)
@@ -98,7 +110,9 @@ void Player::changeVision(double angle)
 
 };
 
-bool Player::entityMovment(GameMap* map, std::map<int, Entity*>& entities)
+bool Player::update(GameMap* map, std::vector<Entity*>& entities)
 {
+    firstGun->update();
+    secondGun->update();
     return false;
 }

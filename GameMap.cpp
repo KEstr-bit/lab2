@@ -68,9 +68,9 @@ bool GameMap::isWall(int coordX, int coordY)
     return worldMap[coordX][coordY] != '.';
 };
 
-bool GameMap::isWall(double coord_X, double coord_Y)
+bool GameMap::isWall(double cord_X, double cord_Y)
 {
-    int x = helper::myRound(coord_X);
-    int y = helper::myRound(coord_Y);
+    int x = helper::myRound(cord_X);
+    int y = helper::myRound(cord_Y);
     return isWall(x, y);
 };

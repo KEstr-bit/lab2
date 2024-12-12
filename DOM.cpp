@@ -12,166 +12,168 @@
 using namespace std;
 using namespace sf;
 
-int Entity::lastID = 0;
-
-void changeFinal(EndingOption option, final* f)
+int Entity::last_id = 0;
+const float Entity::FRAME_SPEED = 0.25;
+void change_final(const EndingOption option, final* f)
 {
-    f->gameEndType = option;
+	f->gameEndType = option;
 }
 
 
 int main()
 {
-    srand(time(NULL));
-    std::string worldMap[GameMap::MAPSIZEX];
-    worldMap[0] += "##k####d##";
-    worldMap[1] += "#........#";
-    worldMap[2] += "#........w";
-    worldMap[3] += "w...##...#";
-    worldMap[4] += "#...#d...k";
-    worldMap[5] += "#...k#...#";
-    worldMap[6] += "w...#k...w";
-    worldMap[7] += "#..#..#..#";
-    worldMap[8] += "#........n";
-    worldMap[9] += "##d#######";
+	srand(time(nullptr));
+	std::string world_map[GameMap::MAPSIZEX];
+	world_map[0] += "##k####d##";
+	world_map[1] += "#........#";
+	world_map[2] += "#........w";
+	world_map[3] += "w........#";
+	world_map[4] += "#........k";
+	world_map[5] += "#..#k....#";
+	world_map[6] += "w...#k...w";
+	world_map[7] += "#..#..#..#";
+	world_map[8] += "#........n";
+	world_map[9] += "##########";
 
-    GameMap* wMap;
-    wMap = new GameMap(worldMap);
-    drawer* dr;
-    dr = new drawer();
-    final* ending;
-    ending = new final;
-    game* DOM;
-    DOM = new game();
- 
-    sf::RenderWindow window(sf::VideoMode(drawer::SCREEN_WIDTH, drawer::SCREEN_HEIGHT), "Graphic Test");
-    bool endFl = false;         //флажок работы игры
-    bool shotfl = true;
-    bool swapfl = true;
-    bool spawnfl = true;
+	GameMap* w_map;
+	w_map = new GameMap(world_map);
+	drawer* dr;
+	dr = new drawer();
+	final* ending;
+	ending = new final;
+	game* dom;
+	dom = new game();
 
+	RenderWindow window(VideoMode(drawer::SCREEN_WIDTH, drawer::SCREEN_HEIGHT), "Graphic Test");
+	//RenderWindow window(VideoMode(1920, 1080), "Graphic Test");
+	window.setSize(sf::Vector2u(1280, 720));
+	window.setPosition(sf::Vector2i(320, 180));
+	bool end_fl = false; //флажок работы игры
+	bool shot_fl = true;
+	bool swap_fl = true;
+	bool spawn_fl = true;
+	bool reloading_fl = true;
 
-    window.setMouseCursorVisible(false);
-    sf::Mouse::setPosition(sf::Vector2i(drawer::SCREEN_WIDTH/2, drawer::SCREEN_HEIGHT/2), window);
+	window.setMouseCursorVisible(false);
+	Mouse::setPosition(Vector2i(drawer::SCREEN_WIDTH / 2, drawer::SCREEN_HEIGHT / 2), window);
 
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
+	while (window.isOpen())
+	{
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::Closed)
+				window.close();
 
-            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) 
-                {
-                    if (shotfl)
-                    {
-                        DOM->playerShot();
-                        shotfl = false;
-                    }
-                }
-            else
-                shotfl = true;
-            
-
-            if (event.type == sf::Event::MouseMoved) {
-                sf::Vector2i currentMousePosition = sf::Mouse::getPosition(window);
-                int deltaX = currentMousePosition.x - drawer::SCREEN_WIDTH/2;
-                DOM->you->changeVision(deltaX*0.1);
-                sf::Mouse::setPosition(sf::Vector2i(drawer::SCREEN_WIDTH/2, drawer::SCREEN_HEIGHT/2), window);
-            }
-        }
-        
-        window.clear(sf::Color::Black);
-
-        if (!endFl)
-        {
-            //обработка действий игрока
-            if (GetAsyncKeyState(0X57))
-            {
-                DOM->you->playerMapStep(North, wMap);
-            }
-            if (GetAsyncKeyState(0X53))
-            {
-                DOM->you->playerMapStep(South, wMap);
-            }
-            if (GetAsyncKeyState(0X44))
-            {
-                DOM->you->playerMapStep(East, wMap);
-            }
-            if (GetAsyncKeyState(0X41))
-            {
-
-                DOM->you->playerMapStep(West, wMap);
-            }
-
-            if (GetAsyncKeyState(VK_LCONTROL))
-            {
-                if (swapfl)
-                {
-                    DOM->you->changeActiveWeapon();
-                    swapfl = false;
-                }
-            }
-            else
-                swapfl = true;
+			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
+			{
+				if (shot_fl)
+				{
+					dom->playerShot();
+					shot_fl = false;
+				}
+			}
+			else
+				shot_fl = true;
 
 
-            if (GetAsyncKeyState(VK_F1))
-            {
-                if (spawnfl)
-                {
-                    (*DOM)++;
-                    spawnfl = false;
-                }
-            }
-            else
-                spawnfl = true;
+			if (event.type == Event::MouseMoved)
+			{
+				Vector2i current_mouse_position = Mouse::getPosition(window);
+				int delta_x = current_mouse_position.x - drawer::SCREEN_WIDTH / 2;
+				dom->you->changeVision(delta_x * 0.1);
+				Mouse::setPosition(Vector2i(drawer::SCREEN_WIDTH / 2, drawer::SCREEN_HEIGHT / 2), window);
+			}
 
-            //взаимодействие объектов
-            DOM->interaction(wMap);      
+			if(event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)
+			{
+				window.close();
+				return 0;
+			}
+		}
 
-            //рисование кадра
-            dr->drawWalls(wMap, DOM, window);
+		window.clear(Color::Black);
 
-            try
-            {
-                dr->entityDraw(DOM, window);
-            }
-            catch (std::out_of_range)
-            {
-                changeFinal(WinGame, ending);
-                endFl = true;
-            }
-            catch (std::logic_error)
-            {
-                changeFinal(LooseGame, ending);
-                endFl = true;
-            }
+		if (!end_fl)
+		{
+			//обработка действий игрока
+			if (GetAsyncKeyState(0X57))
+			{
+				dom->you->playerMapStep(North, w_map);
+			}
+			if (GetAsyncKeyState(0X53))
+			{
+				dom->you->playerMapStep(South, w_map);
+			}
+			if (GetAsyncKeyState(0X44))
+			{
+				dom->you->playerMapStep(East, w_map);
+			}
+			if (GetAsyncKeyState(0X41))
+			{
+				dom->you->playerMapStep(West, w_map);
+			}
 
-        }
-        else
-            ending->outputFinal(window);
+			if (GetAsyncKeyState(VK_LCONTROL))
+			{
+				if (swap_fl)
+				{
+					dom->you->changeActiveWeapon();
+					swap_fl = false;
+				}
+			}
+			else
+				swap_fl = true;
 
-        window.display();
-    }
+			if (GetAsyncKeyState(VK_LSHIFT))
+			{
+				if (reloading_fl)
+				{
+					dom->you->getActiveWeapon()->reloading();
+					reloading_fl = false;
+				}
+			}
+			else
+				reloading_fl = true;
+
+
+			if (GetAsyncKeyState(VK_F1))
+			{
+				if (spawn_fl)
+				{
+					++(*dom);
+					spawn_fl = false;
+				}
+			}
+			else
+				spawn_fl = true;
+
+			//взаимодействие объектов
+			dom->interaction(w_map);
+
+			//рисование кадра
+			dr->drawWalls(w_map, dom, window);
+
+			try
+			{
+				dr->entityDraw(dom, window);
+			}
+			catch (std::out_of_range)
+			{
+				change_final(WinGame, ending);
+				end_fl = true;
+			}
+			catch (std::logic_error)
+			{
+				change_final(LooseGame, ending);
+				end_fl = true;
+			}
+
+			dr->drawPlayerWeapon(dom, window);
+		}
+		else
+			ending->outputFinal(window);
+
+		window.display();
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

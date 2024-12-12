@@ -25,4 +25,5 @@ public:
 	static double projectionToY(double len, double rad_Angle);
 	//интерполяция координат
 	static double interpolateCoord(double startCoord, double finalCoord, double step, double distance);
+	static double getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine);
 };

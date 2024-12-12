@@ -7,6 +7,9 @@ enum textureType
 	Enemy1,
 	Bullet1,
 	WALL1,
+	NEGROMANT,
+	SHOTGUN,
+	AVT,
 	COUNT_TEXTURE
 };
 
@@ -16,6 +19,7 @@ private:
 	//вектор текстур
 	std::vector<sf::Texture> textures;
 public:
+	static const int FRAMES_COUNT = 8;
 	TexturePack();
 	TexturePack(int a);
 	//получить указатель на текстуру

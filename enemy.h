@@ -4,19 +4,21 @@
 #include "avtomat.h"
 class enemy : public Entity
 {
-private:
-    avtomat* avt;
+protected:
     Player* player;
 public:
-    static const double VISSION_STEP; //шаг луча взгляда
+    static const double VISION_STEP; //шаг луча взгляда
 
     enemy(double coordX, double coordY, double speed, int hitPoints, int damage, Player* player);
     enemy(Player* player);
+    enemy();
     ~enemy();
 
     //движение врага
-    bool entityMovment(GameMap* map, std::map<int, Entity*>& entities) override;
+    bool update(GameMap* map, std::vector<Entity*>& entities) override;
 
     //обнаружение игрока
     bool playersVision(GameMap* map);
 };
+
+

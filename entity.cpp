@@ -1,16 +1,17 @@
 #include "entity.h"
 #include "helper.h"
 
-Entity::Entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture)
+
+Entity::Entity(const double cord_x, const double cord_y, const double speed, const int hit_points, const int damage, const textureType texture)
 {
     this->damage = damage;
-    this->hitPoints = hitPoints;
-    this->coordX = coordX;
-    this->coordY = coordY;
+    this->hitPoints = hit_points;
+    this->cordX = cord_x;
+    this->cordY = cord_y;
     this->speed = speed;
     this->texture = texture;
     viewAngle = 0;
-    lastID++;
+    last_id++;
     size = 1;
     textureX = 0;
     textureY = 0;
@@ -18,44 +19,46 @@ Entity::Entity(double coordX, double coordY, double speed, int hitPoints, int da
 
 Entity::Entity()
 {
-    coordX = 8;
-    coordY = 1;
+    cordX = 8;
+    cordY = 1;
     hitPoints = 100;
     speed = 1;
     damage = 50;
     viewAngle = 0;
-    lastID++;
+    last_id++;
     size = 1;
     texture = Enemy1;
     textureX = 0;
     textureY = 0;
 }
 
-Entity::~Entity()
+bool Entity::isfriendly()
 {
+    return friendly;
 }
 
-int Entity::getTextureX()
+
+float Entity::getTextureX() const
 {
     return textureX;
 }
 
-int Entity::getTextureY()
+float Entity::getTextureY() const
 {
     return textureY;
 }
 
-bool Entity::getEntityCoord(double* coordX, double* coordY)
+bool Entity::getEntityCord(double* cord_x, double* cord_y) const
 {
-    *coordX = this->coordX;
-    *coordY = this->coordY;
+    *cord_x = this->cordX;
+    *cord_y = this->cordY;
     return hitPoints <= 0;
 }
 
-bool Entity::getEntityCoord(int* coordX, int* coordY)
+bool Entity::getEntityCord(int* cord_x, int* cord_y)
 {
-    *coordX = helper::myRound(this->coordX);
-    *coordY = helper::myRound(this->coordY);
+    *cord_x = helper::myRound(this->cordX);
+    *cord_y = helper::myRound(this->cordY);
     return hitPoints <= 0;
 }
 
@@ -74,62 +77,111 @@ double Entity::getEntityAngle()
     return viewAngle;
 }
 
-void Entity::attackEntity(int damage)
+void Entity::attackEntity(const int damage)
 {
     hitPoints -= damage;
-    if (!this->isAlive())
+    eventFl = true;
+    if (this->isAlive())
+    {
+        if (textureY != 3)
+        {
+            textureY = 3;
+            textureX = 0;
+        }
+    } else if(textureY != 1)
     {
         textureY = 1;
         textureX = 0;
-        eventFl = true;
     }
 }
 
 bool Entity::isAlive()
 {
-    return hitPoints >= 0;
+    return hitPoints >= 0.1;
 }
 
 bool Entity::entityStep()
 {
-    coordX += helper::projectionToX(speed, helper::degToRad(viewAngle));
-    coordY += helper::projectionToY(speed, helper::degToRad(viewAngle));
+    cordX += helper::projectionToX(speed, helper::degToRad(viewAngle));
+    cordY += helper::projectionToY(speed, helper::degToRad(viewAngle));
     return hitPoints <= 0;
 }
 
-void Entity::entityMapStep(GameMap* map)
+bool Entity::entityStep(double len)
+{
+    cordX += helper::projectionToX(len, helper::degToRad(viewAngle));
+    cordY += helper::projectionToY(len, helper::degToRad(viewAngle));
+    return hitPoints <= 0;
+}
+
+bool Entity::entityMapStep(GameMap* map)
 {
     double oldX, oldY;
-    this->getEntityCoord(&oldX, &oldY);
+    this->getEntityCord(&oldX, &oldY);
+
+    double sdeltaX = size/2;
+    double sdeltaY = sdeltaX;
 
     this->entityStep();
 
-    //если объект шагнул в стену
-    if (map->isWall(this->coordX, this->coordY))
-    {
-        double deltaX = this->coordX - oldX;
-        double deltaY = this->coordY - oldY;
+    double deltaX = this->cordX - oldX;
+    if (deltaX < 0)
+        sdeltaX *= -1;
 
-        //если можно продолжить движение по оси X
-        if (!map->isWall(oldX + deltaX, oldY))
+    double deltaY = this->cordY - oldY;
+    if (deltaY < 0)
+        sdeltaY *= -1;
+
+
+    //если объект шагнул в стену
+    if (map->isWall(this->cordX + sdeltaX, this->cordY))
+    {
+        if (map->isWall(this->cordX, this->cordY + sdeltaY))
         {
-            this->coordX = oldX + deltaX;
-            this->coordY = oldY;
-        }
-        //если можно продолжить движение по оси Y
-        else if (!map->isWall(oldX, oldY + deltaY))
-        {
-            this->coordX = oldX;
-            this->coordY = oldY + deltaY;
+            this->cordX = oldX;
+            this->cordY = oldY;
         }
         else
         {
-            this->coordX = oldX;
-            this->coordY = oldY;
+            this->cordX = oldX;
+            this->cordY = oldY + deltaY;
         }
+        return true;
     }
+    else
+    {
+        if (map->isWall(this->cordX, this->cordY + sdeltaY))
+        {
+            this->cordX = oldX + deltaX;
+            this->cordY = oldY;
+            return true;
+        }
+
+    }
+
+    return false;
 }
 
+void Entity::Step(GameMap* map, double angle)
+{
+    double buf = viewAngle;
+    viewAngle = angle;
+    entityMapStep(map);
+    viewAngle = buf;
+}
+
+bool Entity::frameShift()
+{
+	textureX+= FRAME_SPEED;
+	if (helper::myRound(textureX) >= TexturePack::FRAMES_COUNT)
+	{
+		textureX = 0;
+		textureY = 0;
+		eventFl = false;
+		return true;
+	}
+	return false;
+}
 
 
 double Entity::getSize()

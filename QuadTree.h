@@ -1,13 +1,14 @@
 #pragma once
 #include "entity.h"
 
+template<typename  T>
 class QuadTree {
 private:
     static const int MAX_OBJECTS = 4;  // Максимальное количество объектов в узле
     static const int MAX_LEVELS = 3;    // Максимальная глубина дерева
 
     int level;  // Уровень узла
-    std::vector<Entity*> objects;  // Объекты, хранящиеся в узле
+    std::vector<T> objects;  // Объекты, хранящиеся в узле
     float x, y;  // Позиция узла
     float width, height;  // Размер узла
     QuadTree* nodes[4];  // Дочерние узлы
@@ -47,19 +48,18 @@ public:
         nodes[3] = new QuadTree(level + 1, x + subWidth, y + subHeight, subWidth, subHeight); // Юго-восточный
     }
 
-    int getIndex(Entity* entity) {
+    int getIndex(T entity) {
         int index = -1;
         double verticalMidpoint = x + (width / 2);
         double horizontalMidpoint = y + (height / 2);
 
         double entityX, entityY;
-        int entitySize = entity->getSize() / 2;
-        entity->getEntityCoord(&entityX, &entityY);
+        entity->getEntityCord(&entityX, &entityY);
 
-        bool topQuad = (entityY < horizontalMidpoint && entityY + entitySize < horizontalMidpoint);
+        bool topQuad = (entityY < horizontalMidpoint);
         bool bottomQuad = (entityY > horizontalMidpoint);
 
-        if (entityX < verticalMidpoint && entityX + entitySize < verticalMidpoint) {
+        if (entityX < verticalMidpoint) {
             if (topQuad) {
                 index = 0; // Северо-западный
             }
@@ -67,7 +67,7 @@ public:
                 index = 2; // Юго-западный
             }
         }
-        else if (entityX > verticalMidpoint) {
+        else {
             if (topQuad) {
                 index = 1; // Северо-восточный
             }
@@ -79,7 +79,7 @@ public:
         return index;
     }
 
-    void insert(Entity* entity) {
+    void insert(T entity) {
         if (nodes[0] != nullptr) {
             int index = getIndex(entity);
             if (index != -1) {
@@ -106,8 +106,8 @@ public:
         }
     }
 
-    std::vector<Entity*> retrieve(Entity* entity) {
-        std::vector<Entity*> returnObjects;
+    std::vector<T> retrieve(T entity) {
+        std::vector<T> returnObjects;
         int index = getIndex(entity);
         if (index != -1 && nodes[0] != nullptr) {
             returnObjects = nodes[index]->retrieve(entity);

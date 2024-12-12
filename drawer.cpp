@@ -45,11 +45,12 @@ void drawer::drawVerticalSegment(sf::RenderWindow& window, float length, float s
 }
 
 
-void drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, int textureX, int textureY, float width, float height) {
+void drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, float textureX, float textureY, float width, float
+                       height) {
     // Создаем спрайт и устанавливаем текстуру
     sf::Sprite sprite(*texture);
 
-    sf::IntRect textureRect((textureX/4)*128, textureY * 128, 128, 128);
+    sf::IntRect textureRect(helper::myRound(textureX)*128, textureY * 128, 128, 128);
     sprite.setTextureRect(textureRect);
 
     // Устанавливаем позицию спрайта
@@ -131,7 +132,7 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
     if (countEnt < 1)
         throw std::out_of_range("В игре не осталось entity");
 
-    if(gm->you->getEntityCoord(&PlayerCoordX, &PlayerCoordY))
+    if(gm->you->getEntityCord(&PlayerCoordX, &PlayerCoordY))
         throw std::logic_error("В игре не осталось entity");
 
     std::vector<double> distToEntity;       //вектор расстояний до объектов
@@ -141,7 +142,7 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
     for (int i = 0; i < countEnt; i++)
     {
         Entity* e = gm->getEntityByIndex(i);
-        e->getEntityCoord(&EntityCoordX, &EntityCoordY);
+        e->getEntityCord(&EntityCoordX, &EntityCoordY);
         distToEntity.emplace_back(helper::calcDistance(EntityCoordX, EntityCoordY, PlayerCoordX, PlayerCoordY));
         pointersEntity.emplace_back(e);
     }
@@ -156,7 +157,7 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
         double distance = distToEntity[i];
         Entity* e = pointersEntity[i];
 
-        e->getEntityCoord(&EntityCoordX, &EntityCoordY);
+        e->getEntityCord(&EntityCoordX, &EntityCoordY);
 
         double spriteSize = e->getSize();
 
@@ -174,8 +175,17 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
         spriteSize *= SCREEN_HEIGHT / distance;
 
         //отрисовка объекта
-        drawImage(window, gm->tPack->getTexture(e->getTextureType()), vertLineNum - spriteSize / 2, (SCREEN_HEIGHT - spriteSize) / 2, e->getTextureX(), e->getTextureY(), spriteSize, spriteSize);
+        if(e->getSize() > 1)
+        {
+            drawImage(window, gm->tPack->getTexture(e->getTextureType()), vertLineNum - spriteSize / 2,
+                SCREEN_HEIGHT/2 - spriteSize + SCREEN_HEIGHT / (2*distance), e->getTextureX(), e->getTextureY(), spriteSize, spriteSize);
+        }
+        else
+        {
 
+            drawImage(window, gm->tPack->getTexture(e->getTextureType()), vertLineNum - spriteSize / 2,
+                (SCREEN_HEIGHT - spriteSize) / 2, e->getTextureX(), e->getTextureY(), spriteSize, spriteSize);
+        }
         vertLineNum -= spriteSize / 2;
         int rightBorder = vertLineNum + spriteSize + 2;
 
@@ -211,7 +221,7 @@ void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
     double EntityCoordX, EntityCoordY;
 
 
-    if (!gm->you->getEntityCoord(&EntityCoordX, &EntityCoordY))
+    if (!gm->you->getEntityCord(&EntityCoordX, &EntityCoordY))
     {
         double realPlayerAngle = gm->you->getEntityAngle();
         double curentPlayerAngle = realPlayerAngle;

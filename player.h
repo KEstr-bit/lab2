@@ -26,7 +26,8 @@ public:
     //смена оружия
     void changeActiveWeapon();
     //выстрел 
-    void shot(std::map<int, Entity*> &entiyes);
+    void shot(std::vector<Entity*>& entiyes);
+    weapon* getActiveWeapon();
 
-    bool entityMovment(GameMap* map, std::map<int, Entity*>& entities) override;
+    bool update(GameMap* map, std::vector<Entity*>& entities) override;
 };

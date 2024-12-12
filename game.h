@@ -12,7 +12,7 @@ public:
     Player* you;            //игрок
     TexturePack* tPack;     //хранилище текстур
 private:
-    std::map<int, Entity*> entities;    //вектор объектов
+    std::vector<Entity*> entities;    //вектор объектов
 public:
     game();
     ~game();
@@ -32,12 +32,12 @@ public:
     game& operator++() {
         double x, y, a;
         a = you->getEntityAngle();
-        you->getEntityCoord(&x, &y);
+        you->getEntityCord(&x, &y);
 
         x += 2 * cos(helper::degToRad(a));
         y += 2 * sin(helper::degToRad(a));
 
-        entities.emplace(Entity::lastID, new enemy(x, y, 0.01, 100, 10, you));
+        entities.emplace_back(new enemy(x, y, 0.01, 100, 10, you));
         return *this;
     }
 

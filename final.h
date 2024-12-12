@@ -14,7 +14,7 @@ public:
     //Вывести сообщение об завершении игры
     void outputFinal(sf::RenderWindow& window);
     //Изменить параметр окончания
-    friend void changeFinal(EndingOption, final*);
+    friend void change_final(EndingOption, final*);
 private:
     void displayMessage(sf::RenderWindow& window, const std::string& message, sf::Color color);
 };

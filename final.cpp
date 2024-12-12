@@ -1,6 +1,8 @@
 #include <iostream>
 #include "final.h"
 
+#include "drawer.h"
+
 
 final::final()
 {
@@ -18,7 +20,7 @@ void final::displayMessage(sf::RenderWindow& window, const std::string& message,
     text.setFillColor(color);
     sf::FloatRect textRect = text.getLocalBounds();
     text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-    text.setPosition(window.getSize().x / 2.0f, window.getSize().y / 2.0f);
+    text.setPosition(drawer::SCREEN_WIDTH / 2.0f, drawer::SCREEN_HEIGHT / 2.0f);
 
     //вывод
     window.draw(text);

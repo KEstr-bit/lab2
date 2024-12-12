@@ -84,3 +84,24 @@ double helper::interpolateCoord(double startCoord, double finalCoord, double ste
 {
     return (step * finalCoord + (distance - step) * startCoord) / distance;
 }
+
+double helper::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine) {
+    double cosRotAngle = cos(helper::degToRad(playerAngle)) * cosPlEnLine + sin(helper::degToRad(playerAngle)) * sinPlEnLine;
+    double sinRotAngle = sin(helper::degToRad(playerAngle)) * cosPlEnLine - cos(helper::degToRad(playerAngle)) * sinPlEnLine;
+
+    if (cosRotAngle > 1)
+        cosRotAngle = 1;
+
+    if (cosRotAngle < -1)
+        cosRotAngle = -1;
+
+    //угол на который игроку нужно повернуться, чтобы смотреть ровно на объект
+    double rotAngle = helper::radToDeg(acos(cosRotAngle));
+
+    if (sinRotAngle < 0)
+        rotAngle *= -1;
+
+    //если объект находится за обзором игрока
+    rotAngle = round(rotAngle * 1000) / 1000.0;
+    return rotAngle;
+}

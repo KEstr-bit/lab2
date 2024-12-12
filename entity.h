@@ -2,54 +2,56 @@
 #include "TexturePack.h"
 #include "GameMap.h"
 #include "helper.h"
+#include "QuadTree.h"
 
 class Entity
 {
 protected:
-    double coordX;             //координата по X
-    double coordY;             //координата по Y
-    int hitPoints;             //очки здоровья 
+    double cordX;             //координата по X
+    double cordY;             //координата по Y
+    double hitPoints;             //очки здоровья 
     int damage;                //урон наносимый
     double speed;              //скорость 
     double viewAngle;          //угол обзора
     double size;               //размер
     textureType texture;       //текстура 
-    int textureX;
-    int textureY;
+    float textureX;
+    float textureY;
     bool eventFl = false;
-public: 
-    static int lastID;          //последний записанный id
-
-    Entity(double coordX, double coordY, double speed, int hitPoints, int damage, textureType texture);
+    bool friendly = false;
+public:
+    virtual ~Entity() = default;
+    static int last_id;          //последний записанный id
+    static const float FRAME_SPEED;
+    Entity(double cord_x, double cord_y, double speed, int hit_points, int damage, textureType texture);
     Entity();
-    ~Entity();
-    bool getEntityCoord(double* coordX, double* coordY);
-    bool getEntityCoord(int* coordX, int* coordY);
+    bool isfriendly();
+    bool getEntityCord(double* cord_x, double* cord_y) const;
+    bool getEntityCord(int* cord_x, int* cord_y);
     int getEntityDamage();
     int getEntityHitPoints();
     double getEntityAngle();
     double getSize();
     textureType getTextureType();
-    int getTextureX();
-    int getTextureY();
+    float getTextureX() const;
+    float getTextureY() const;
     //нанести урон объекту
     void attackEntity(int damage);
     //движение вдоль направления взгляда
     bool isAlive();
     bool entityStep();
+    bool entityStep(double len);
     //движение с учетом стен
-    void entityMapStep(GameMap* map);
-    
+    bool entityMapStep(GameMap* map);
+    void Step(GameMap* map, double angle);
     //виртуальная функция движения для наследников
-    virtual bool entityMovment(GameMap* map, std::map<int, Entity*>& entities) = 0;
+    virtual bool update(GameMap* map, std::vector<Entity*>& entities) = 0;
+    bool frameShift();
 
-
-    bool intersects(Entity* other) const {
-        double dist = helper::calcDistance(coordX, coordY, other->coordX, other->coordY);
-        return dist < (size + other->size * 0.7) / 2;
+    bool intersects(const Entity* other, float error_rate) const {
+	    const double distance = helper::calcDistance(cordX, cordY, other->cordX, other->cordY);
+	    return distance < (size + other->size) * error_rate / 2;
     }
 
 
 };
-
-
