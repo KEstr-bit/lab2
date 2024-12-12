@@ -13,7 +13,7 @@ Necromant::Necromant(double coordX, double coordY, double speed, int hitPoints, 
     this->player = player;
     size = 2;
     texture = NEGROMANT;
-    avt = new shotGun();
+    avt = new ShotGun();
 }
 
 Necromant::Necromant(Player* player)
@@ -26,7 +26,7 @@ Necromant::Necromant(Player* player)
     this->player = player;
     size = 2;
     texture = NEGROMANT;
-    avt = new shotGun();
+    avt = new ShotGun();
 }
 
 bool Necromant::update(GameMap* map, std::vector<Entity*>& entities)
@@ -56,10 +56,10 @@ bool Necromant::update(GameMap* map, std::vector<Entity*>& entities)
     //если враг видит игрока
     if (playersVision(map))
     {
-        double distance = helper::calcDistance(playerX, playerY, this->cordX, this->cordY);
+        double distance = Helper::calcDistance(playerX, playerY, this->cordX, this->cordY);
         double angleCos = deltaX / distance;
         double angleSin = deltaY / distance;
-        this->viewAngle = helper::radToDeg(atan2(angleSin, angleCos));
+        this->viewAngle = Helper::radToDeg(atan2(angleSin, angleCos));
 
         if (distance > 5)
             this->entityMapStep(map);
@@ -96,8 +96,8 @@ void Necromant::respawn(GameMap* map, std::vector<Entity*>& entities)
     {
         angle += 90;
         double x, y;
-        x = 2 * cos(helper::degToRad(angle)) + cordX;
-        y = 2 * sin(helper::degToRad(angle)) + cordY;
+        x = 2 * cos(Helper::degToRad(angle)) + cordX;
+        y = 2 * sin(Helper::degToRad(angle)) + cordY;
         if (!map->isWall(x, y))
         {
 	        if(rand()%2)

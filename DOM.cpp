@@ -2,11 +2,11 @@
 
 #include <SFML/Graphics.hpp>
 #include <windows.h>
-#include "game.h"
-#include "final.h"
-#include "drawer.h"
+#include "Game.h"
+#include "Final.h"
+#include "Drawer.h"
 #include "GameMap.h"
-#include "entity.h"
+#include "Entity.h"
 
 
 using namespace std;
@@ -14,7 +14,7 @@ using namespace sf;
 
 int Entity::last_id = 0;
 const float Entity::FRAME_SPEED = 0.25;
-void change_final(const EndingOption option, final* f)
+void change_final(const EndingOption option, Final* f)
 {
 	f->gameEndType = option;
 }
@@ -37,14 +37,14 @@ int main()
 
 	GameMap* w_map;
 	w_map = new GameMap(world_map);
-	drawer* dr;
-	dr = new drawer();
-	final* ending;
-	ending = new final;
-	game* dom;
-	dom = new game();
+	Drawer* dr;
+	dr = new Drawer();
+	Final* ending;
+	ending = new Final;
+	Game* dom;
+	dom = new Game();
 
-	RenderWindow window(VideoMode(drawer::SCREEN_WIDTH, drawer::SCREEN_HEIGHT), "Graphic Test");
+	RenderWindow window(VideoMode(Drawer::SCREEN_WIDTH, Drawer::SCREEN_HEIGHT), "Graphic Test");
 	//RenderWindow window(VideoMode(1920, 1080), "Graphic Test");
 	window.setSize(sf::Vector2u(1280, 720));
 	window.setPosition(sf::Vector2i(320, 180));
@@ -55,7 +55,7 @@ int main()
 	bool reloading_fl = true;
 
 	window.setMouseCursorVisible(false);
-	Mouse::setPosition(Vector2i(drawer::SCREEN_WIDTH / 2, drawer::SCREEN_HEIGHT / 2), window);
+	Mouse::setPosition(Vector2i(Drawer::SCREEN_WIDTH / 2, Drawer::SCREEN_HEIGHT / 2), window);
 
 	while (window.isOpen())
 	{
@@ -80,9 +80,9 @@ int main()
 			if (event.type == Event::MouseMoved)
 			{
 				Vector2i current_mouse_position = Mouse::getPosition(window);
-				int delta_x = current_mouse_position.x - drawer::SCREEN_WIDTH / 2;
+				int delta_x = current_mouse_position.x - Drawer::SCREEN_WIDTH / 2;
 				dom->you->changeVision(delta_x * 0.1);
-				Mouse::setPosition(Vector2i(drawer::SCREEN_WIDTH / 2, drawer::SCREEN_HEIGHT / 2), window);
+				Mouse::setPosition(Vector2i(Drawer::SCREEN_WIDTH / 2, Drawer::SCREEN_HEIGHT / 2), window);
 			}
 
 			if(event.type == Event::KeyPressed && event.key.code == Keyboard::Escape)

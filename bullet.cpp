@@ -1,6 +1,6 @@
-#include "bullet.h"
+#include "Bullet.h"
 
-bullet::bullet(bullet* b)
+Bullet::Bullet(Bullet* b)
 {
     this->cordX = b->cordX;
     this->cordY = b->cordY;
@@ -14,7 +14,7 @@ bullet::bullet(bullet* b)
     textureY = 2;
 }
 
-bullet::bullet(double coordX, double coordY, double flightAngle, int damage, double speed, textureType texture)
+Bullet::Bullet(double coordX, double coordY, double flightAngle, int damage, double speed, textureType texture)
 {
     this->cordX = coordX;
     this->cordY = coordY;
@@ -27,7 +27,7 @@ bullet::bullet(double coordX, double coordY, double flightAngle, int damage, dou
     textureY = 2;
 }
 
-bullet::bullet(double coordX, double coordY, double flightAngle, int damage, double speed)
+Bullet::Bullet(double coordX, double coordY, double flightAngle, int damage, double speed)
 {
     this->cordX = coordX;
     this->cordY = coordY;
@@ -40,7 +40,7 @@ bullet::bullet(double coordX, double coordY, double flightAngle, int damage, dou
     textureY = 2;
 }
 
-bullet::bullet(double coordX, double coordY, double flightAngle, int damage, double speed, bool friendly)
+Bullet::Bullet(double coordX, double coordY, double flightAngle, int damage, double speed, bool friendly)
 {
     this->cordX = coordX;
     this->cordY = coordY;
@@ -54,7 +54,7 @@ bullet::bullet(double coordX, double coordY, double flightAngle, int damage, dou
     textureY = 2;
 }
 
-bullet::bullet()
+Bullet::Bullet()
 {
     cordX = 8;
     cordY = 1;
@@ -67,12 +67,12 @@ bullet::bullet()
     textureY = 2;
 }
 
-bullet::~bullet()
+Bullet::~Bullet()
 {
 }
 
 
-bool bullet::update(GameMap* map, std::vector<Entity*>& entities)
+bool Bullet::update(GameMap* map, std::vector<Entity*>& entities)
 {
     frameShift();
 
@@ -94,7 +94,7 @@ bool bullet::update(GameMap* map, std::vector<Entity*>& entities)
     return false;
 }
 
-void bullet::setRemLen(double len) {
+void Bullet::setRemLen(double len) {
     hitPoints = len;
     if (!this->isAlive() && !eventFl)
     {

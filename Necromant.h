@@ -1,7 +1,7 @@
 #pragma once
-#include "enemy.h"
+#include "Enemy.h"
 
-class Necromant : public enemy
+class Necromant : public Enemy
 {
 public:
 	Necromant(double coordX, double coordY, double speed, int hitPoints, int damage, Player* player);
@@ -11,7 +11,7 @@ public:
 	~Necromant();
 
 private:
-	shotGun* avt;
+	ShotGun* avt;
 
 
 };

@@ -1,6 +1,6 @@
-#include "weapon.h"
+#include "Gun.h"
 
-weapon::weapon(int bulletCount, double bulletSpeed, int bulletDamage, bool friendly): magazineCapacity(10)
+Gun::Gun(int bulletCount, double bulletSpeed, int bulletDamage, bool friendly): magazineCapacity(10)
 {
 	this->bulletDamage = bulletDamage;
 	this->bulletCount = bulletCount;
@@ -8,7 +8,7 @@ weapon::weapon(int bulletCount, double bulletSpeed, int bulletDamage, bool frien
 	this->friendly = friendly;
 }
 
-weapon::weapon(): magazineCapacity(10)
+Gun::Gun(): magazineCapacity(10)
 {
 	bulletCount = 1;
 	bulletSpeed = 0.05;
@@ -16,7 +16,7 @@ weapon::weapon(): magazineCapacity(10)
 	friendly = false;
 }
 
-weapon::weapon(bool friendly): magazineCapacity(10)
+Gun::Gun(bool friendly): magazineCapacity(10)
 {
 	bulletCount = 1;
 	bulletSpeed = 0.05;
@@ -24,14 +24,14 @@ weapon::weapon(bool friendly): magazineCapacity(10)
 	this->friendly = friendly;
 }
 
-weapon::~weapon()
+Gun::~Gun()
 {
 }
 
-void weapon::update()
+void Gun::update()
 {
 	textureX += Entity::FRAME_SPEED;
-	if (helper::myRound(textureX) >= TexturePack::FRAMES_COUNT)
+	if (Helper::myRound(textureX) >= TexturePack::FRAMES_COUNT)
 	{
 		textureX = 0;
 		textureY = 0;

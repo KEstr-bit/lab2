@@ -1,8 +1,8 @@
 #pragma once
 #include <map>
-#include "entity.h"
+#include "Entity.h"
 
-class weapon
+class Gun
 {
 public:
     const int magazineCapacity;
@@ -18,10 +18,10 @@ protected:
     float textureY = 3;
 
 public:
-    weapon(int bulletCount, double bulletSpeed, int bulletDamage, bool friendly);
-    weapon();
-    weapon(bool friendly);
-    virtual ~weapon();
+    Gun(int bulletCount, double bulletSpeed, int bulletDamage, bool friendly);
+    Gun();
+    Gun(bool friendly);
+    virtual ~Gun();
     void setAnimation(int animation)
     {
         textureX = 0;

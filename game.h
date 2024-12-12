@@ -1,12 +1,12 @@
 #pragma once
-#include "player.h"
-#include "enemy.h"
-#include "helper.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Helper.h"
 
 #define MAX_X 10
 #define MAX_Y 10
 
-class game
+class Game
 {
 public:
     Player* you;            //игрок
@@ -14,8 +14,8 @@ public:
 private:
     std::vector<Entity*> entities;    //вектор объектов
 public:
-    game();
-    ~game();
+    Game();
+    ~Game();
     //поиск entity по id
     Entity* findEntityByID(int id);
     //получение entity по индексу
@@ -29,20 +29,20 @@ public:
     void allEntityMovment(GameMap* map);
 
     //спавн врага по взгляду игрока на расстоянии 2м
-    game& operator++() {
+    Game& operator++() {
         double x, y, a;
         a = you->getEntityAngle();
         you->getEntityCord(&x, &y);
 
-        x += 2 * cos(helper::degToRad(a));
-        y += 2 * sin(helper::degToRad(a));
+        x += 2 * cos(Helper::degToRad(a));
+        y += 2 * sin(Helper::degToRad(a));
 
-        entities.emplace_back(new enemy(x, y, 0.01, 100, 10, you));
+        entities.emplace_back(new Enemy(x, y, 0.01, 100, 10, you));
         return *this;
     }
 
-    game operator++(int) {
-        game temp = *this;  
+    Game operator++(int) {
+        Game temp = *this;  
         ++(*this);       
         return temp;       
     }

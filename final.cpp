@@ -1,32 +1,32 @@
 #include <iostream>
-#include "final.h"
+#include "Final.h"
 
-#include "drawer.h"
+#include "Drawer.h"
 
 
-final::final()
+Final::Final()
 {
     font.loadFromFile("ComicSansMS.ttf");
     gameEndType = WinGame;
 }
 
-final::~final()
+Final::~Final()
 {
 }
 
-void final::displayMessage(sf::RenderWindow& window, const std::string& message, sf::Color color) {
+void Final::displayMessage(sf::RenderWindow& window, const std::string& message, sf::Color color) {
     //созданеие текстового блока
     sf::Text text(message, font, 70);
     text.setFillColor(color);
     sf::FloatRect textRect = text.getLocalBounds();
     text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-    text.setPosition(drawer::SCREEN_WIDTH / 2.0f, drawer::SCREEN_HEIGHT / 2.0f);
+    text.setPosition(Drawer::SCREEN_WIDTH / 2.0f, Drawer::SCREEN_HEIGHT / 2.0f);
 
     //вывод
     window.draw(text);
 }
 
-void final::outputFinal(sf::RenderWindow& window)
+void Final::outputFinal(sf::RenderWindow& window)
 {
     switch (gameEndType)
     {

@@ -1,9 +1,9 @@
-﻿#include "drawer.h"
-#include "helper.h"
+﻿#include "Drawer.h"
+#include "Helper.h"
 
-const double drawer::RAY_STEP = 0.01;
+const double Drawer::RAY_STEP = 0.01;
 
-drawer::drawer()
+Drawer::Drawer()
 {
     for (int i = 0; i < SCREEN_WIDTH; i++)
     {
@@ -12,11 +12,11 @@ drawer::drawer()
     }
 }
 
-drawer::~drawer()
+Drawer::~Drawer()
 {
 }
 
-void drawer::drawVerticalSegment(sf::RenderWindow& window, float length, float stripIndex, float x, float y, const sf::Texture* texture) {
+void Drawer::drawVerticalSegment(sf::RenderWindow& window, float length, float stripIndex, float x, float y, const sf::Texture* texture) {
     /*вертикальный отрезок
     sf::RectangleShape segment(sf::Vector2f(width, length));
 
@@ -45,12 +45,12 @@ void drawer::drawVerticalSegment(sf::RenderWindow& window, float length, float s
 }
 
 
-void drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, float textureX, float textureY, float width, float
+void Drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, float textureX, float textureY, float width, float
                        height) {
     // Создаем спрайт и устанавливаем текстуру
     sf::Sprite sprite(*texture);
 
-    sf::IntRect textureRect(helper::myRound(textureX)*128, textureY * 128, 128, 128);
+    sf::IntRect textureRect(Helper::myRound(textureX)*128, textureY * 128, 128, 128);
     sprite.setTextureRect(textureRect);
 
     // Устанавливаем позицию спрайта
@@ -66,7 +66,7 @@ void drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, flo
 }
 
 
-void drawer::dependSorting(std::vector<double> &mainMas, std::vector<Entity*> &sideMas, int left, int right) {
+void Drawer::dependSorting(std::vector<double> &mainMas, std::vector<Entity*> &sideMas, int left, int right) {
     //Указатели в начало и в конец массива
     int i = left, j = right;
 
@@ -103,9 +103,9 @@ void drawer::dependSorting(std::vector<double> &mainMas, std::vector<Entity*> &s
         dependSorting(mainMas, sideMas, i, right);
 }
 
-double drawer::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine) {
-    double cosRotAngle = cos(helper::degToRad(playerAngle)) * cosPlEnLine + sin(helper::degToRad(playerAngle)) * sinPlEnLine;
-    double sinRotAngle = sin(helper::degToRad(playerAngle)) * cosPlEnLine - cos(helper::degToRad(playerAngle)) * sinPlEnLine;
+double Drawer::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine) {
+    double cosRotAngle = cos(Helper::degToRad(playerAngle)) * cosPlEnLine + sin(Helper::degToRad(playerAngle)) * sinPlEnLine;
+    double sinRotAngle = sin(Helper::degToRad(playerAngle)) * cosPlEnLine - cos(Helper::degToRad(playerAngle)) * sinPlEnLine;
 
     if (cosRotAngle > 1)
         cosRotAngle = 1;
@@ -114,7 +114,7 @@ double drawer::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlE
         cosRotAngle = -1;
 
     //угол на который игроку нужно повернуться, чтобы смотреть ровно на объект
-    double rotAngle = helper::radToDeg(acos(cosRotAngle));
+    double rotAngle = Helper::radToDeg(acos(cosRotAngle));
 
     if (sinRotAngle < 0)
         rotAngle *= -1;
@@ -124,7 +124,7 @@ double drawer::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlE
     return rotAngle;
 }
 
-void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
+void Drawer::entityDraw(Game* gm, sf::RenderWindow& window) {
     double EntityCoordX, EntityCoordY;
     double PlayerCoordX, PlayerCoordY;
 
@@ -143,7 +143,7 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
     {
         Entity* e = gm->getEntityByIndex(i);
         e->getEntityCord(&EntityCoordX, &EntityCoordY);
-        distToEntity.emplace_back(helper::calcDistance(EntityCoordX, EntityCoordY, PlayerCoordX, PlayerCoordY));
+        distToEntity.emplace_back(Helper::calcDistance(EntityCoordX, EntityCoordY, PlayerCoordX, PlayerCoordY));
         pointersEntity.emplace_back(e);
     }
 
@@ -217,7 +217,7 @@ void drawer::entityDraw(game* gm, sf::RenderWindow& window) {
     }
 }
 
-void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
+void Drawer::drawWalls(GameMap* map, Game* gm, sf::RenderWindow& window) {
     double EntityCoordX, EntityCoordY;
 
 
@@ -233,8 +233,8 @@ void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
             //флаг найденной стены в этом направлении
             bool flNotWall = true;
 
-            double currentCosinus = cos(helper::degToRad(curentPlayerAngle));
-            double currentSinus = sin(helper::degToRad(curentPlayerAngle));
+            double currentCosinus = cos(Helper::degToRad(curentPlayerAngle));
+            double currentSinus = sin(Helper::degToRad(curentPlayerAngle));
 
 
             //поиск стены на пути луча
@@ -250,7 +250,7 @@ void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
                 if (map->isWall(x, y))
                 {
                     //исправление эффекта рыбьего глаза по оси Y
-                    distance = distance * cos(helper::degToRad(curentPlayerAngle - realPlayerAngle));
+                    distance = distance * cos(Helper::degToRad(curentPlayerAngle - realPlayerAngle));
 
                     
 
@@ -259,8 +259,8 @@ void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
 
                     //цвет полосы
                     float stripIndex;
-                    float dx = x - helper::myRound(x) + 0.5;
-                    float dy = y - helper::myRound(y) + 0.5;
+                    float dx = x - Helper::myRound(x) + 0.5;
+                    float dy = y - Helper::myRound(y) + 0.5;
                     stripIndex = (dx + dy) * 128;
                     if (stripIndex > 128)
                         stripIndex -= 128;
@@ -278,8 +278,8 @@ void drawer::drawWalls(GameMap* map, game* gm, sf::RenderWindow& window) {
 
             }
             //исправление эффекта рыбьего глаза по оси X
-            curentPlayerAngle = atan(tan(helper::degToRad(curentPlayerAngle - realPlayerAngle)) - (2 * tan(helper::degToRad(gm->you->FOV * 0.5)) / SCREEN_WIDTH));
-            curentPlayerAngle = helper::radToDeg(curentPlayerAngle);
+            curentPlayerAngle = atan(tan(Helper::degToRad(curentPlayerAngle - realPlayerAngle)) - (2 * tan(Helper::degToRad(gm->you->FOV * 0.5)) / SCREEN_WIDTH));
+            curentPlayerAngle = Helper::radToDeg(curentPlayerAngle);
             curentPlayerAngle += realPlayerAngle;
         }
     }

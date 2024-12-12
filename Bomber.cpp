@@ -46,10 +46,10 @@ bool Bomber::update(GameMap* map, std::vector<Entity*>& entities)
     //если враг видит игрока
     if (playersVision(map))
     {
-        double distance = helper::calcDistance(playerX, playerY, this->cordX, this->cordY);
+        double distance = Helper::calcDistance(playerX, playerY, this->cordX, this->cordY);
         double angleCos = deltaX / distance;
         double angleSin = deltaY / distance;
-        this->viewAngle = helper::radToDeg(atan2(angleSin, angleCos));
+        this->viewAngle = Helper::radToDeg(atan2(angleSin, angleCos));
 
         this->entityMapStep(map);
 

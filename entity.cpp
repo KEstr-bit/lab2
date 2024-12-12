@@ -1,5 +1,5 @@
-#include "entity.h"
-#include "helper.h"
+#include "Entity.h"
+#include "Helper.h"
 
 
 Entity::Entity(const double cord_x, const double cord_y, const double speed, const int hit_points, const int damage, const textureType texture)
@@ -57,8 +57,8 @@ bool Entity::getEntityCord(double* cord_x, double* cord_y) const
 
 bool Entity::getEntityCord(int* cord_x, int* cord_y)
 {
-    *cord_x = helper::myRound(this->cordX);
-    *cord_y = helper::myRound(this->cordY);
+    *cord_x = Helper::myRound(this->cordX);
+    *cord_y = Helper::myRound(this->cordY);
     return hitPoints <= 0;
 }
 
@@ -102,15 +102,15 @@ bool Entity::isAlive()
 
 bool Entity::entityStep()
 {
-    cordX += helper::projectionToX(speed, helper::degToRad(viewAngle));
-    cordY += helper::projectionToY(speed, helper::degToRad(viewAngle));
+    cordX += Helper::projectionToX(speed, Helper::degToRad(viewAngle));
+    cordY += Helper::projectionToY(speed, Helper::degToRad(viewAngle));
     return hitPoints <= 0;
 }
 
 bool Entity::entityStep(double len)
 {
-    cordX += helper::projectionToX(len, helper::degToRad(viewAngle));
-    cordY += helper::projectionToY(len, helper::degToRad(viewAngle));
+    cordX += Helper::projectionToX(len, Helper::degToRad(viewAngle));
+    cordY += Helper::projectionToY(len, Helper::degToRad(viewAngle));
     return hitPoints <= 0;
 }
 
@@ -173,7 +173,7 @@ void Entity::Step(GameMap* map, double angle)
 bool Entity::frameShift()
 {
 	textureX+= FRAME_SPEED;
-	if (helper::myRound(textureX) >= TexturePack::FRAMES_COUNT)
+	if (Helper::myRound(textureX) >= TexturePack::FRAMES_COUNT)
 	{
 		textureX = 0;
 		textureY = 0;

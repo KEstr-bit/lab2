@@ -1,8 +1,8 @@
-#include "avtomat.h"
-#include "helper.h"
-#include "bullet.h"
+#include "Rifle.h"
+#include "Helper.h"
+#include "Bullet.h"
 
-avtomat::avtomat(bool friendly)
+Rifle::Rifle(bool friendly)
 {
     this->friendly = friendly;
     texture = AVT;
@@ -10,13 +10,13 @@ avtomat::avtomat(bool friendly)
     bulletSpeed = 0.3;
 }
 
-avtomat::avtomat()
+Rifle::Rifle()
 {
     texture = AVT;
     bulletDamage = 100;
 }
 
-bool avtomat::shot(double coordX, double coordY, double shotAngle, std::vector<Entity*>& entiyes)
+bool Rifle::shot(double coordX, double coordY, double shotAngle, std::vector<Entity*>& entiyes)
 {
 
     if (ammunition < bulletCount)
@@ -39,14 +39,14 @@ bool avtomat::shot(double coordX, double coordY, double shotAngle, std::vector<E
         sideShift += bulletSpeed;
 
         double x, y;
-        x = helper::projectionToX(sideShift, helper::degToRad(shotAngle));
-        y = helper::projectionToY(sideShift, helper::degToRad(shotAngle));
+        x = Helper::projectionToX(sideShift, Helper::degToRad(shotAngle));
+        y = Helper::projectionToY(sideShift, Helper::degToRad(shotAngle));
 
         x += coordX;
         y += coordY;
 
         //инициализация новой пули
-        entiyes.emplace_back(new bullet(x, y, shotAngle, bulletDamage, bulletSpeed, friendly));
+        entiyes.emplace_back(new Bullet(x, y, shotAngle, bulletDamage, bulletSpeed, friendly));
 
     }
     return true;

@@ -1,20 +1,20 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "helper.h"
+#include "Helper.h"
 
-class final
+class Final
 {
 private:
     sf::Font font;
     EndingOption gameEndType;       //Парамтр окончания игры
 
 public:
-    final();
-    ~final();
+    Final();
+    ~Final();
     //Вывести сообщение об завершении игры
     void outputFinal(sf::RenderWindow& window);
     //Изменить параметр окончания
-    friend void change_final(EndingOption, final*);
+    friend void change_final(EndingOption, Final*);
 private:
     void displayMessage(sf::RenderWindow& window, const std::string& message, sf::Color color);
 };

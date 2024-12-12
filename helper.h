@@ -2,9 +2,9 @@
 
 enum EndingOption { WinGame, LooseGame };
 enum СardinalDirections { North, East, South, West };
-enum WeaponOption {ShotGun, Automat};
+enum GunOption {GUN_SHOTGUN, GUN_RIFLE};
 
-static class helper
+static class Helper
 {
 public:
 	static void setcur(int x, int y);

@@ -1,4 +1,4 @@
-#include "player.h"
+#include "Player.h"
 
 Player::Player(double coordX, double coordY, double speed, int hitPoints, int damage)
 {
@@ -8,9 +8,9 @@ Player::Player(double coordX, double coordY, double speed, int hitPoints, int da
     this->cordY = coordY;
     this->speed = speed;
     size = 0.5;
-    activeWeapon = ShotGun;
-    firstGun = new shotGun(true);
-    secondGun = new avtomat(true);
+    activeWeapon = GUN_SHOTGUN;
+    firstGun = new ShotGun(true);
+    secondGun = new Rifle(true);
     friendly = true;
     viewAngle = 0;
 }
@@ -23,9 +23,9 @@ Player::Player()
     speed = 0.05;
     damage = 50;
     size = 0.5;
-    activeWeapon = ShotGun;
-    firstGun = new shotGun(true);
-    secondGun = new avtomat(true);
+    activeWeapon = GUN_SHOTGUN;
+    firstGun = new ShotGun(true);
+    secondGun = new Rifle(true);
     friendly = true;
     viewAngle = 180;
 }
@@ -58,11 +58,11 @@ void Player::changeActiveWeapon()
 {
     switch (activeWeapon)
     {
-    case ShotGun:
-        activeWeapon = Automat;
+    case GUN_SHOTGUN:
+        activeWeapon = GUN_RIFLE;
         break;
-    case Automat:
-        activeWeapon = ShotGun;
+    case GUN_RIFLE:
+        activeWeapon = GUN_SHOTGUN;
         break;
     }
     this->getActiveWeapon()->setAnimation(3);
@@ -73,16 +73,16 @@ void Player::shot(std::vector<Entity*>& entiyes)
 
     switch (activeWeapon)
     {
-    case ShotGun:   
+    case GUN_SHOTGUN:   
         this->firstGun->shot(cordX, cordY, viewAngle, entiyes);
         break;
-    case Automat:
+    case GUN_RIFLE:
         this->secondGun->shot(cordX, cordY, viewAngle, entiyes);
         break;
     }
 }
 
-weapon* Player::getActiveWeapon()
+Gun* Player::getActiveWeapon()
 {
 	switch (activeWeapon)
 	{

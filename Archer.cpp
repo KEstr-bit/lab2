@@ -8,7 +8,7 @@ Archer::Archer(double coordX, double coordY, double speed, int hitPoints, int da
     this->cordY = coordY;
     this->speed = speed;
     this->player = player;
-    avt = new avtomat();
+    avt = new Rifle();
 }
 
 
@@ -20,7 +20,7 @@ Archer::Archer(Player* player)
     cordY = 8;
     speed = 0.01;
     this->player = player;
-    avt = new avtomat();
+    avt = new Rifle();
 }
 
 bool Archer::update(GameMap* map, std::vector<Entity*>& entities)
@@ -48,10 +48,10 @@ bool Archer::update(GameMap* map, std::vector<Entity*>& entities)
     //если враг видит игрока
     if (playersVision(map))
     {
-        double distance = helper::calcDistance(playerX, playerY, this->cordX, this->cordY);
+        double distance = Helper::calcDistance(playerX, playerY, this->cordX, this->cordY);
         double angleCos = deltaX / distance;
         double angleSin = deltaY / distance;
-        this->viewAngle = helper::radToDeg(atan2(angleSin, angleCos));
+        this->viewAngle = Helper::radToDeg(atan2(angleSin, angleCos));
         double angle = viewAngle;
         if(distance > 5)
 			this->entityMapStep(map);

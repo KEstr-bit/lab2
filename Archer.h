@@ -1,7 +1,7 @@
 #pragma once
-#include "enemy.h"
+#include "Enemy.h"
 
-class Archer : public enemy
+class Archer : public Enemy
 {
 public:
 	Archer(double coordX, double coordY, double speed, int hitPoints, int damage, Player* player);
@@ -10,7 +10,7 @@ public:
 	~Archer();
 
 private:
-	avtomat* avt;
+	Rifle* avt;
 
     
 };

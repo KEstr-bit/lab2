@@ -1,7 +1,7 @@
 #pragma once
 #include "TexturePack.h"
 #include "GameMap.h"
-#include "helper.h"
+#include "Helper.h"
 #include "QuadTree.h"
 
 class Entity
@@ -49,7 +49,7 @@ public:
     bool frameShift();
 
     bool intersects(const Entity* other, float error_rate) const {
-	    const double distance = helper::calcDistance(cordX, cordY, other->cordX, other->cordY);
+	    const double distance = Helper::calcDistance(cordX, cordY, other->cordX, other->cordY);
 	    return distance < (size + other->size) * error_rate / 2;
     }
 

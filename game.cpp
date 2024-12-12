@@ -1,11 +1,11 @@
-#include "game.h"
+#include "Game.h"
 
 #include "Archer.h"
 #include "Bomber.h"
-#include "bullet.h"
+#include "Bullet.h"
 #include "Necromant.h"
 #include "QuadTree.h"
-game::game()
+Game::Game()
 {
     you = new Player();
 
@@ -21,18 +21,18 @@ game::game()
     entities.emplace_back(new Bomber(1, 5, 0.06, 100, 200, you));
     entities.emplace_back(new Archer(1, 2, 0.03, 100, 50, you));
 
-    bullet bul1;
-    bullet bul2;
+    Bullet bul1;
+    Bullet bul2;
 
-    entities.emplace_back(new bullet(bul1 + bul2));
+    entities.emplace_back(new Bullet(bul1 + bul2));
 }
 
-game::~game()
+Game::~Game()
 {
 }
 
 
-void game::allEntityMovment(GameMap* map)
+void Game::allEntityMovment(GameMap* map)
 {
     std::vector<Entity*> newEntities;
     for (auto it = entities.begin(); it != entities.end(); )
@@ -51,23 +51,23 @@ void game::allEntityMovment(GameMap* map)
 }
 
 
-Entity* game::getEntityByIndex(int index)
+Entity* Game::getEntityByIndex(int index)
 {
 
     return entities.at(index);
 }
 
-void game::playerShot()
+void Game::playerShot()
 {
     you->shot(entities);
 }
 
-int game::getCountEntity()
+int Game::getCountEntity()
 {
     return entities.size();
 }
 
-void game::interaction(GameMap* map)
+void Game::interaction(GameMap* map)
 {
     this->allEntityMovment(map);                        //движение всех лбъектов
 
@@ -101,7 +101,7 @@ void game::interaction(GameMap* map)
             if (!it->intersects(potentialCollision, 0.7))
                 continue;
 
-            if (bullet* b = dynamic_cast<bullet*>(it))
+            if (Bullet* b = dynamic_cast<Bullet*>(it))
             {
 	            if(b->isfriendly() != potentialCollision->isfriendly())
 	            {
@@ -111,9 +111,9 @@ void game::interaction(GameMap* map)
                 }
             }
 
-            if (enemy* e = dynamic_cast<enemy*>(it))
+            if (Enemy* e = dynamic_cast<Enemy*>(it))
             {
-                if (bullet* pce = dynamic_cast<bullet*>(potentialCollision))
+                if (Bullet* pce = dynamic_cast<Bullet*>(potentialCollision))
 					continue;
 
                     double x, y;
@@ -121,8 +121,8 @@ void game::interaction(GameMap* map)
                     double cord_x_, cord_y_;
                     e->getEntityCord(&cord_x_, &cord_y_);
 
-                    double distance = helper::calcDistance(cord_x_, cord_y_, x, y);
-                    double angle = helper::radToDeg(acos((cord_x_ - x) / distance));
+                    double distance = Helper::calcDistance(cord_x_, cord_y_, x, y);
+                    double angle = Helper::radToDeg(acos((cord_x_ - x) / distance));
 
                     if ((cord_y_ - y) / distance < 0)
                         angle *= -1;
@@ -143,7 +143,7 @@ void game::interaction(GameMap* map)
 
     for (auto it = entities.begin(); it != entities.end(); it++) {
         // Пробуем выполнить динамическое приведение
-        if (enemy* e = dynamic_cast<enemy*>(it->second)) 
+        if (Enemy* e = dynamic_cast<Enemy*>(it->second)) 
         {
             //запись id врага в monstersMap по координатам
             e->getEntityCord(&monsterCoordX, &monsterCoordY);
@@ -167,7 +167,7 @@ void game::interaction(GameMap* map)
     //перебор пуль
     for (auto it = entities.begin(); it != entities.end(); it++)
     {
-        if (bullet* b = dynamic_cast<bullet*>(it->second))
+        if (Bullet* b = dynamic_cast<Bullet*>(it->second))
         {
             int bulletCoordX, bulletCoordY;
 

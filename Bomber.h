@@ -1,7 +1,7 @@
 #pragma once
-#include "enemy.h"
+#include "Enemy.h"
 
-class Bomber : public enemy
+class Bomber : public Enemy
 {
 public:
 	Bomber(double coordX, double coordY, double speed, int hitPoints, int damage, Player* player);

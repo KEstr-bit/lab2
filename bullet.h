@@ -1,17 +1,17 @@
 #pragma once
-#include "entity.h"
+#include "Entity.h"
 
-class bullet : public Entity
+class Bullet : public Entity
 {
 
 public:
     
-    bullet(double coordX, double coordY, double flightAngle, int damage, double speed, textureType texture);
-    bullet(double coordX, double coordY, double flightAngle, int damage, double speed);
-    bullet(double coordX, double coordY, double flightAngle, int damage, double speed, bool friendly);
-    bullet(bullet*);
-    bullet();
-    ~bullet();
+    Bullet(double coordX, double coordY, double flightAngle, int damage, double speed, textureType texture);
+    Bullet(double coordX, double coordY, double flightAngle, int damage, double speed);
+    Bullet(double coordX, double coordY, double flightAngle, int damage, double speed, bool friendly);
+    Bullet(Bullet*);
+    Bullet();
+    ~Bullet();
 
     //движение пули
     bool update(GameMap* map, std::vector<Entity*>& entities) override;
@@ -19,7 +19,7 @@ public:
     void setRemLen(double len);
     
     //сложение угла полета, урона и скорости двух пуль
-    bullet operator+(const bullet& other) const {
-        return bullet(this->cordX, this->cordY, this->viewAngle + other.viewAngle, this->damage + other.damage, this->speed + other.speed);
+    Bullet operator+(const Bullet& other) const {
+        return Bullet(this->cordX, this->cordY, this->viewAngle + other.viewAngle, this->damage + other.damage, this->speed + other.speed);
     }
 };

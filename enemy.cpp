@@ -1,9 +1,9 @@
-#include "enemy.h"
-#include "helper.h"
+#include "Enemy.h"
+#include "Helper.h"
 
-const double enemy::VISION_STEP = 0.2;
+const double Enemy::VISION_STEP = 0.2;
 
-enemy::enemy(double coordX, double coordY, double speed, int hitPoints, int damage, Player* player)
+Enemy::Enemy(double coordX, double coordY, double speed, int hitPoints, int damage, Player* player)
 {
     this->damage = damage;
     this->hitPoints = hitPoints;
@@ -13,7 +13,7 @@ enemy::enemy(double coordX, double coordY, double speed, int hitPoints, int dama
     this->player = player;
 }
 
-enemy::enemy(Player* player)
+Enemy::Enemy(Player* player)
 {
     damage = 50;
     hitPoints = 100;
@@ -23,7 +23,7 @@ enemy::enemy(Player* player)
     this->player = player;
 }
 
-enemy::enemy()
+Enemy::Enemy()
 {
     damage = 50;
     hitPoints = 100;
@@ -33,12 +33,12 @@ enemy::enemy()
     this->player = nullptr;
 }
 
-enemy::~enemy()
+Enemy::~Enemy()
 {
 }
 
 
-bool enemy::update(GameMap* map, std::vector<Entity*>& entities)
+bool Enemy::update(GameMap* map, std::vector<Entity*>& entities)
 {
     frameShift();
 
@@ -58,10 +58,10 @@ bool enemy::update(GameMap* map, std::vector<Entity*>& entities)
     if (playersVision(map))
     {
         
-        double distance = helper::calcDistance(playerX, playerY, this->cordX, this->cordY);
+        double distance = Helper::calcDistance(playerX, playerY, this->cordX, this->cordY);
         double angleCos = deltaX / distance;
         double angleSin = deltaY / distance;
-        this->viewAngle = helper::radToDeg(atan2(angleSin, angleCos));
+        this->viewAngle = Helper::radToDeg(atan2(angleSin, angleCos));
         this->entityMapStep(map);
     }
 
@@ -69,7 +69,7 @@ bool enemy::update(GameMap* map, std::vector<Entity*>& entities)
 }
 
 
-bool enemy::playersVision(GameMap* map)
+bool Enemy::playersVision(GameMap* map)
 {
     double playerX, playerY;
     player->getEntityCord(&playerX, &playerY);
@@ -79,17 +79,17 @@ bool enemy::playersVision(GameMap* map)
 
     
     bool flVission = true;
-    double distance = helper::calcDistance(enemyX, enemyY, playerX, playerY);
+    double distance = Helper::calcDistance(enemyX, enemyY, playerX, playerY);
 
     viewAngle += std::atan2((playerX - enemyX) / distance, (playerY - enemyY) / distance);
 
     //движение луча взгляда к игроку
     while (distance > VISION_STEP && flVission)
     {
-        enemyX = helper::interpolateCoord(enemyX, playerX, VISION_STEP, distance);
-        enemyY = helper::interpolateCoord(enemyY, playerY, VISION_STEP, distance);
+        enemyX = Helper::interpolateCoord(enemyX, playerX, VISION_STEP, distance);
+        enemyY = Helper::interpolateCoord(enemyY, playerY, VISION_STEP, distance);
 
-        distance = helper::calcDistance(enemyX, enemyY, playerX, playerY);
+        distance = Helper::calcDistance(enemyX, enemyY, playerX, playerY);
 
         //если луч столкнулся со стеной
         if (map->isWall(enemyX, enemyY))

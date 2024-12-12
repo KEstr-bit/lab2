@@ -1,11 +1,11 @@
 #pragma once
-#include "weapon.h"
+#include "Gun.h"
 
-class avtomat : public weapon
+class Rifle : public Gun
 {
 public:
     //переопределение выстрела
-    avtomat(bool friendly);
-    avtomat();
+    Rifle(bool friendly);
+    Rifle();
     bool shot(double coordX, double coordY, double shotAngle, std::vector<Entity*>& entiyes) override;
 };

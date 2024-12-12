@@ -1,29 +1,29 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "GameMap.h"
-#include "game.h"
-#include "entity.h"
+#include "Game.h"
+#include "Entity.h"
 #include <vector>
 
 using namespace sf;
 
-class drawer
+class Drawer
 {
 public:
 	//отрисовка стен
-	void drawWalls(GameMap* map, game* gm, sf::RenderWindow& window);
+	void drawWalls(GameMap* map, Game* gm, sf::RenderWindow& window);
 	//отрисовка объектов
-	void entityDraw(game* gm, sf::RenderWindow& window);
+	void entityDraw(Game* gm, sf::RenderWindow& window);
 
-	void drawPlayerWeapon(game* gm, sf::RenderWindow& window)
+	void drawPlayerWeapon(Game* gm, sf::RenderWindow& window)
 	{
 		gm->you->getActiveWeapon()->getTextureX();
 		gm->you->getActiveWeapon()->getTextureY();
 		drawImage(window, gm->tPack->getTexture(gm->you->getActiveWeapon()->texture), SCREEN_WIDTH - SCREEN_HEIGHT,
 			SCREEN_HEIGHT / 3, gm->you->getActiveWeapon()->getTextureX(), gm->you->getActiveWeapon()->getTextureY(), SCREEN_HEIGHT/1.5, SCREEN_HEIGHT/1.5);
 	}
-	drawer();
-	~drawer();
+	Drawer();
+	~Drawer();
 
 private:
 	//отрисовка текстуры по координатам

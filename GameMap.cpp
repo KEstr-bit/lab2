@@ -1,5 +1,5 @@
 #include "GameMap.h"
-#include "helper.h"
+#include "Helper.h"
 
 GameMap::GameMap(std::string worldMap[MAPSIZEX])
 {
@@ -55,8 +55,8 @@ int GameMap::whatIsWall(int coordX, int coordY)
 
 int GameMap::whatIsWall(double coordX, double coordY)
 {
-    int x = helper::myRound(coordX);
-    int y = helper::myRound(coordY);
+    int x = Helper::myRound(coordX);
+    int y = Helper::myRound(coordY);
     return whatIsWall(x, y);
 }
 
@@ -70,7 +70,7 @@ bool GameMap::isWall(int coordX, int coordY)
 
 bool GameMap::isWall(double cord_X, double cord_Y)
 {
-    int x = helper::myRound(cord_X);
-    int y = helper::myRound(cord_Y);
+    int x = Helper::myRound(cord_X);
+    int y = Helper::myRound(cord_Y);
     return isWall(x, y);
 };
