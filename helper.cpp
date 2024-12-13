@@ -1,107 +1,70 @@
 #include "Helper.h"
 #include <iostream>
-#include <windows.h>
 
-void Helper::setcur(int x, int y)
-{
-    COORD coord;
-    coord.X = x;
-    coord.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-};
 
-char* Helper::strcopy(char* _Destination, const char* _Source)
-{
-    char* temp = _Destination;
-    if(_Destination != NULL && _Source != NULL)
-        while (*_Destination++ = *_Source++); 
-    return temp;
-};
-
-int Helper::myRound(double number)
+double Helper::round(const double number)
 {
     if (number > 0) 
     {
         return static_cast<int>(number + 0.5);
     }
-    else 
-    {
-        return static_cast<int>(number - 0.5);
-    }
-
+    return static_cast<int>(number - 0.5);
 };
 
-int Helper::myAbs(int number)
-{
-    if (number > 0) 
-    {
-        return number;
-    }
-    else
-    {
-        return number * (-1);
-    }
-};
 
-double Helper::myAbs(double number)
+double Helper::abs(const double number)
 {
     if (number > 0)
     {
         return number;
     }
-    else
-    {
-        return number * (-1);
-    }
+    return number * (-1);
 };
 
 
-double Helper::calcDistance(double first_X, double first_Y, double second_X, double second_Y) {
-    return sqrt((first_X - second_X) * (first_X - second_X) + (first_Y - second_Y) * (first_Y - second_Y));
+double Helper::calcDistance(const double firstX, const double firstY, const double secondX, const double secondY) {
+    return sqrt((firstX - secondX) * (firstX - secondX) + (firstY - secondY) * (firstY - secondY));
 };
 
-double Helper::degToRad(double deg)
+double Helper::degToRad(const double degrees)
 {
-    return deg * 3.14 / 180;
+    return degrees * 3.14 / 180;
 }
 
-double Helper::radToDeg(double rad)
+double Helper::radToDeg(const double radians)
 {
-    return rad * 180 / 3.14;
+    return radians * 180 / 3.14;
 }
 
-double Helper::projectionToX(double len, double rad_Angle)
+double Helper::projectToX(const double length, const double radians)
 {
-    return len * cos(rad_Angle);
+    return length * cos(radians);
 }
 
-double Helper::projectionToY(double len, double rad_Angle)
+double Helper::projectToY(const double length, const double radians)
 {
-    return len * sin(rad_Angle);
+    return length * sin(radians);
 }
 
-double Helper::interpolateCoord(double startCoord, double finalCoord, double step, double distance)
+double Helper::interpolateCoords(const double startCoordinate, const double finalCoordinate, const double step, const double distance)
 {
-    return (step * finalCoord + (distance - step) * startCoord) / distance;
+    return (step * finalCoordinate + (distance - step) * startCoordinate) / distance;
 }
 
-double Helper::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine) {
-    double cosRotAngle = cos(Helper::degToRad(playerAngle)) * cosPlEnLine + sin(Helper::degToRad(playerAngle)) * sinPlEnLine;
-    double sinRotAngle = sin(Helper::degToRad(playerAngle)) * cosPlEnLine - cos(Helper::degToRad(playerAngle)) * sinPlEnLine;
+double Helper::getRotationAngle(const double radians, const double lineCos, const double lineSin) {
+    double rotationCos = cos(radians) * lineCos + sin(radians) * lineSin;
+    const double rotationSin = sin(radians) * lineCos - cos(radians) * lineSin;
 
-    if (cosRotAngle > 1)
-        cosRotAngle = 1;
+    if (rotationCos > 1)
+        rotationCos = 1;
 
-    if (cosRotAngle < -1)
-        cosRotAngle = -1;
+    if (rotationCos < -1)
+        rotationCos = -1;
 
-    //угол на который игроку нужно повернуться, чтобы смотреть ровно на объект
-    double rotAngle = Helper::radToDeg(acos(cosRotAngle));
+    double rotationAngle = radToDeg(acos(rotationCos));
 
-    if (sinRotAngle < 0)
-        rotAngle *= -1;
+    if (rotationSin < 0)
+        rotationAngle *= -1;
 
-    //если объект находится за обзором игрока
-    rotAngle = round(rotAngle * 1000) / 1000.0;
-    return rotAngle;
+    return rotationAngle;
 }

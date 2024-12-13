@@ -2,127 +2,104 @@
 #include "Helper.h"
 
 
-Entity::Entity(const double cord_x, const double cord_y, const double speed, const int hit_points, const int damage, const textureType texture)
+Entity::Entity(const double cordX, const double cordY, const double speed, const double hitPoints, const double damage,
+               const double size, const TextureType texture, const bool friendly):
+	texture(texture),
+	size(size)
 {
-    this->damage = damage;
-    this->hitPoints = hit_points;
-    this->cordX = cord_x;
-    this->cordY = cord_y;
+    this->cordX = cordX;
+    this->cordY = cordY;
     this->speed = speed;
-    this->texture = texture;
-    viewAngle = 0;
-    last_id++;
-    size = 1;
-    textureX = 0;
-    textureY = 0;
+	this->damage = damage;
+	this->hitPoints = hitPoints;
+    this->friendly = friendly;
 }
 
-Entity::Entity()
-{
-    cordX = 8;
-    cordY = 1;
-    hitPoints = 100;
-    speed = 1;
-    damage = 50;
-    viewAngle = 0;
-    last_id++;
-    size = 1;
-    texture = Enemy1;
-    textureX = 0;
-    textureY = 0;
-}
 
-bool Entity::isfriendly()
+bool Entity::isFriendly() const
 {
     return friendly;
 }
 
-
-float Entity::getTextureX() const
+void Entity::getCords(double& cordX, double& cordY) const
 {
-    return textureX;
+    cordX = this->cordX;
+    cordY = this->cordY;
 }
 
-float Entity::getTextureY() const
+void Entity::getCords(int& cordX, int& cordY) const
 {
-    return textureY;
+    cordX = static_cast<int>(Helper::round(this->cordX));
+    cordY = static_cast<int>(Helper::round(this->cordY));
 }
 
-bool Entity::getEntityCord(double* cord_x, double* cord_y) const
-{
-    *cord_x = this->cordX;
-    *cord_y = this->cordY;
-    return hitPoints <= 0;
-}
-
-bool Entity::getEntityCord(int* cord_x, int* cord_y)
-{
-    *cord_x = Helper::myRound(this->cordX);
-    *cord_y = Helper::myRound(this->cordY);
-    return hitPoints <= 0;
-}
-
-int Entity::getEntityDamage()
+double Entity::getDamage() const
 {
     return damage;
 }
 
-int Entity::getEntityHitPoints()
+double Entity::getHitPoints() const
 {
     return hitPoints;
 }
 
-double Entity::getEntityAngle()
+double Entity::getAngle() const
 {
     return viewAngle;
 }
 
-void Entity::attackEntity(const int damage)
+void Entity::dealDamage(const double damage)
 {
     hitPoints -= damage;
-    eventFl = true;
-    if (this->isAlive())
-    {
-        if (textureY != 3)
-        {
-            textureY = 3;
-            textureX = 0;
-        }
-    } else if(textureY != 1)
-    {
-        textureY = 1;
-        textureX = 0;
-    }
+    if (isAlive())
+	    startAnimation(ANIM_TAKING_DAMAGE);
+    else if(animation != ANIM_DIE)
+	    startAnimation(ANIM_DIE);
 }
 
-bool Entity::isAlive()
+void Entity::kill()
 {
-    return hitPoints >= 0.1;
+    hitPoints = 0;
+    startAnimation(ANIM_DIE);
 }
 
-bool Entity::entityStep()
+bool Entity::update(GameMap& map, std::vector<Entity*>& entities)
 {
-    cordX += Helper::projectionToX(speed, Helper::degToRad(viewAngle));
-    cordY += Helper::projectionToY(speed, Helper::degToRad(viewAngle));
-    return hitPoints <= 0;
+    updateAnimation();
+    if (eventFl)
+        return false;
+    if (!isAlive())
+        return true;
+
+    return false;
 }
 
-bool Entity::entityStep(double len)
+bool Entity::isAlive() const
 {
-    cordX += Helper::projectionToX(len, Helper::degToRad(viewAngle));
-    cordY += Helper::projectionToY(len, Helper::degToRad(viewAngle));
-    return hitPoints <= 0;
+    return hitPoints > 0.1;
 }
 
-bool Entity::entityMapStep(GameMap* map)
+void Entity::baseStep()
+{
+    cordX += Helper::projectToX(speed, Helper::degToRad(viewAngle));
+    cordY += Helper::projectToY(speed, Helper::degToRad(viewAngle));
+}
+
+void Entity::baseStep(const double len)
+{
+    cordX += Helper::projectToX(speed + len, Helper::degToRad(viewAngle));
+    cordY += Helper::projectToY(speed + len, Helper::degToRad(viewAngle));
+}
+
+bool Entity::mapStep(GameMap& map)
 {
     double oldX, oldY;
-    this->getEntityCord(&oldX, &oldY);
+    this->getCords(oldX, oldY);
 
-    double sdeltaX = size/2;
+    double sdeltaX = size / 2;
     double sdeltaY = sdeltaX;
 
-    this->entityStep();
+    this->baseStep();
 
     double deltaX = this->cordX - oldX;
     if (deltaX < 0)
@@ -133,10 +110,10 @@ bool Entity::entityMapStep(GameMap* map)
         sdeltaY *= -1;
 
 
-    //ÐµÑÐ»Ð¸ Ð¾Ð±ÑŠÐµÐºÑ‚ ÑˆÐ°Ð³Ð½ÑƒÐ» Ð² ÑÑ‚ÐµÐ½Ñƒ
-    if (map->isWall(this->cordX + sdeltaX, this->cordY))
+    //åñëè îáúåêò øàãíóë â ñòåíó
+    if (map.isWall(this->cordX + sdeltaX, this->cordY))
     {
-        if (map->isWall(this->cordX, this->cordY + sdeltaY))
+        if (map.isWall(this->cordX, this->cordY + sdeltaY))
         {
             this->cordX = oldX;
             this->cordY = oldY;
@@ -150,7 +127,7 @@ bool Entity::entityMapStep(GameMap* map)
     }
     else
     {
-        if (map->isWall(this->cordX, this->cordY + sdeltaY))
+        if (map.isWall(this->cordX, this->cordY + sdeltaY))
         {
             this->cordX = oldX + deltaX;
             this->cordY = oldY;
@@ -162,34 +139,41 @@ bool Entity::entityMapStep(GameMap* map)
     return false;
 }
 
-void Entity::Step(GameMap* map, double angle)
+bool Entity::directionStep(GameMap& map, const double angle)
 {
-    double buf = viewAngle;
+	const double oldAngle = viewAngle;
     viewAngle = angle;
-    entityMapStep(map);
-    viewAngle = buf;
+	const bool fl = mapStep(map);
+    viewAngle = oldAngle;
+    return fl;
 }
 
-bool Entity::frameShift()
+bool Entity::intersects(const Entity& other, const float coefficient) const
 {
-	textureX+= FRAME_SPEED;
-	if (Helper::myRound(textureX) >= TexturePack::FRAMES_COUNT)
-	{
-		textureX = 0;
-		textureY = 0;
-		eventFl = false;
-		return true;
-	}
-	return false;
+	const double distance = Helper::calcDistance(cordX, cordY, other.cordX, other.cordY);
+	return distance < (size + other.size) * coefficient / 2;
 }
 
-
-double Entity::getSize()
+void Entity::startAnimation(const Animations animation)
 {
-    return size;
+    frame = 0;
+    this->animation = animation;
+    eventFl = true;
 }
 
-textureType Entity::getTextureType()
+void Entity::getAnimationState(Animations& animation, int& frame)
 {
-    return texture;
+    frame = static_cast<int>(Helper::round(this->frame));
+    animation = this->animation;
+}
+
+void Entity::updateAnimation()
+{
+    frame += FRAME_SPEED;
+    if (Helper::round(frame) >= TexturePack::FRAMES_COUNT)
+    {
+        frame = 0;
+        animation = ANIM_BASE;
+        eventFl = false;
+    }
 }

@@ -4,30 +4,26 @@
 #include "Rifle.h"
 #include "Helper.h"
 
-class Player : public Entity
+class Player final : public Entity
 {
 private:
-    GunOption activeWeapon;  //активное оружие
+    GunOption activeWeapon;             //активное оружие
+    ShotGun* firstGun;                  //оружие игрока1
+    Rifle* secondGun;                   //оружие игрока2
 
 public:
     static const int VISION_SPEED = 1;  //скорость изменения угла обзора
     static const int FOV = 60;          //ширина обзора
-    ShotGun* firstGun;                  //оружие игрока1
-    Rifle* secondGun;                 //оружие игрока2
 
 public:
-    Player(double coordX, double coordY, double speed, int hitPoints, int damage);
-    Player();
+    Player(double cordX, double cordY);
     ~Player();
-    //перемщение игрока
-    void playerMapStep(СardinalDirections step_Direction, GameMap* map);
-    //поворот угла обзора
-    void changeVision(double angle);
-    //смена оружия
-    void changeActiveWeapon();
-    //выстрел 
-    void shot(std::vector<Entity*>& entiyes);
-    Gun* getActiveWeapon();
+    Gun* getActiveWeapon() const;
 
-    bool update(GameMap* map, std::vector<Entity*>& entities) override;
+    void playerMapStep(CardinalDirections stepDirection, GameMap& map); //перемщение игрока
+    void changeVision(double angle);    //поворот угла обзора
+    void changeActiveWeapon();          //смена оружия
+    void shot(std::vector<Entity*>& entities) const;   //выстрел 
+
+    bool update(GameMap& map, std::vector<Entity*>& entities) override;
 };

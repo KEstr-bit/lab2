@@ -2,57 +2,44 @@
 #include "Helper.h"
 #include "Bullet.h"
 
-ShotGun::ShotGun(bool friendly)
-{
-    this->friendly = friendly;
-    this->bulletCount = 3;
-    texture = SHOTGUN;
-}
+ShotGun::ShotGun(const int magazineCapacity, const int bulletCount, const double bulletSpeed, const double bulletDamage, const TextureType bulletTexture,
+    const bool friendly) : Gun(magazineCapacity, bulletCount, bulletSpeed, bulletDamage, friendly, SHOTGUN, bulletTexture) {}
 
-ShotGun::ShotGun()
-{
-    this->bulletCount = 3;
-    texture = SHOTGUN;
-}
-
-bool ShotGun::shot(double coordX, double coordY, double shotAngle, std::vector<Entity*>& entiyes)
+bool ShotGun::shot(const double cordX, const double cordY, double shotAngle, std::vector<Entity*>& entities)
 {
     //смещение угла полета
-    if(ammunition < bulletCount)
+    if (ammunition < bulletCount) {
         return false;
-
-    if (eventFl)
-        return true;
-
-    ammunition -= bulletCount;
-
-    eventFl = true;
-    textureX = 0;
-    textureY = 1;
-
-    //смещение угла полета
-    double sideShift = 0;
-    if (bulletCount > 1)
-    {
-        sideShift = SPREAD_ANGLE / (bulletCount - 1);
-        shotAngle -= SPREAD_ANGLE / 2;
     }
 
-    
+    if (eventFl) {
+        return true;
+    }
+
+    ammunition -= bulletCount;
+    startAnimation(ANIM_ATTACK1);
+
+
+    //смещение угла полета
+    double angleShift = 0;
+    if (bulletCount > 1)
+    {
+        angleShift = static_cast<double>(SPREAD_ANGLE) / (bulletCount - 1);
+        shotAngle -= SPREAD_ANGLE / 2.0;
+    }
 
     for (int i = 0; i < bulletCount; i++)
     {
-        double x, y;
-        x = Helper::projectionToX(10*bulletSpeed, Helper::degToRad(shotAngle));
-        y = Helper::projectionToY(10*bulletSpeed, Helper::degToRad(shotAngle));
+	    double x = Helper::projectToX(SIDE_SHIFT, Helper::degToRad(shotAngle));
+        double y = Helper::projectToY(SIDE_SHIFT, Helper::degToRad(shotAngle));
 
-        x += coordX;
-        y += coordY;
+        x += cordX;
+        y += cordY;
 
         //инициализация новой пули
-        entiyes.emplace_back(new Bullet(x, y, shotAngle, bulletDamage, bulletSpeed, friendly));
+        entities.emplace_back(new Bullet(x, y, shotAngle, bulletSpeed, 5, bulletDamage, bulletTexture, friendly));
 
-        shotAngle += sideShift;
+        shotAngle += angleShift;
     }
     return true;
 }

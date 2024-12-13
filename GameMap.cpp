@@ -1,76 +1,54 @@
 #include "GameMap.h"
 #include "Helper.h"
 
-GameMap::GameMap(std::string worldMap[MAPSIZEX])
+GameMap::GameMap(std::string worldMap[MAP_SIZE_X])
 {
-    for (int i = 0; i < MAPSIZEX; i++)
+    for (int i = 0; i < MAP_SIZE_X; i++)
         this->worldMap[i] = worldMap[i];
 }
 
-GameMap::GameMap()
-{
-    worldMap[0] += "##########";
-    worldMap[1] += "#........#";
-    worldMap[2] += "#........#";
-    worldMap[3] += "#........#";
-    worldMap[4] += "#######..#";
-    worldMap[5] += "#.....#..#";
-    worldMap[6] += "#........#";
-    worldMap[7] += "#...#....#";
-    worldMap[8] += "#...#....#";
-    worldMap[9] += "##########";
-}
 
-GameMap::~GameMap()
+int GameMap::whatIsWall(const int cordX, const int cordY)
 {
-}
-
-int GameMap::whatIsWall(int coordX, int coordY)
-{
-    if (coordX < 0 || coordX >= MAPSIZEX || coordY < 0 || coordY >= MAPSIZEY) {
-        return 0; // Out of bounds is considered a wall
+    if (cordX < 0 || cordX >= MAP_SIZE_X || cordY < 0 || cordY >= MAP_SIZE_Y) {
+        return 0;
     }
 
-    switch (worldMap[coordX][coordY])
+    switch (worldMap[cordX][cordY])
     {
     case '#':
         return 0;
-        break;
     case 'w':
         return 1;
-        break;
     case 'k':
         return 2;
-        break;
     case 'n':
         return 3;
-        break;
     case 'd':
         return 4;
-        break;
     default:
         return 0;
     }
 }
 
-int GameMap::whatIsWall(double coordX, double coordY)
+int GameMap::whatIsWall(const double cordX, const double cordY)
 {
-    int x = Helper::myRound(coordX);
-    int y = Helper::myRound(coordY);
+	const int x = static_cast<int>(Helper::round(cordX));
+	const int y = static_cast<int>(Helper::round(cordY));
     return whatIsWall(x, y);
 }
 
-bool GameMap::isWall(int coordX, int coordY)
+bool GameMap::isWall(const int cordX, const int cordY)
 {
-    if (coordX < 0 || coordX >= MAPSIZEX || coordY < 0 || coordY >= MAPSIZEY) {
-        return true; // Out of bounds is considered a wall
+    if (cordX < 0 || cordX >= MAP_SIZE_X || cordY < 0 || cordY >= MAP_SIZE_Y) {
+        return true;
     }
-    return worldMap[coordX][coordY] != '.';
+    return worldMap[cordX][cordY] != '.';
 };
 
-bool GameMap::isWall(double cord_X, double cord_Y)
+bool GameMap::isWall(const double cordX, const double cordY)
 {
-    int x = Helper::myRound(cord_X);
-    int y = Helper::myRound(cord_Y);
+	const int x = static_cast<int>(Helper::round(cordX));
+	const int y = static_cast<int>(Helper::round(cordY));
     return isWall(x, y);
 };

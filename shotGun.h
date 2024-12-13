@@ -1,13 +1,13 @@
 #pragma once
 #include "Gun.h"
 
-class ShotGun : public Gun
+class ShotGun final : public Gun
 {
 private:
     //угол разброса
-    static const int SPREAD_ANGLE = 30;
+    static const int SPREAD_ANGLE;
+    static const double SIDE_SHIFT;
 public:
-    ShotGun(bool f);
-    ShotGun();
-    bool shot(double coordX, double coordY, double shotAngle, std::vector<Entity*>& entiyes) override;
+    ShotGun(int magazineCapacity, int bulletCount, double bulletSpeed, double bulletDamage, TextureType bulletTexture, bool friendly);
+    bool shot(double cordX, double cordY, double shotAngle, std::vector<Entity*>& entities) override;
 };

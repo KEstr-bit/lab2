@@ -2,10 +2,8 @@
 
 TexturePack::TexturePack(){
 
-    int countText = COUNT_TEXTURE;
     sf::Texture texture;
-
-    for (int i = 0; i < countText; i++) {
+    for (int i = 0; i < COUNT_TEXTURES; i++) {
         std::string path = "image";
         path += std::to_string(i);
         path += ".png";
@@ -17,15 +15,15 @@ TexturePack::TexturePack(){
     }
 }
 
-TexturePack::TexturePack(int a)
+TexturePack::TexturePack(int)
 {
-    int countText = COUNT_TEXTURE;
     sf::Texture texture;
-    for (int i = 0; i < countText; i++)
+    for (int i = 0; i < COUNT_TEXTURES; i++)
         textures.emplace_back(texture);
 }
 
-sf::Texture* TexturePack::getTexture(textureType type)
+
+sf::Texture* TexturePack::getTexture(const TextureType type)
 {
 	return &textures.at(type);
 }

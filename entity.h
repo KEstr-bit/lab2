@@ -1,57 +1,51 @@
 #pragma once
+#include "AnimationControl.h"
 #include "TexturePack.h"
 #include "GameMap.h"
 #include "Helper.h"
-#include "QuadTree.h"
 
-class Entity
+class Entity : public AnimationControl
 {
+public:
+    const TextureType texture;
+    const double size;
 protected:
     double cordX;             //координата по X
     double cordY;             //координата по Y
     double hitPoints;             //очки здоровья 
-    int damage;                //урон наносимый
+    double damage;                //урон наносимый
     double speed;              //скорость 
-    double viewAngle;          //угол обзора
-    double size;               //размер
-    textureType texture;       //текстура 
-    float textureX;
-    float textureY;
+    double viewAngle = 0;          //угол обзора
+    bool friendly;
     bool eventFl = false;
-    bool friendly = false;
+    float frame = 0;
+    Animations animation = ANIM_SPAWN;
 public:
-    virtual ~Entity() = default;
-    static int last_id;          //последний записанный id
-    static const float FRAME_SPEED;
-    Entity(double cord_x, double cord_y, double speed, int hit_points, int damage, textureType texture);
-    Entity();
-    bool isfriendly();
-    bool getEntityCord(double* cord_x, double* cord_y) const;
-    bool getEntityCord(int* cord_x, int* cord_y);
-    int getEntityDamage();
-    int getEntityHitPoints();
-    double getEntityAngle();
-    double getSize();
-    textureType getTextureType();
-    float getTextureX() const;
-    float getTextureY() const;
-    //нанести урон объекту
-    void attackEntity(int damage);
-    //движение вдоль направления взгляда
-    bool isAlive();
-    bool entityStep();
-    bool entityStep(double len);
-    //движение с учетом стен
-    bool entityMapStep(GameMap* map);
-    void Step(GameMap* map, double angle);
-    //виртуальная функция движения для наследников
-    virtual bool update(GameMap* map, std::vector<Entity*>& entities) = 0;
-    bool frameShift();
+    Entity(double cordX, double cordY, double speed, double hitPoints, double damage, double size, TextureType texture, bool friendly);
 
-    bool intersects(const Entity* other, float error_rate) const {
-	    const double distance = Helper::calcDistance(cordX, cordY, other->cordX, other->cordY);
-	    return distance < (size + other->size) * error_rate / 2;
-    }
+    bool isFriendly() const;
+    bool isAlive() const;
 
+    void getCords(int& cordX, int& cordY) const;
+    void getCords(double& cordX, double& cordY) const;
+    double getDamage() const;
+    double getHitPoints() const;
+    double getAngle() const;
 
+    void startAnimation(Animations animation) override;
+    void getAnimationState(Animations& animation, int& frame) override;
+    void updateAnimation() override;
+
+    bool mapStep(GameMap& map);
+    bool directionStep(GameMap& map, double angle);
+    void dealDamage(double damage);
+    void kill();
+
+    virtual bool update(GameMap& map, std::vector<Entity*>& entities);
+
+    bool intersects(const Entity& other, float coefficient) const;
+
+protected:
+	void baseStep();
+    void baseStep(double len);
 };

@@ -3,98 +3,53 @@
 
 const double Enemy::VISION_STEP = 0.2;
 
-Enemy::Enemy(double coordX, double coordY, double speed, int hitPoints, int damage, Player* player)
+Enemy::Enemy(const double cordX, const double cordY, const double speed, const double hitPoints, const double damage, const double size,
+    const TextureType texture, Entity* target) : Entity(cordX, cordY, speed, hitPoints, damage, size, texture, false)
 {
-    this->damage = damage;
-    this->hitPoints = hitPoints;
-    this->cordX = coordX;
-    this->cordY = coordY;
-    this->speed = speed;
-    this->player = player;
+    this->target = target;
 }
 
-Enemy::Enemy(Player* player)
+bool Enemy::isTargetSeen(GameMap& map)
 {
-    damage = 50;
-    hitPoints = 100;
-    cordX = 1;
-    cordY = 8;
-    speed = 0.02;
-    this->player = player;
-}
-
-Enemy::Enemy()
-{
-    damage = 50;
-    hitPoints = 100;
-    cordX = 1;
-    cordY = 8;
-    speed = 0.02;
-    this->player = nullptr;
-}
-
-Enemy::~Enemy()
-{
-}
-
-
-bool Enemy::update(GameMap* map, std::vector<Entity*>& entities)
-{
-    frameShift();
-
-    if (eventFl)
-        return false;
-
-    if (!this->isAlive())
-            return true;
-
-    double playerX, playerY;
-    player->getEntityCord(&playerX, &playerY);
-
-    double deltaX = playerX - this->cordX;
-    double deltaY = playerY - this->cordY;
-
-    //если враг видит игрока
-    if (playersVision(map))
-    {
-        
-        double distance = Helper::calcDistance(playerX, playerY, this->cordX, this->cordY);
-        double angleCos = deltaX / distance;
-        double angleSin = deltaY / distance;
-        this->viewAngle = Helper::radToDeg(atan2(angleSin, angleCos));
-        this->entityMapStep(map);
-    }
-
-    return false;
-}
-
-
-bool Enemy::playersVision(GameMap* map)
-{
-    double playerX, playerY;
-    player->getEntityCord(&playerX, &playerY);
+    double targetX, targetY;
+    target->getCords(targetX, targetY);
 
     double enemyX, enemyY;
-    this->getEntityCord(&enemyX, &enemyY);
+    this->getCords(enemyX, enemyY);
 
-    
-    bool flVission = true;
-    double distance = Helper::calcDistance(enemyX, enemyY, playerX, playerY);
+    bool visionFl = true;
+    double distance = Helper::calcDistance(enemyX, enemyY, targetX, targetY);
 
-    viewAngle += std::atan2((playerX - enemyX) / distance, (playerY - enemyY) / distance);
+    viewAngle += std::atan2((targetX - enemyX) / distance, (targetY - enemyY) / distance);
 
     //движение луча взгляда к игроку
-    while (distance > VISION_STEP && flVission)
+    while (distance > VISION_STEP && visionFl)
     {
-        enemyX = Helper::interpolateCoord(enemyX, playerX, VISION_STEP, distance);
-        enemyY = Helper::interpolateCoord(enemyY, playerY, VISION_STEP, distance);
+        enemyX = Helper::interpolateCoords(enemyX, targetX, VISION_STEP, distance);
+        enemyY = Helper::interpolateCoords(enemyY, targetY, VISION_STEP, distance);
 
-        distance = Helper::calcDistance(enemyX, enemyY, playerX, playerY);
+        distance = Helper::calcDistance(enemyX, enemyY, targetX, targetY);
 
         //если луч столкнулся со стеной
-        if (map->isWall(enemyX, enemyY))
-            flVission = false;
+        if (map.isWall(enemyX, enemyY))
+            visionFl = false;
     }
 
-    return flVission;
+    return visionFl;
+}
+
+double Enemy::updateAngle()
+{
+
+    double targetX, targetY;
+    target->getCords(targetX, targetY);
+
+    const double deltaX = targetX - cordX;
+    const double deltaY = targetY - cordY;
+
+    const double distance = Helper::calcDistance(targetX, targetY, cordX, cordY);
+    const double angleCos = deltaX / distance;
+    const double angleSin = deltaY / distance;
+    viewAngle = Helper::radToDeg(atan2(angleSin, angleCos));
+    return distance;
 }

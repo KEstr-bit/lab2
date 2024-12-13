@@ -6,53 +6,52 @@
 #include "Final.h"
 #include "Drawer.h"
 #include "GameMap.h"
-#include "Entity.h"
-
 
 using namespace std;
 using namespace sf;
 
-int Entity::last_id = 0;
-const float Entity::FRAME_SPEED = 0.25;
+const float AnimationControl::FRAME_SPEED = 0.25;
+const double Rifle::SIDE_SHIFT = 0.25;
+const double ShotGun::SIDE_SHIFT = 0.25;
+const int ShotGun::SPREAD_ANGLE = 30;
+
 void change_final(const EndingOption option, Final* f)
 {
-	f->gameEndType = option;
+	f->endingOption = option;
 }
-
 
 int main()
 {
 	srand(time(nullptr));
-	std::string world_map[GameMap::MAPSIZEX];
-	world_map[0] += "##k####d##";
-	world_map[1] += "#........#";
-	world_map[2] += "#........w";
-	world_map[3] += "w........#";
-	world_map[4] += "#........k";
-	world_map[5] += "#..#k....#";
-	world_map[6] += "w...#k...w";
-	world_map[7] += "#..#..#..#";
-	world_map[8] += "#........n";
-	world_map[9] += "##########";
+	std::string worldMap[GameMap::MAP_SIZE_X];
+	worldMap[0] += "##k####d##";
+	worldMap[1] += "#........#";
+	worldMap[2] += "#........w";
+	worldMap[3] += "w........#";
+	worldMap[4] += "#........k";
+	worldMap[5] += "#..#k....#";
+	worldMap[6] += "w...#k...w";
+	worldMap[7] += "#..#..#..#";
+	worldMap[8] += "#........n";
+	worldMap[9] += "##########";
 
-	GameMap* w_map;
-	w_map = new GameMap(world_map);
-	Drawer* dr;
-	dr = new Drawer();
+	GameMap* gameMap;
+	gameMap = new GameMap(worldMap);
+	Drawer* drawer;
+	drawer = new Drawer();
 	Final* ending;
 	ending = new Final;
-	Game* dom;
-	dom = new Game();
+	Game* game;
+	game = new Game();
 
 	RenderWindow window(VideoMode(Drawer::SCREEN_WIDTH, Drawer::SCREEN_HEIGHT), "Graphic Test");
 	//RenderWindow window(VideoMode(1920, 1080), "Graphic Test");
 	window.setSize(sf::Vector2u(1280, 720));
 	window.setPosition(sf::Vector2i(320, 180));
-	bool end_fl = false; //флажок работы игры
-	bool shot_fl = true;
-	bool swap_fl = true;
-	bool spawn_fl = true;
-	bool reloading_fl = true;
+	bool endFl = false; //флажок работы игры
+	bool shotFl = true;
+	bool swapFl = true;
+	bool reloadingFl = true;
 
 	window.setMouseCursorVisible(false);
 	Mouse::setPosition(Vector2i(Drawer::SCREEN_WIDTH / 2, Drawer::SCREEN_HEIGHT / 2), window);
@@ -67,21 +66,22 @@ int main()
 
 			if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
 			{
-				if (shot_fl)
+				if (shotFl)
 				{
-					dom->playerShot();
-					shot_fl = false;
+					game->playerShot();
+					
+					shotFl = false;
 				}
 			}
 			else
-				shot_fl = true;
+				shotFl = true;
 
 
 			if (event.type == Event::MouseMoved)
 			{
-				Vector2i current_mouse_position = Mouse::getPosition(window);
-				int delta_x = current_mouse_position.x - Drawer::SCREEN_WIDTH / 2;
-				dom->you->changeVision(delta_x * 0.1);
+				Vector2i currentMousePosition = Mouse::getPosition(window);
+				int deltaX = currentMousePosition.x - Drawer::SCREEN_WIDTH / 2;
+				game->player->changeVision(deltaX * 0.1);
 				Mouse::setPosition(Vector2i(Drawer::SCREEN_WIDTH / 2, Drawer::SCREEN_HEIGHT / 2), window);
 			}
 
@@ -94,82 +94,71 @@ int main()
 
 		window.clear(Color::Black);
 
-		if (!end_fl)
+		if (!endFl)
 		{
 			//обработка действий игрока
 			if (GetAsyncKeyState(0X57))
 			{
-				dom->you->playerMapStep(North, w_map);
+				game->player->playerMapStep(NORTH, *gameMap);
 			}
 			if (GetAsyncKeyState(0X53))
 			{
-				dom->you->playerMapStep(South, w_map);
+				game->player->playerMapStep(SOUTH, *gameMap);
 			}
 			if (GetAsyncKeyState(0X44))
 			{
-				dom->you->playerMapStep(East, w_map);
+				game->player->playerMapStep(EAST, *gameMap);
 			}
 			if (GetAsyncKeyState(0X41))
 			{
-				dom->you->playerMapStep(West, w_map);
+				game->player->playerMapStep(WEST, *gameMap);
 			}
 
 			if (GetAsyncKeyState(VK_LCONTROL))
 			{
-				if (swap_fl)
+				if (swapFl)
 				{
-					dom->you->changeActiveWeapon();
-					swap_fl = false;
+					game->player->changeActiveWeapon();
+					swapFl = false;
 				}
 			}
 			else
-				swap_fl = true;
+				swapFl = true;
 
 			if (GetAsyncKeyState(VK_LSHIFT))
 			{
-				if (reloading_fl)
+				if (reloadingFl)
 				{
-					dom->you->getActiveWeapon()->reloading();
-					reloading_fl = false;
+					game->player->getActiveWeapon()->reloading();
+					reloadingFl = false;
 				}
 			}
 			else
-				reloading_fl = true;
+				reloadingFl = true;
 
-
-			if (GetAsyncKeyState(VK_F1))
-			{
-				if (spawn_fl)
-				{
-					++(*dom);
-					spawn_fl = false;
-				}
-			}
-			else
-				spawn_fl = true;
 
 			//взаимодействие объектов
-			dom->interaction(w_map);
+			game->interaction(*gameMap);
 
 			//рисование кадра
-			dr->drawWalls(w_map, dom, window);
+			drawer->drawWalls(*gameMap, *game, window);
 
 			try
 			{
-				dr->entityDraw(dom, window);
+				drawer->entityDraw(*game, window);
 			}
 			catch (std::out_of_range)
 			{
-				change_final(WinGame, ending);
-				end_fl = true;
+				change_final(WIN_GAME, ending);
+				endFl = true;
 			}
 			catch (std::logic_error)
 			{
-				change_final(LooseGame, ending);
-				end_fl = true;
+				change_final(LOOSE_GAME, ending);
+				endFl = true;
 			}
 
-			dr->drawPlayerWeapon(dom, window);
+			drawer->drawPlayerWeapon(*game, window);
 		}
 		else
 			ending->outputFinal(window);

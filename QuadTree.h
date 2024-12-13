@@ -77,7 +77,7 @@ int QuadTree<T>::getIndex(T entity)
 	double horizontalMidpoint = y + (height / 2);
 
 	double entityX, entityY;
-	entity->getEntityCord(&entityX, &entityY);
+	entity->getCords(entityX, entityY);
 
 	bool topQuad = (entityY < horizontalMidpoint);
 	bool bottomQuad = (entityY > horizontalMidpoint);

@@ -5,10 +5,10 @@ const double Drawer::RAY_STEP = 0.01;
 
 Drawer::Drawer()
 {
-    for (int i = 0; i < SCREEN_WIDTH; i++)
+    for (auto& it : lengthsAndIndexes)
     {
-        mas[i][0] = 0;
-        mas[i][1] = 0;
+	    it[0] = 0;
+	    it[1] = 0;
     }
 }
 
@@ -16,178 +16,112 @@ Drawer::~Drawer()
 {
 }
 
-void Drawer::drawVerticalSegment(sf::RenderWindow& window, float length, float stripIndex, float x, float y, const sf::Texture* texture) {
-    /*вертикальный отрезок
-    sf::RectangleShape segment(sf::Vector2f(width, length));
+void Drawer::drawVerticalSegment(sf::RenderWindow& window, float length, const float stripIndex, const float x, const float y, const sf::Texture& texture) {
 
-    segment.setPosition(x, y);
-
-    //цвет отрезка
-    segment.setFillColor(color);
-
-    //рисование
-    window.draw(segment);
-    */
-    sf::Sprite stripeSprite(*texture);
+    sf::Sprite stripeSprite(texture);
 
     // Устанавливаем текстуру только для нужной полосы шириной в 1 пиксель
-    sf::IntRect textureRect(stripIndex, 0, 1, (*texture).getSize().y); // 1 пиксель шириной, вся высота текстуры
+    const sf::IntRect textureRect(stripIndex, 0, 1, (texture).getSize().y); // 1 пиксель шириной, вся высота текстуры
     stripeSprite.setTextureRect(textureRect);
 
     // Устанавливаем позицию спрайта
     stripeSprite.setPosition(x, y);
 
     // Масштабируем спрайт по высоте, чтобы сделать полоску нужной длины
-    stripeSprite.setScale(1.0, length / (*texture).getSize().y);
+    stripeSprite.setScale(1.0, length / (texture).getSize().y);
 
     // Рисуем полоску в окне
     window.draw(stripeSprite);
 }
 
 
-void Drawer::drawImage(sf::RenderWindow& window, const sf::Texture* texture, float x, float y, float textureX, float textureY, float width, float
-                       height) {
+void Drawer::drawImage(sf::RenderWindow& window, const sf::Texture& texture, const float x, const float y, const float textureX, const float textureY, const float width, const float height) {
     // Создаем спрайт и устанавливаем текстуру
-    sf::Sprite sprite(*texture);
+    sf::Sprite sprite(texture);
 
-    sf::IntRect textureRect(Helper::myRound(textureX)*128, textureY * 128, 128, 128);
+    sf::IntRect textureRect(Helper::round(textureX) * 128, textureY * 128, 128, 128);
     sprite.setTextureRect(textureRect);
 
     // Устанавливаем позицию спрайта
     sprite.setPosition(x, y);
 
     // Рассчитываем масштаб для изменения размера
-    float scaleX = width / 128;  // Масштаб по оси X
-    float scaleY = height / 128; // Масштаб по оси Y
+    const float scaleX = width / 128;  // Масштаб по оси X
+    const float scaleY = height / 128; // Масштаб по оси Y
     sprite.setScale(scaleX, scaleY);                // Применяем масштаб
 
     // Рисуем спрайт в окне
     window.draw(sprite);
 }
 
+void Drawer::entityDraw(const Game& gm, sf::RenderWindow& window) {
+    double entityCordX, entityCordY;
+    double playerCordX, playerCordY;
 
-void Drawer::dependSorting(std::vector<double> &mainMas, std::vector<Entity*> &sideMas, int left, int right) {
-    //Указатели в начало и в конец массива
-    int i = left, j = right;
-
-    //Центральный элемент массива
-    double mid = mainMas[(left + right) / 2];
-
-    //Делим массив
-    do {
-
-        while (mainMas[i] > mid) {
-            i++;
-        }
-
-        while (mainMas[j] < mid) {
-            j--;
-        }
-
-        //Меняем элементы местами
-        if (i <= j) {
-
-            std::swap(sideMas[i], sideMas[j]);
-            std::swap(mainMas[i], mainMas[j]);
-
-            i++;
-            j--;
-        }
-    } while (i <= j);
-
-
-    //Рекурсивные вызовы, если осталось, что сортировать
-    if (left < j)
-        dependSorting(mainMas, sideMas, left, j);
-    if (i < right)
-        dependSorting(mainMas, sideMas, i, right);
-}
-
-double Drawer::getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine) {
-    double cosRotAngle = cos(Helper::degToRad(playerAngle)) * cosPlEnLine + sin(Helper::degToRad(playerAngle)) * sinPlEnLine;
-    double sinRotAngle = sin(Helper::degToRad(playerAngle)) * cosPlEnLine - cos(Helper::degToRad(playerAngle)) * sinPlEnLine;
-
-    if (cosRotAngle > 1)
-        cosRotAngle = 1;
-
-    if (cosRotAngle < -1)
-        cosRotAngle = -1;
-
-    //угол на который игроку нужно повернуться, чтобы смотреть ровно на объект
-    double rotAngle = Helper::radToDeg(acos(cosRotAngle));
-
-    if (sinRotAngle < 0)
-        rotAngle *= -1;
-
-    //если объект находится за обзором игрока
-    rotAngle = round(rotAngle * 1000) / 1000.0;
-    return rotAngle;
-}
-
-void Drawer::entityDraw(Game* gm, sf::RenderWindow& window) {
-    double EntityCoordX, EntityCoordY;
-    double PlayerCoordX, PlayerCoordY;
-
-    int countEnt = gm->getCountEntity();
-    if (countEnt < 1)
+    const int countEntities = gm.getCountEntity();
+    if (countEntities < 1)
         throw std::out_of_range("В игре не осталось entity");
 
-    if(gm->you->getEntityCord(&PlayerCoordX, &PlayerCoordY))
+    gm.player->getCords(playerCordX, playerCordY);
+    if(!gm.player->isAlive())
         throw std::logic_error("В игре не осталось entity");
 
     std::vector<double> distToEntity;       //вектор расстояний до объектов
     std::vector<Entity*> pointersEntity;    //вектор указателей на объекты
 
     //заполнение векторов distToEntity и pointersEntity
-    for (int i = 0; i < countEnt; i++)
+    for (int i = 0; i < countEntities; i++)
     {
-        Entity* e = gm->getEntityByIndex(i);
-        e->getEntityCord(&EntityCoordX, &EntityCoordY);
-        distToEntity.emplace_back(Helper::calcDistance(EntityCoordX, EntityCoordY, PlayerCoordX, PlayerCoordY));
+        Entity* e = gm.getEntityByIndex(i);
+        e->getCords(entityCordX, entityCordY);
+        distToEntity.emplace_back(Helper::calcDistance(entityCordX, entityCordY, playerCordX, playerCordY));
         pointersEntity.emplace_back(e);
     }
 
     //сортировка по убыванию расстояний
-    dependSorting(distToEntity, pointersEntity, 0, distToEntity.size() - 1);
+    Helper::dependSorting(distToEntity, pointersEntity, 0, static_cast<int>(distToEntity.size()) - 1);
 
-    double playerAngle = gm->you->getEntityAngle();
+    const double playerAngle = gm.player->getAngle();
 
-    for (int i = 0; i < countEnt; i++)
+    for (int i = 0; i < countEntities; i++)
     {
-        double distance = distToEntity[i];
+	    const double distance = distToEntity[i];
         Entity* e = pointersEntity[i];
 
-        e->getEntityCord(&EntityCoordX, &EntityCoordY);
+        e->getCords(entityCordX, entityCordY);
 
-        double spriteSize = e->getSize();
+        double spriteSize = e->size;
 
-        double cosPlEnLine = (EntityCoordX - PlayerCoordX) / distance;
-        double sinPlEnLine = (EntityCoordY - PlayerCoordY) / distance;
+	    const double cosPlEnLine = (entityCordX - playerCordX) / distance;
+	    const double sinPlEnLine = (entityCordY - playerCordY) / distance;
 
-        double rotAngle = getRotAngle(playerAngle, cosPlEnLine, sinPlEnLine);
-        if (abs(rotAngle) > gm->you->FOV)
-            continue;
+	    const double rotAngle = Helper::getRotationAngle(Helper::degToRad(playerAngle), cosPlEnLine, sinPlEnLine);
+        if (abs(rotAngle) > Player::FOV)
+	       continue;
 
-        int vertLineNum = SCREEN_WIDTH * rotAngle / gm->you->FOV;       //номер вертикальной полосы
+        int vertLineNum = static_cast<int>(Helper::round(SCREEN_WIDTH * rotAngle / Player::FOV));       //номер вертикальной полосы
 
         vertLineNum += SCREEN_WIDTH / 2;
 
         spriteSize *= SCREEN_HEIGHT / distance;
 
+        Animations animation;
+        int frame;
+        e->getAnimationState(animation, frame);
         //отрисовка объекта
-        if(e->getSize() > 1)
+        if(e->size > 1)
         {
-            drawImage(window, gm->tPack->getTexture(e->getTextureType()), vertLineNum - spriteSize / 2,
-                SCREEN_HEIGHT/2 - spriteSize + SCREEN_HEIGHT / (2*distance), e->getTextureX(), e->getTextureY(), spriteSize, spriteSize);
+            drawImage(window, *gm.texture_pack->getTexture(e->texture), vertLineNum - spriteSize / 2,
+                SCREEN_HEIGHT/2 - spriteSize + SCREEN_HEIGHT / (2*distance), frame, animation, spriteSize, spriteSize);
         }
         else
         {
 
-            drawImage(window, gm->tPack->getTexture(e->getTextureType()), vertLineNum - spriteSize / 2,
-                (SCREEN_HEIGHT - spriteSize) / 2, e->getTextureX(), e->getTextureY(), spriteSize, spriteSize);
+            drawImage(window, *gm.texture_pack->getTexture(e->texture), vertLineNum - spriteSize / 2,
+                (SCREEN_HEIGHT - spriteSize) / 2, frame, animation, spriteSize, spriteSize);
         }
-        vertLineNum -= spriteSize / 2;
-        int rightBorder = vertLineNum + spriteSize + 2;
+        vertLineNum -= static_cast<int>(spriteSize / 2);
+        int rightBorder = static_cast<int>(vertLineNum + spriteSize + 2);
 
         if (vertLineNum < 0)
             vertLineNum = 0;
@@ -199,17 +133,13 @@ void Drawer::entityDraw(Game* gm, sf::RenderWindow& window) {
         for (; vertLineNum < rightBorder; vertLineNum++)
         {
             //если вертикальная полоса находится позади объекта
-            if (mas[vertLineNum][0] > distance)
+            if (lengthsAndIndexes[vertLineNum][0] > distance)
                 continue;
 
-            double len = SCREEN_HEIGHT / mas[vertLineNum][0];
+            const double len = SCREEN_HEIGHT / lengthsAndIndexes[vertLineNum][0];
 
-            //вычисление цвета вертикальной полосы
-            double Ws = 255 / sqrt(mas[vertLineNum][0]);
-            if (Ws > 255)
-                Ws = 255;
 
-            drawVerticalSegment(window, len, mas[vertLineNum][1], vertLineNum, (SCREEN_HEIGHT - len) / 2, gm->tPack->getTexture(WALL1));
+            drawVerticalSegment(window, len, lengthsAndIndexes[vertLineNum][1], vertLineNum, (SCREEN_HEIGHT - len) / 2,*gm.texture_pack->getTexture(WALLS));
         }
 
 
@@ -217,70 +147,77 @@ void Drawer::entityDraw(Game* gm, sf::RenderWindow& window) {
     }
 }
 
-void Drawer::drawWalls(GameMap* map, Game* gm, sf::RenderWindow& window) {
-    double EntityCoordX, EntityCoordY;
+void Drawer::drawPlayerWeapon(const Game& gm, sf::RenderWindow& window)
+{
+	Animations animation;
+	int frame;
+	gm.player->getActiveWeapon()->getAnimationState(animation, frame);
+	drawImage(window, *gm.texture_pack->getTexture(gm.player->getActiveWeapon()->texture), SCREEN_WIDTH - SCREEN_HEIGHT,
+	          SCREEN_HEIGHT / 3, frame, animation, SCREEN_HEIGHT/1.5, SCREEN_HEIGHT/1.5);
+}
 
+void Drawer::drawWalls(GameMap& map, const Game& gm, sf::RenderWindow& window) {
+    double entityCordX, entityCordY;
 
-    if (!gm->you->getEntityCord(&EntityCoordX, &EntityCoordY))
+    gm.player->getCords(entityCordX, entityCordY);
+    if (gm.player->isAlive())
     {
-        double realPlayerAngle = gm->you->getEntityAngle();
-        double curentPlayerAngle = realPlayerAngle;
+	    const double realPlayerAngle = gm.player->getAngle();
+        double currentPlayerAngle = realPlayerAngle;
 
-        curentPlayerAngle += gm->you->FOV / 2.0;
+        currentPlayerAngle += Player::FOV / 2.0;
 
         for (int i = 0; i < SCREEN_WIDTH; i++)
         {
             //флаг найденной стены в этом направлении
             bool flNotWall = true;
 
-            double currentCosinus = cos(Helper::degToRad(curentPlayerAngle));
-            double currentSinus = sin(Helper::degToRad(curentPlayerAngle));
+            const double currentCosines = cos(Helper::degToRad(currentPlayerAngle));
+            const double currentSinus = sin(Helper::degToRad(currentPlayerAngle));
 
 
             //поиск стены на пути луча
             for (double distance = RAY_STEP; distance < 10 && flNotWall; distance += RAY_STEP)
             {
-                double x = distance * currentCosinus;
+                double x = distance * currentCosines;
                 double y = distance * currentSinus;
 
-                x += EntityCoordX;
-                y += EntityCoordY;
+                x += entityCordX;
+                y += entityCordY;
 
                 //если стена
-                if (map->isWall(x, y))
+                if (map.isWall(x, y))
                 {
                     //исправление эффекта рыбьего глаза по оси Y
-                    distance = distance * cos(Helper::degToRad(curentPlayerAngle - realPlayerAngle));
+                    distance = distance * cos(Helper::degToRad(currentPlayerAngle - realPlayerAngle));
 
-                    
 
-                    
-                    double len = SCREEN_HEIGHT / distance;
+                    const double len = SCREEN_HEIGHT / distance;
 
                     //цвет полосы
-                    float stripIndex;
-                    float dx = x - Helper::myRound(x) + 0.5;
-                    float dy = y - Helper::myRound(y) + 0.5;
-                    stripIndex = (dx + dy) * 128;
+                    const float dx = x - Helper::round(x) + 0.5;
+                    const float dy = y - Helper::round(y) + 0.5;
+                    float stripIndex = (dx + dy) * 128;
                     if (stripIndex > 128)
                         stripIndex -= 128;
 
-                    stripIndex += map->whatIsWall(x, y) * 128;
+                    stripIndex += map.whatIsWall(x, y) * 128;
 
-                    mas[i][0] = distance;
-                    mas[i][1] = stripIndex;
+                    lengthsAndIndexes[i][0] = distance;
+                    lengthsAndIndexes[i][1] = stripIndex;
 
 
-                    drawVerticalSegment(window, len, stripIndex, i, (SCREEN_HEIGHT - len)/2, gm->tPack->getTexture(WALL1));
+                    drawVerticalSegment(window, len, stripIndex, i, (SCREEN_HEIGHT - len)/2, *gm.texture_pack->getTexture(WALLS));
 
                     flNotWall = false;
                 }
 
             }
             //исправление эффекта рыбьего глаза по оси X
-            curentPlayerAngle = atan(tan(Helper::degToRad(curentPlayerAngle - realPlayerAngle)) - (2 * tan(Helper::degToRad(gm->you->FOV * 0.5)) / SCREEN_WIDTH));
-            curentPlayerAngle = Helper::radToDeg(curentPlayerAngle);
-            curentPlayerAngle += realPlayerAngle;
+            currentPlayerAngle = atan(tan(Helper::degToRad(currentPlayerAngle - realPlayerAngle)) - (2 * tan(Helper::degToRad(
+	            Player::FOV * 0.5)) / SCREEN_WIDTH));
+            currentPlayerAngle = Helper::radToDeg(currentPlayerAngle);
+            currentPlayerAngle += realPlayerAngle;
         }
     }
 }

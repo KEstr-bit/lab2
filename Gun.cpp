@@ -1,6 +1,9 @@
 #include "Gun.h"
 
-Gun::Gun(int bulletCount, double bulletSpeed, int bulletDamage, bool friendly): magazineCapacity(10)
+Gun::Gun(const int magazineCapacity, const int bulletCount, const double bulletSpeed, const double bulletDamage,
+         const bool friendly, const TextureType texture, const TextureType bulletTexture):
+		magazine_capacity(magazineCapacity), texture(texture),
+		bulletTexture(bulletTexture)
 {
 	this->bulletDamage = bulletDamage;
 	this->bulletCount = bulletCount;
@@ -8,34 +11,41 @@ Gun::Gun(int bulletCount, double bulletSpeed, int bulletDamage, bool friendly): 
 	this->friendly = friendly;
 }
 
-Gun::Gun(): magazineCapacity(10)
+void Gun::startAnimation(const Animations animation)
 {
-	bulletCount = 1;
-	bulletSpeed = 0.05;
-	bulletDamage = 50;
-	friendly = false;
+	frame = 0;
+	this->animation = animation;
+	eventFl = true;
 }
 
-Gun::Gun(bool friendly): magazineCapacity(10)
+void Gun::startAnimation(const Animations animation, int)
 {
-	bulletCount = 1;
-	bulletSpeed = 0.05;
-	bulletDamage = 50;
-	this->friendly = friendly;
+	if(!eventFl)
+		this->animation = animation;
 }
 
-Gun::~Gun()
+
+void Gun::getAnimationState(Animations& animation, int& frame)
 {
+	frame = static_cast<int>(Helper::round(this->frame));
+	animation = this->animation;
 }
 
-void Gun::update()
+void Gun::updateAnimation()
 {
-	textureX += Entity::FRAME_SPEED;
-	if (Helper::myRound(textureX) >= TexturePack::FRAMES_COUNT)
+	frame += FRAME_SPEED;
+	if (Helper::round(frame) >= TexturePack::FRAMES_COUNT)
 	{
-		textureX = 0;
-		textureY = 0;
+		frame = 0;
+		animation = ANIM_BASE;
 		eventFl = false;
 	}
+}
+
+
+void Gun::reloading()
+{
+	startAnimation(ANIM_ATTACK2);
+	ammunition = magazine_capacity;
 }
 

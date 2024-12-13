@@ -5,20 +5,15 @@
 class Enemy : public Entity
 {
 protected:
-    Player* player;
+    Entity* target;
 public:
     static const double VISION_STEP; //шаг луча взгляда
+    Enemy(double cordX, double cordY, double speed, double hitPoints, double damage, double size, TextureType texture, Entity* target);
 
-    Enemy(double coordX, double coordY, double speed, int hitPoints, int damage, Player* player);
-    Enemy(Player* player);
-    Enemy();
-    ~Enemy();
-
-    //движение врага
-    bool update(GameMap* map, std::vector<Entity*>& entities) override;
-
+protected:
     //обнаружение игрока
-    bool playersVision(GameMap* map);
+    bool isTargetSeen(GameMap& map);
+    double updateAngle();
 };
 
 

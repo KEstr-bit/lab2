@@ -1,29 +1,69 @@
 #pragma once
+#include <vector>
 
-enum EndingOption { WinGame, LooseGame };
-enum СardinalDirections { North, East, South, West };
-enum GunOption {GUN_SHOTGUN, GUN_RIFLE};
+enum EndingOption { WIN_GAME, LOOSE_GAME };
+enum CardinalDirections { NORTH, EAST, SOUTH, WEST };
+enum GunOption { GUN_SHOTGUN, GUN_RIFLE };
 
-static class Helper
+class Helper
 {
 public:
-	static void setcur(int x, int y);
-	static char* strcopy(char* _Destination, const char* _Source);
 	//округление
-	static int myRound(double number);
+	static double round(double number);
 	//модуль
-	static int myAbs(int number);
-	static double myAbs(double number);
+	static double abs(double number);
 	//расстояние между двумя точками
-	static double calcDistance(double first_X, double first_Y, double second_X, double second_Y);
+	static double calcDistance(double firstX, double firstY, double secondX, double secondY);
 	//перевод градусов в радианы
-	static double degToRad(double deg);
+	static double degToRad(double degrees);
 	//перевод радиан в градусы
-	static double radToDeg(double rad);
+	static double radToDeg(double radians);
 	//проекция вектора на ось
-	static double projectionToX(double len, double rad_Angle);
-	static double projectionToY(double len, double rad_Angle);
+	static double projectToX(double length, double radians);
+	static double projectToY(double length, double radians);
 	//интерполяция координат
-	static double interpolateCoord(double startCoord, double finalCoord, double step, double distance);
-	static double getRotAngle(double playerAngle, double cosPlEnLine, double sinPlEnLine);
+	static double interpolateCoords(double startCoordinate, double finalCoordinate, double step, double distance);
+	static double getRotationAngle(double radians, double lineCos, double lineSin);
+
+	template<typename T, typename Q>
+	static void dependSorting(std::vector<T>& mainMas, std::vector<Q>& sideMas, int left, int right);
 };
+
+template <typename T, typename Q>
+void Helper::dependSorting(std::vector<T>& mainMas, std::vector<Q>& sideMas, int left, int right)
+{
+    //Указатели в начало и в конец массива
+    int i = left, j = right;
+
+    //Центральный элемент массива
+    T mid = mainMas[(left + right) / 2];
+
+    //Делим массив
+    do {
+
+        while (mainMas[i] > mid) {
+            i++;
+        }
+
+        while (mainMas[j] < mid) {
+            j--;
+        }
+
+        //Меняем элементы местами
+        if (i <= j) {
+
+            std::swap(sideMas[i], sideMas[j]);
+            std::swap(mainMas[i], mainMas[j]);
+
+            i++;
+            j--;
+        }
+    } while (i <= j);
+
+
+    //Рекурсивные вызовы, если осталось, что сортировать
+    if (left < j)
+        dependSorting(mainMas, sideMas, left, j);
+    if (i < right)
+        dependSorting(mainMas, sideMas, i, right);
+}

@@ -2,26 +2,25 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-enum textureType
+enum TextureType
 {
-	Enemy1,
-	Bullet1,
-	WALL1,
-	NEGROMANT,
+	ENEMY,
+	BULLET,
+	WALLS,
+	NECROMANCER,
 	SHOTGUN,
-	AVT,
-	COUNT_TEXTURE
+	RIFLE,
+	COUNT_TEXTURES
 };
 
 class TexturePack
 {
 private:
-	//вектор текстур
 	std::vector<sf::Texture> textures;
 public:
-	static const int FRAMES_COUNT = 8;
+	static constexpr int FRAMES_COUNT = 8;
+	explicit TexturePack(int);
 	TexturePack();
-	TexturePack(int a);
 	//получить указатель на текстуру
-	sf::Texture* getTexture(textureType type);
+	sf::Texture* getTexture(TextureType type);
 };

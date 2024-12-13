@@ -2,51 +2,39 @@
 #include "Helper.h"
 #include "Bullet.h"
 
-Rifle::Rifle(bool friendly)
-{
-    this->friendly = friendly;
-    texture = AVT;
-    bulletDamage = 100;
-    bulletSpeed = 0.3;
-}
 
-Rifle::Rifle()
-{
-    texture = AVT;
-    bulletDamage = 100;
-}
+Rifle::Rifle(const int magazineCapacity, const int bulletCount, const double bulletSpeed, const double bulletDamage, const TextureType bulletTexture,
+    const bool friendly) : Gun(magazineCapacity, bulletCount, bulletSpeed, bulletDamage, friendly, RIFLE, bulletTexture) {}
 
-bool Rifle::shot(double coordX, double coordY, double shotAngle, std::vector<Entity*>& entiyes)
+bool Rifle::shot(const double cordX, const double cordY, const double shotAngle, std::vector<Entity*>& entities)
 {
 
-    if (ammunition < bulletCount)
+    if (ammunition < bulletCount){
         return false;
+    }
 
-	if (eventFl)
-		return true;
+    if (eventFl) {
+        return true;
+    }
 
     ammunition -= bulletCount;
-  
-    eventFl = true;
-    textureX = 0;
-    textureY = 1;
+    startAnimation(ANIM_ATTACK1);
 
     //смещение пули от точки выстрела
-    double sideShift = 0.25;
+    double sideShift = SIDE_SHIFT;
 
     for (int i = 0; i < bulletCount; i++)
     {
         sideShift += bulletSpeed;
 
-        double x, y;
-        x = Helper::projectionToX(sideShift, Helper::degToRad(shotAngle));
-        y = Helper::projectionToY(sideShift, Helper::degToRad(shotAngle));
+        double x = Helper::projectToX(sideShift, Helper::degToRad(shotAngle));
+        double y = Helper::projectToY(sideShift, Helper::degToRad(shotAngle));
 
-        x += coordX;
-        y += coordY;
+        x += cordX;
+        y += cordY;
 
         //инициализация новой пули
-        entiyes.emplace_back(new Bullet(x, y, shotAngle, bulletDamage, bulletSpeed, friendly));
+        entities.emplace_back(new Bullet(x, y, shotAngle, bulletSpeed, 10, bulletDamage, bulletTexture, friendly));
 
     }
     return true;

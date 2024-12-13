@@ -1,50 +1,30 @@
 #pragma once
-#include <map>
+#include "AnimationControl.h"
 #include "Entity.h"
 
-class Gun
+class Gun: public AnimationControl
 {
 public:
-    const int magazineCapacity;
-    textureType texture;
+    const int magazine_capacity;
+    const TextureType texture;
+    const TextureType bulletTexture;
 protected:
     int bulletCount;                    //количество пуль, выпускаемых за раз
     double bulletSpeed;                 //скорость полета пули
-    int bulletDamage;                   //урон, наносимы пулей
+    double bulletDamage;                   //урон, наносимы пулей
+    int ammunition = magazine_capacity;
     bool friendly;
-    int ammunition = magazineCapacity;
     bool eventFl = true;
-    float textureX = 0;
-    float textureY = 3;
+    float frame = 0;
+    Animations animation = ANIM_SPAWN;
 
 public:
-    Gun(int bulletCount, double bulletSpeed, int bulletDamage, bool friendly);
-    Gun();
-    Gun(bool friendly);
-    virtual ~Gun();
-    void setAnimation(int animation)
-    {
-        textureX = 0;
-        textureY = animation;
-        eventFl = true;
-    }
-    //выстрел из оружия
-    virtual bool shot(double coordX, double coordY, double shotAngle, std::vector<Entity*>& entiyes) = 0;
-    void update();
-    float getTextureX()
-    {
-        return textureX;
-    }
+    Gun(int magazineCapacity, int bulletCount, double bulletSpeed, double bulletDamage, bool friendly, TextureType texture, TextureType bulletTexture);
+    virtual bool shot(double cordX, double cordY, double shotAngle, std::vector<Entity*>& entities) = 0;
+    void reloading();
 
-    float getTextureY()
-    {
-        return textureY;
-    }
-
-    void reloading()
-    {
-        setAnimation(2);
-        ammunition = magazineCapacity;
-    }
-
+    void startAnimation(Animations animation) override;
+    void startAnimation(Animations animation, int);
+    void getAnimationState(Animations& animation, int& frame) override;
+    void updateAnimation() override;
 };
