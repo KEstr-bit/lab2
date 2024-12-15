@@ -1,9 +1,11 @@
 #include "Archer.h"
+#include "Rifle.h"
 
-Archer::Archer(const double cordX, const double cordY, Entity* target): Enemy(
-	cordX, cordY, 0.02, 100, 50, 1, ENEMY, target)
+Archer::Archer(const double cordX, const double cordY, Entity* target):
+	Enemy(cordX, cordY, 0.02, 100, 50, 1, ENEMY, target)
 {
-	rifle = new Rifle(10, 1, 0.1, 50, BULLET, false);
+    rifle = new Rifle(10, 1, 0.1, 
+        50, BULLET, false);
 }
 
 Archer::~Archer()
@@ -15,12 +17,12 @@ Archer::~Archer()
 bool Archer::update(GameMap& map, std::vector<Entity*>& entities)
 {
     static int shift = 0;
-    const double distance = updateAngle();
+    const double distance = lookAtTarget(map);
     switch (animation)
     {
     case ANIM_MOVE:
         if (distance > 5)
-            mapStep(map);
+            move(map);
         else if (distance < 3)
             directionStep(map,viewAngle - 180);
         else
@@ -47,11 +49,14 @@ bool Archer::update(GameMap& map, std::vector<Entity*>& entities)
     }
 
     rifle->updateAnimation();
-    if(Entity::update(map, entities))
-        return true;
+
+    updateAnimation();
 
     if (eventFl)
         return false;
+
+    if(!isAlive())
+        return true;
 
     //если враг не видит цель
     if (!isTargetSeen(map)) {

@@ -21,6 +21,7 @@ bool Entity::isFriendly() const
     return friendly;
 }
 
+
 void Entity::getCords(double& cordX, double& cordY) const
 {
     cordX = this->cordX;
@@ -31,6 +32,11 @@ void Entity::getCords(int& cordX, int& cordY) const
 {
     cordX = static_cast<int>(Helper::round(this->cordX));
     cordY = static_cast<int>(Helper::round(this->cordY));
+}
+
+double Entity::getSpeed() const
+{
+    return damage;
 }
 
 double Entity::getDamage() const
@@ -52,7 +58,7 @@ void Entity::dealDamage(const double damage)
 {
     hitPoints -= damage;
     if (isAlive())
-	    startAnimation(ANIM_TAKING_DAMAGE);
+	    startAnimation(ANIM_TAKING_DAMAGE, 1);
     else if(animation != ANIM_DIE)
 	    startAnimation(ANIM_DIE);
 }
@@ -61,17 +67,6 @@ void Entity::kill()
 {
     hitPoints = 0;
     startAnimation(ANIM_DIE);
-}
-
-bool Entity::update(GameMap& map, std::vector<Entity*>& entities)
-{
-    updateAnimation();
-    if (eventFl)
-        return false;
-    if (!isAlive())
-        return true;
-
-    return false;
 }
 
 bool Entity::isAlive() const
@@ -85,35 +80,30 @@ void Entity::baseStep()
     cordY += Helper::projectToY(speed, Helper::degToRad(viewAngle));
 }
 
-void Entity::baseStep(const double len)
-{
-    cordX += Helper::projectToX(speed + len, Helper::degToRad(viewAngle));
-    cordY += Helper::projectToY(speed + len, Helper::degToRad(viewAngle));
-}
 
-bool Entity::mapStep(GameMap& map)
+bool Entity::move(GameMap& map)
 {
     double oldX, oldY;
     this->getCords(oldX, oldY);
 
-    double sdeltaX = size / 2;
-    double sdeltaY = sdeltaX;
+    double sizeShiftX = size / 2;
+    double sizeShiftY = sizeShiftX;
 
     this->baseStep();
 
-    double deltaX = this->cordX - oldX;
+    const double deltaX = this->cordX - oldX;
     if (deltaX < 0)
-        sdeltaX *= -1;
+        sizeShiftX *= -1;
 
-    double deltaY = this->cordY - oldY;
+    const double deltaY = this->cordY - oldY;
     if (deltaY < 0)
-        sdeltaY *= -1;
+        sizeShiftY *= -1;
 
 
     //если объект шагнул в стену
-    if (map.isWall(this->cordX + sdeltaX, this->cordY))
+    if (map.isWall(this->cordX + sizeShiftX, this->cordY))
     {
-        if (map.isWall(this->cordX, this->cordY + sdeltaY))
+        if (map.isWall(this->cordX, this->cordY + sizeShiftY))
         {
             this->cordX = oldX;
             this->cordY = oldY;
@@ -127,7 +117,7 @@ bool Entity::mapStep(GameMap& map)
     }
     else
     {
-        if (map.isWall(this->cordX, this->cordY + sdeltaY))
+        if (map.isWall(this->cordX, this->cordY + sizeShiftY))
         {
             this->cordX = oldX + deltaX;
             this->cordY = oldY;
@@ -143,7 +133,7 @@ bool Entity::directionStep(GameMap& map, const double angle)
 {
 	const double oldAngle = viewAngle;
     viewAngle = angle;
-	const bool fl = mapStep(map);
+	const bool fl = move(map);
     viewAngle = oldAngle;
     return fl;
 }
@@ -176,4 +166,10 @@ void Entity::updateAnimation()
         animation = ANIM_BASE;
         eventFl = false;
     }
+}
+
+void Entity::startAnimation(const Animations animation, int)
+{
+    frame = 0;
+	this->animation = animation;
 }

@@ -9,47 +9,39 @@ Enemy::Enemy(const double cordX, const double cordY, const double speed, const d
     this->target = target;
 }
 
-bool Enemy::isTargetSeen(GameMap& map)
+
+
+double Enemy::lookAtTarget(GameMap& map)
 {
-    double targetX, targetY;
-    target->getCords(targetX, targetY);
-
-    double enemyX, enemyY;
-    this->getCords(enemyX, enemyY);
-
-    bool visionFl = true;
-    double distance = Helper::calcDistance(enemyX, enemyY, targetX, targetY);
-
-    viewAngle += std::atan2((targetX - enemyX) / distance, (targetY - enemyY) / distance);
-
-    //движение луча взгляда к игроку
-    while (distance > VISION_STEP && visionFl)
+    double distance = 0;
+    if (isTargetSeen(map))
     {
-        enemyX = Helper::interpolateCoords(enemyX, targetX, VISION_STEP, distance);
-        enemyY = Helper::interpolateCoords(enemyY, targetY, VISION_STEP, distance);
+        double targetX, targetY;
+        target->getCords(targetX, targetY);
 
-        distance = Helper::calcDistance(enemyX, enemyY, targetX, targetY);
+        const double deltaX = targetX - cordX;
+        const double deltaY = targetY - cordY;
 
-        //если луч столкнулся со стеной
-        if (map.isWall(enemyX, enemyY))
-            visionFl = false;
+        distance = Helper::calcDistance(targetX, targetY,
+            cordX, cordY);
+        const double angleCos = deltaX / distance;
+        const double angleSin = deltaY / distance;
+        viewAngle = Helper::radToDeg(atan2(angleSin, angleCos));
     }
-
-    return visionFl;
+    return distance;
 }
 
-double Enemy::updateAngle()
+bool Enemy::update(GameMap& map, std::vector<Entity*>& entities)
 {
+    lookAtTarget(map);
 
-    double targetX, targetY;
-    target->getCords(targetX, targetY);
+    if (isAlive())
+        return false;
 
-    const double deltaX = targetX - cordX;
-    const double deltaY = targetY - cordY;
+    return true;
+}
 
-    const double distance = Helper::calcDistance(targetX, targetY, cordX, cordY);
-    const double angleCos = deltaX / distance;
-    const double angleSin = deltaY / distance;
-    viewAngle = Helper::radToDeg(atan2(angleSin, angleCos));
-    return distance;
+Entity* Enemy::getTarget() const
+{
+    return target;
 }

@@ -20,10 +20,11 @@ public:
     ~Player();
     Gun* getActiveWeapon() const;
 
-    void playerMapStep(CardinalDirections stepDirection, GameMap& map); //перемщение игрока
+    void move(CardinalDirections stepDirection, GameMap& map); //перемщение игрока
     void changeVision(double angle);    //поворот угла обзора
     void changeActiveWeapon();          //смена оружия
     void shot(std::vector<Entity*>& entities) const;   //выстрел 
 
     bool update(GameMap& map, std::vector<Entity*>& entities) override;
+    double getDamage() const override;
 };

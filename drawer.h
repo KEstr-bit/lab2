@@ -21,7 +21,7 @@ public:
 	//отрисовка стен
 	void drawWalls(GameMap& map, const Game& gm, sf::RenderWindow& window);
 	//отрисовка объектов
-	void entityDraw(const Game& gm, sf::RenderWindow& window);
+	void entityDraw(const Game& gm, sf::RenderWindow& window) const;
 
 	static void drawPlayerWeapon(const Game& gm, sf::RenderWindow& window);
 	Drawer();

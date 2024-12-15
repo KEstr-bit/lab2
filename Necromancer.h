@@ -1,5 +1,6 @@
 #pragma once
 #include "Enemy.h"
+#include "ShotGun.h"
 
 class Necromancer final: public Enemy
 {

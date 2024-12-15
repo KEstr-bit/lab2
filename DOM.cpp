@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <windows.h>
+
+#include "Bomber.h"
 #include "Game.h"
 #include "Final.h"
 #include "Drawer.h"
@@ -13,7 +15,7 @@ using namespace sf;
 const float AnimationControl::FRAME_SPEED = 0.25;
 const double Rifle::SIDE_SHIFT = 0.25;
 const double ShotGun::SIDE_SHIFT = 0.25;
-const int ShotGun::SPREAD_ANGLE = 30;
+const int ShotGun::MAX_SPREAD_ANGLE = 30;
 
 void change_final(const EndingOption option, Final* f)
 {
@@ -43,6 +45,26 @@ int main()
 	ending = new Final;
 	Game* game;
 	game = new Game();
+
+	Enemy* c;
+	Enemy* a = new Enemy(1,1,1,1,
+		1,1,ENEMY,game->player);
+	Bomber* b = new Bomber(2,2, game->player);
+	c = a;
+
+	vector<Entity*> entities;
+
+	b->lookAtTarget(*gameMap);		//Enemy::isTargetSeen
+	a->lookAtTarget(*gameMap);		//Enemy::isTargetSeen
+
+	a = b;
+	a->lookAtTarget(*gameMap);		//Enemy::isTargetSeen
+
+	*b = *c;
+	b->lookAtTarget(*gameMap);		//Enemy::isTargetSeen
+
+	delete c;
+	delete a;
 
 	RenderWindow window(VideoMode(Drawer::SCREEN_WIDTH, Drawer::SCREEN_HEIGHT), "Graphic Test");
 	//RenderWindow window(VideoMode(1920, 1080), "Graphic Test");
@@ -99,19 +121,19 @@ int main()
 			//обработка действий игрока
 			if (GetAsyncKeyState(0X57))
 			{
-				game->player->playerMapStep(NORTH, *gameMap);
+				game->player->move(NORTH, *gameMap);
 			}
 			if (GetAsyncKeyState(0X53))
 			{
-				game->player->playerMapStep(SOUTH, *gameMap);
+				game->player->move(SOUTH, *gameMap);
 			}
 			if (GetAsyncKeyState(0X44))
 			{
-				game->player->playerMapStep(EAST, *gameMap);
+				game->player->move(EAST, *gameMap);
 			}
 			if (GetAsyncKeyState(0X41))
 			{
-				game->player->playerMapStep(WEST, *gameMap);
+				game->player->move(WEST, *gameMap);
 			}
 
 			if (GetAsyncKeyState(VK_LCONTROL))

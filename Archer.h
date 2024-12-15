@@ -1,5 +1,6 @@
 #pragma once
 #include "Enemy.h"
+#include "Rifle.h"
 
 class Archer final: public Enemy
 {

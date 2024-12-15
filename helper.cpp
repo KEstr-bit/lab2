@@ -46,7 +46,7 @@ double Helper::projectToY(const double length, const double radians)
     return length * sin(radians);
 }
 
-double Helper::interpolateCoords(const double startCoordinate, const double finalCoordinate, const double step, const double distance)
+double Helper::interpolateCords(const double startCoordinate, const double finalCoordinate, const double step, const double distance)
 {
     return (step * finalCoordinate + (distance - step) * startCoordinate) / distance;
 }

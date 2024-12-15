@@ -3,8 +3,8 @@
 Player::Player(const double cordX, const double cordY) : Entity(cordX, cordY, 0.05, 100, 50, 0.5, NECROMANCER, true)
 {
 	activeWeapon = GUN_SHOTGUN;
-	firstGun = new ShotGun(10, 10, 0.05, 50, BULLET, true);
-	secondGun = new Rifle(10, 1, 0.3, 100, BULLET, true);
+	firstGun = new ShotGun(10, 3, 0.05, 50, BULLET, true);
+	secondGun = new Rifle(10, 1, 0.3, 10, BULLET, true);
 }
 
 
@@ -15,7 +15,7 @@ Player::~Player()
 }
 
 
-void Player::playerMapStep(const CardinalDirections stepDirection, GameMap& map)
+void Player::move(const CardinalDirections stepDirection, GameMap& map)
 {
     getActiveWeapon()->startAnimation(ANIM_MOVE, 1);
 	const double oldAngle = viewAngle;
@@ -29,7 +29,7 @@ void Player::playerMapStep(const CardinalDirections stepDirection, GameMap& map)
     case NORTH:break;
     }
 
-    this->mapStep(map);
+    Entity::move(map);
     //возвращение исходного угла
     viewAngle = oldAngle;
 }
@@ -89,4 +89,9 @@ bool Player::update(GameMap& map, std::vector<Entity*>& entities)
     firstGun->updateAnimation();
     secondGun->updateAnimation();
     return false;
+}
+
+double Player::getDamage() const
+{
+    return getActiveWeapon()->getDamage();
 }

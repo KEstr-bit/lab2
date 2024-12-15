@@ -16,7 +16,7 @@ Drawer::~Drawer()
 {
 }
 
-void Drawer::drawVerticalSegment(sf::RenderWindow& window, float length, const float stripIndex, const float x, const float y, const sf::Texture& texture) {
+void Drawer::drawVerticalSegment(sf::RenderWindow& window, const float length, const float stripIndex, const float x, const float y, const sf::Texture& texture) {
 
     sf::Sprite stripeSprite(texture);
 
@@ -54,7 +54,8 @@ void Drawer::drawImage(sf::RenderWindow& window, const sf::Texture& texture, con
     window.draw(sprite);
 }
 
-void Drawer::entityDraw(const Game& gm, sf::RenderWindow& window) {
+void Drawer::entityDraw(const Game& gm, sf::RenderWindow& window) const
+{
     double entityCordX, entityCordY;
     double playerCordX, playerCordY;
 

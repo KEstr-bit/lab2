@@ -2,6 +2,7 @@
 
 #include "Archer.h"
 #include "Bomber.h"
+#include "ShotGun.h"
 
 Necromancer::Necromancer(const double cordX, const double cordY, Entity* target): Enemy(
     cordX, cordY, 0.02, 1000, 50, 2, NECROMANCER, target)
@@ -12,13 +13,13 @@ Necromancer::Necromancer(const double cordX, const double cordY, Entity* target)
 
 bool Necromancer::update(GameMap& map, std::vector<Entity*>& entities)
 {
-    const double distance = updateAngle();
+    const double distance = lookAtTarget(map);
     switch (animation)
     {
     case ANIM_MOVE:
         
         if (distance > 5){
-            mapStep(map);
+            move(map);
         }
         break;
     case ANIM_ATTACK1:
@@ -35,11 +36,14 @@ bool Necromancer::update(GameMap& map, std::vector<Entity*>& entities)
     }
 
     shotGun->updateAnimation();
-    if (Entity::update(map, entities))
-        return true;
+
+    updateAnimation();
 
     if (eventFl)
         return false;
+
+    if (!isAlive())
+        return true;
 
     //если враг не видит цель
     if (!isTargetSeen(map)) {

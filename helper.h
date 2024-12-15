@@ -22,7 +22,7 @@ public:
 	static double projectToX(double length, double radians);
 	static double projectToY(double length, double radians);
 	//интерполяция координат
-	static double interpolateCoords(double startCoordinate, double finalCoordinate, double step, double distance);
+	static double interpolateCords(double startCoordinate, double finalCoordinate, double step, double distance);
 	static double getRotationAngle(double radians, double lineCos, double lineSin);
 
 	template<typename T, typename Q>

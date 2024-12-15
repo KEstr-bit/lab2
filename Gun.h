@@ -11,7 +11,7 @@ public:
 protected:
     int bulletCount;                    //количество пуль, выпускаемых за раз
     double bulletSpeed;                 //скорость полета пули
-    double bulletDamage;                   //урон, наносимы пулей
+    double bulletDamage;                //урон, наносимы пулей
     int ammunition = magazine_capacity;
     bool friendly;
     bool eventFl = true;
@@ -19,9 +19,11 @@ protected:
     Animations animation = ANIM_SPAWN;
 
 public:
-    Gun(int magazineCapacity, int bulletCount, double bulletSpeed, double bulletDamage, bool friendly, TextureType texture, TextureType bulletTexture);
+    Gun(int magazineCapacity, int bulletCount, double bulletSpeed, 
+        double bulletDamage, bool friendly, TextureType texture, TextureType bulletTexture);
     virtual bool shot(double cordX, double cordY, double shotAngle, std::vector<Entity*>& entities) = 0;
-    void reloading();
+    virtual void reloading();
+    double getDamage() const;
 
     void startAnimation(Animations animation) override;
     void startAnimation(Animations animation, int);

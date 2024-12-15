@@ -3,28 +3,22 @@
 template<typename  T>
 class QuadTree {
 private:
-    static const int MAX_OBJECTS = 4;  // Максимальное количество объектов в узле
+    static const int MAX_OBJECTS = 4;	// Максимальное количество объектов в узле
     static const int MAX_LEVELS = 3;    // Максимальная глубина дерева
 
-    int level;  // Уровень узла
-    std::vector<T> objects;  // Объекты, хранящиеся в узле
-    float x, y;  // Позиция узла
-    float width, height;  // Размер узла
-    QuadTree* nodes[4];  // Дочерние узлы
+    int level;							// Уровень узла
+    std::vector<T> objects;				// Объекты, хранящиеся в узле
+    float x, y;							// Позиция узла
+    float width, height;				// Размер узла
+    QuadTree* nodes[4];					// Дочерние узлы
 
 public:
     QuadTree(int level, float x, float y, float width, float height);
-
     ~QuadTree();
-
     void clear();
-
     void split();
-
     int getIndex(T entity);
-
     void insert(T entity);
-
     std::vector<T> retrieve(T entity);
 };
 

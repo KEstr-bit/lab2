@@ -8,11 +8,13 @@ Bullet::Bullet(const double cordX, const double cordY, const double flightAngle,
 
 bool Bullet::update(GameMap& map, std::vector<Entity*>& entities)
 {
-    if (Entity::update(map, entities))
-        return true;
+    updateAnimation();
 
     if (eventFl)
         return false;
+
+    if (!isAlive())
+        return true;
 
     baseStep();
 	hitPoints -= speed;

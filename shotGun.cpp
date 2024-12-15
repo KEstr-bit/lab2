@@ -24,8 +24,8 @@ bool ShotGun::shot(const double cordX, const double cordY, double shotAngle, std
     double angleShift = 0;
     if (bulletCount > 1)
     {
-        angleShift = static_cast<double>(SPREAD_ANGLE) / (bulletCount - 1);
-        shotAngle -= SPREAD_ANGLE / 2.0;
+        angleShift = static_cast<double>(spreadAngle) / (bulletCount - 1);
+        shotAngle -= spreadAngle / 2.0;
     }
 
     for (int i = 0; i < bulletCount; i++)
@@ -41,7 +41,16 @@ bool ShotGun::shot(const double cordX, const double cordY, double shotAngle, std
 
         shotAngle += angleShift;
     }
+
+    spreadAngle -= MAX_SPREAD_ANGLE/ (magazine_capacity / bulletCount);
+
     return true;
+}
+
+void ShotGun::reloading()
+{
+    Gun::reloading();
+    spreadAngle = MAX_SPREAD_ANGLE;
 }
 
 

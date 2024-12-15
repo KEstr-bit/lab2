@@ -49,3 +49,8 @@ void Gun::reloading()
 	ammunition = magazine_capacity;
 }
 
+double Gun::getDamage() const
+{
+	return bulletDamage;
+}
+
